@@ -1,0 +1,258 @@
+MATLAB version : 26.1.0.3203278 (R2026a) (this package needs R2020b or later)
+Package folder : C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude
+Path is set (lib, demos, main, work, tests).
+Search: 30000 symbols per point, 36 powers from -20.0 to 15.0 dBm
+    K =  1, M =   2, PTx = -20.0 dBm: BER = 3.084e-01
+    K =  1, M =   2, PTx = -19.0 dBm: BER = 2.859e-01
+    K =  1, M =   2, PTx = -18.0 dBm: BER = 2.617e-01
+    K =  1, M =   2, PTx = -17.0 dBm: BER = 2.389e-01
+    K =  1, M =   2, PTx = -16.0 dBm: BER = 2.134e-01
+    K =  1, M =   2, PTx = -15.0 dBm: BER = 1.887e-01
+    K =  1, M =   2, PTx = -14.0 dBm: BER = 1.638e-01
+    K =  1, M =   2, PTx = -13.0 dBm: BER = 1.406e-01
+    K =  1, M =   2, PTx = -12.0 dBm: BER = 1.174e-01
+    K =  1, M =   2, PTx = -11.0 dBm: BER = 9.531e-02
+    K =  1, M =   2, PTx = -10.0 dBm: BER = 7.412e-02
+    K =  1, M =   2, PTx =  -9.0 dBm: BER = 5.473e-02
+    K =  1, M =   2, PTx =  -8.0 dBm: BER = 3.829e-02
+    K =  1, M =   2, PTx =  -7.0 dBm: BER = 2.498e-02
+    K =  1, M =   2, PTx =  -6.0 dBm: BER = 1.468e-02
+    K =  1, M =   2, PTx =  -5.0 dBm: BER = 7.613e-03
+  K =  1, M =   2 (  192 ports): required PTx =  -5.0 dBm
+    K =  1, M =   4, PTx =  -5.0 dBm: BER = 5.751e-02
+    K =  1, M =   4, PTx =  -4.0 dBm: BER = 3.990e-02
+    K =  1, M =   4, PTx =  -3.0 dBm: BER = 2.581e-02
+    K =  1, M =   4, PTx =  -2.0 dBm: BER = 1.499e-02
+    K =  1, M =   4, PTx =  -1.0 dBm: BER = 8.525e-03
+  K =  1, M =   4 (  384 ports): required PTx =  -1.0 dBm
+    K =  1, M =   8, PTx =  -1.0 dBm: BER = 5.814e-02
+    K =  1, M =   8, PTx =   0.0 dBm: BER = 4.065e-02
+    K =  1, M =   8, PTx =   1.0 dBm: BER = 2.756e-02
+    K =  1, M =   8, PTx =   2.0 dBm: BER = 1.733e-02
+    K =  1, M =   8, PTx =   3.0 dBm: BER = 9.862e-03
+  K =  1, M =   8 (  768 ports): required PTx =   3.0 dBm
+    K =  1, M =  16, PTx =   3.0 dBm: BER = 6.042e-02
+    K =  1, M =  16, PTx =   4.0 dBm: BER = 4.394e-02
+    K =  1, M =  16, PTx =   5.0 dBm: BER = 2.969e-02
+    K =  1, M =  16, PTx =   6.0 dBm: BER = 1.879e-02
+    K =  1, M =  16, PTx =   7.0 dBm: BER = 1.109e-02
+    K =  1, M =  16, PTx =   8.0 dBm: BER = 6.225e-03
+  K =  1, M =  16 ( 1536 ports): required PTx =   8.0 dBm
+    K =  1, M =  32, PTx =   8.0 dBm: BER = 4.845e-02
+    K =  1, M =  32, PTx =   9.0 dBm: BER = 3.475e-02
+    K =  1, M =  32, PTx =  10.0 dBm: BER = 2.378e-02
+    K =  1, M =  32, PTx =  11.0 dBm: BER = 1.537e-02
+    K =  1, M =  32, PTx =  12.0 dBm: BER = 9.525e-03
+  K =  1, M =  32 ( 3072 ports): required PTx =  12.0 dBm
+    K =  1, M =  64, PTx =  12.0 dBm: BER = 5.658e-02
+    K =  1, M =  64, PTx =  13.0 dBm: BER = 4.314e-02
+    K =  1, M =  64, PTx =  14.0 dBm: BER = 3.190e-02
+    K =  1, M =  64, PTx =  15.0 dBm: BER = 2.296e-02
+  K =  1, M =  64 ( 6144 ports): required PTx =   NaN dBm
+  K =  1, M = 128 (12288 ports): required PTx =   NaN dBm
+    K =  2, M =   2, PTx = -20.0 dBm: BER = 2.265e-01
+    K =  2, M =   2, PTx = -19.0 dBm: BER = 2.012e-01
+    K =  2, M =   2, PTx = -18.0 dBm: BER = 1.767e-01
+    K =  2, M =   2, PTx = -17.0 dBm: BER = 1.522e-01
+    K =  2, M =   2, PTx = -16.0 dBm: BER = 1.293e-01
+    K =  2, M =   2, PTx = -15.0 dBm: BER = 1.073e-01
+    K =  2, M =   2, PTx = -14.0 dBm: BER = 8.459e-02
+    K =  2, M =   2, PTx = -13.0 dBm: BER = 6.438e-02
+    K =  2, M =   2, PTx = -12.0 dBm: BER = 4.679e-02
+    K =  2, M =   2, PTx = -11.0 dBm: BER = 3.215e-02
+    K =  2, M =   2, PTx = -10.0 dBm: BER = 1.994e-02
+    K =  2, M =   2, PTx =  -9.0 dBm: BER = 1.126e-02
+    K =  2, M =   2, PTx =  -8.0 dBm: BER = 5.662e-03
+  K =  2, M =   2 (  192 ports): required PTx =  -8.0 dBm
+    K =  2, M =   4, PTx =  -8.0 dBm: BER = 4.901e-02
+    K =  2, M =   4, PTx =  -7.0 dBm: BER = 3.335e-02
+    K =  2, M =   4, PTx =  -6.0 dBm: BER = 2.050e-02
+    K =  2, M =   4, PTx =  -5.0 dBm: BER = 1.214e-02
+    K =  2, M =   4, PTx =  -4.0 dBm: BER = 6.663e-03
+  K =  2, M =   4 (  384 ports): required PTx =  -4.0 dBm
+    K =  2, M =   8, PTx =  -4.0 dBm: BER = 4.964e-02
+    K =  2, M =   8, PTx =  -3.0 dBm: BER = 3.447e-02
+    K =  2, M =   8, PTx =  -2.0 dBm: BER = 2.279e-02
+    K =  2, M =   8, PTx =  -1.0 dBm: BER = 1.376e-02
+    K =  2, M =   8, PTx =   0.0 dBm: BER = 8.112e-03
+  K =  2, M =   8 (  768 ports): required PTx =   0.0 dBm
+    K =  2, M =  16, PTx =   0.0 dBm: BER = 5.224e-02
+    K =  2, M =  16, PTx =   1.0 dBm: BER = 3.711e-02
+    K =  2, M =  16, PTx =   2.0 dBm: BER = 2.434e-02
+    K =  2, M =  16, PTx =   3.0 dBm: BER = 1.528e-02
+    K =  2, M =  16, PTx =   4.0 dBm: BER = 8.725e-03
+  K =  2, M =  16 ( 1536 ports): required PTx =   4.0 dBm
+    K =  2, M =  32, PTx =   4.0 dBm: BER = 5.730e-02
+    K =  2, M =  32, PTx =   5.0 dBm: BER = 4.229e-02
+    K =  2, M =  32, PTx =   6.0 dBm: BER = 2.936e-02
+    K =  2, M =  32, PTx =   7.0 dBm: BER = 1.970e-02
+    K =  2, M =  32, PTx =   8.0 dBm: BER = 1.263e-02
+    K =  2, M =  32, PTx =   9.0 dBm: BER = 7.763e-03
+  K =  2, M =  32 ( 3072 ports): required PTx =   9.0 dBm
+    K =  2, M =  64, PTx =   9.0 dBm: BER = 5.038e-02
+    K =  2, M =  64, PTx =  10.0 dBm: BER = 3.771e-02
+    K =  2, M =  64, PTx =  11.0 dBm: BER = 2.791e-02
+    K =  2, M =  64, PTx =  12.0 dBm: BER = 2.051e-02
+    K =  2, M =  64, PTx =  13.0 dBm: BER = 1.465e-02
+    K =  2, M =  64, PTx =  14.0 dBm: BER = 1.055e-02
+    K =  2, M =  64, PTx =  15.0 dBm: BER = 7.675e-03
+  K =  2, M =  64 ( 6144 ports): required PTx =  15.0 dBm
+    K =  2, M = 128, PTx =  15.0 dBm: BER = 4.691e-02
+  K =  2, M = 128 (12288 ports): required PTx =   NaN dBm
+    K =  4, M =   2, PTx = -20.0 dBm: BER = 1.418e-01
+    K =  4, M =   2, PTx = -19.0 dBm: BER = 1.186e-01
+    K =  4, M =   2, PTx = -18.0 dBm: BER = 9.638e-02
+    K =  4, M =   2, PTx = -17.0 dBm: BER = 7.585e-02
+    K =  4, M =   2, PTx = -16.0 dBm: BER = 5.664e-02
+    K =  4, M =   2, PTx = -15.0 dBm: BER = 4.025e-02
+    K =  4, M =   2, PTx = -14.0 dBm: BER = 2.714e-02
+    K =  4, M =   2, PTx = -13.0 dBm: BER = 1.641e-02
+    K =  4, M =   2, PTx = -12.0 dBm: BER = 9.288e-03
+  K =  4, M =   2 (  192 ports): required PTx = -12.0 dBm
+    K =  4, M =   4, PTx = -12.0 dBm: BER = 5.983e-02
+    K =  4, M =   4, PTx = -11.0 dBm: BER = 4.208e-02
+    K =  4, M =   4, PTx = -10.0 dBm: BER = 2.775e-02
+    K =  4, M =   4, PTx =  -9.0 dBm: BER = 1.706e-02
+    K =  4, M =   4, PTx =  -8.0 dBm: BER = 9.713e-03
+  K =  4, M =   4 (  384 ports): required PTx =  -8.0 dBm
+    K =  4, M =   8, PTx =  -8.0 dBm: BER = 5.914e-02
+    K =  4, M =   8, PTx =  -7.0 dBm: BER = 4.271e-02
+    K =  4, M =   8, PTx =  -6.0 dBm: BER = 2.973e-02
+    K =  4, M =   8, PTx =  -5.0 dBm: BER = 1.918e-02
+    K =  4, M =   8, PTx =  -4.0 dBm: BER = 1.140e-02
+    K =  4, M =   8, PTx =  -3.0 dBm: BER = 6.125e-03
+  K =  4, M =   8 (  768 ports): required PTx =  -3.0 dBm
+    K =  4, M =  16, PTx =  -3.0 dBm: BER = 4.576e-02
+    K =  4, M =  16, PTx =  -2.0 dBm: BER = 3.151e-02
+    K =  4, M =  16, PTx =  -1.0 dBm: BER = 2.026e-02
+    K =  4, M =  16, PTx =   0.0 dBm: BER = 1.293e-02
+    K =  4, M =  16, PTx =   1.0 dBm: BER = 7.350e-03
+  K =  4, M =  16 ( 1536 ports): required PTx =   1.0 dBm
+    K =  4, M =  32, PTx =   1.0 dBm: BER = 4.967e-02
+    K =  4, M =  32, PTx =   2.0 dBm: BER = 3.620e-02
+    K =  4, M =  32, PTx =   3.0 dBm: BER = 2.551e-02
+    K =  4, M =  32, PTx =   4.0 dBm: BER = 1.694e-02
+    K =  4, M =  32, PTx =   5.0 dBm: BER = 1.068e-02
+    K =  4, M =  32, PTx =   6.0 dBm: BER = 7.025e-03
+  K =  4, M =  32 ( 3072 ports): required PTx =   6.0 dBm
+    K =  4, M =  64, PTx =   6.0 dBm: BER = 4.525e-02
+    K =  4, M =  64, PTx =   7.0 dBm: BER = 3.404e-02
+    K =  4, M =  64, PTx =   8.0 dBm: BER = 2.530e-02
+    K =  4, M =  64, PTx =   9.0 dBm: BER = 1.831e-02
+    K =  4, M =  64, PTx =  10.0 dBm: BER = 1.348e-02
+    K =  4, M =  64, PTx =  11.0 dBm: BER = 1.006e-02
+    K =  4, M =  64, PTx =  12.0 dBm: BER = 7.712e-03
+  K =  4, M =  64 ( 6144 ports): required PTx =  12.0 dBm
+    K =  4, M = 128, PTx =  12.0 dBm: BER = 4.386e-02
+    K =  4, M = 128, PTx =  13.0 dBm: BER = 3.695e-02
+    K =  4, M = 128, PTx =  14.0 dBm: BER = 3.220e-02
+    K =  4, M = 128, PTx =  15.0 dBm: BER = 2.760e-02
+  K =  4, M = 128 (12288 ports): required PTx =   NaN dBm
+    K =  8, M =   2, PTx = -20.0 dBm: BER = 6.859e-02
+    K =  8, M =   2, PTx = -19.0 dBm: BER = 5.091e-02
+    K =  8, M =   2, PTx = -18.0 dBm: BER = 3.581e-02
+    K =  8, M =   2, PTx = -17.0 dBm: BER = 2.371e-02
+    K =  8, M =   2, PTx = -16.0 dBm: BER = 1.441e-02
+    K =  8, M =   2, PTx = -15.0 dBm: BER = 8.212e-03
+  K =  8, M =   2 (  192 ports): required PTx = -15.0 dBm
+    K =  8, M =   4, PTx = -15.0 dBm: BER = 5.271e-02
+    K =  8, M =   4, PTx = -14.0 dBm: BER = 3.714e-02
+    K =  8, M =   4, PTx = -13.0 dBm: BER = 2.470e-02
+    K =  8, M =   4, PTx = -12.0 dBm: BER = 1.558e-02
+    K =  8, M =   4, PTx = -11.0 dBm: BER = 9.350e-03
+  K =  8, M =   4 (  384 ports): required PTx = -11.0 dBm
+    K =  8, M =   8, PTx = -11.0 dBm: BER = 5.334e-02
+    K =  8, M =   8, PTx = -10.0 dBm: BER = 3.841e-02
+    K =  8, M =   8, PTx =  -9.0 dBm: BER = 2.639e-02
+    K =  8, M =   8, PTx =  -8.0 dBm: BER = 1.724e-02
+    K =  8, M =   8, PTx =  -7.0 dBm: BER = 1.051e-02
+    K =  8, M =   8, PTx =  -6.0 dBm: BER = 5.587e-03
+  K =  8, M =   8 (  768 ports): required PTx =  -6.0 dBm
+    K =  8, M =  16, PTx =  -6.0 dBm: BER = 4.116e-02
+    K =  8, M =  16, PTx =  -5.0 dBm: BER = 2.841e-02
+    K =  8, M =  16, PTx =  -4.0 dBm: BER = 1.893e-02
+    K =  8, M =  16, PTx =  -3.0 dBm: BER = 1.180e-02
+    K =  8, M =  16, PTx =  -2.0 dBm: BER = 6.962e-03
+  K =  8, M =  16 ( 1536 ports): required PTx =  -2.0 dBm
+    K =  8, M =  32, PTx =  -2.0 dBm: BER = 4.514e-02
+    K =  8, M =  32, PTx =  -1.0 dBm: BER = 3.247e-02
+    K =  8, M =  32, PTx =   0.0 dBm: BER = 2.345e-02
+    K =  8, M =  32, PTx =   1.0 dBm: BER = 1.586e-02
+    K =  8, M =  32, PTx =   2.0 dBm: BER = 1.081e-02
+    K =  8, M =  32, PTx =   3.0 dBm: BER = 6.687e-03
+  K =  8, M =  32 ( 3072 ports): required PTx =   3.0 dBm
+    K =  8, M =  64, PTx =   3.0 dBm: BER = 4.200e-02
+    K =  8, M =  64, PTx =   4.0 dBm: BER = 3.206e-02
+    K =  8, M =  64, PTx =   5.0 dBm: BER = 2.426e-02
+    K =  8, M =  64, PTx =   6.0 dBm: BER = 1.798e-02
+    K =  8, M =  64, PTx =   7.0 dBm: BER = 1.351e-02
+    K =  8, M =  64, PTx =   8.0 dBm: BER = 1.019e-02
+    K =  8, M =  64, PTx =   9.0 dBm: BER = 7.725e-03
+  K =  8, M =  64 ( 6144 ports): required PTx =   9.0 dBm
+    K =  8, M = 128, PTx =   9.0 dBm: BER = 4.340e-02
+    K =  8, M = 128, PTx =  10.0 dBm: BER = 3.735e-02
+    K =  8, M = 128, PTx =  11.0 dBm: BER = 3.235e-02
+    K =  8, M = 128, PTx =  12.0 dBm: BER = 2.789e-02
+    K =  8, M = 128, PTx =  13.0 dBm: BER = 2.484e-02
+    K =  8, M = 128, PTx =  14.0 dBm: BER = 2.243e-02
+    K =  8, M = 128, PTx =  15.0 dBm: BER = 2.049e-02
+  K =  8, M = 128 (12288 ports): required PTx =   NaN dBm
+    K = 12, M =   2, PTx = -20.0 dBm: BER = 2.094e-02
+    K = 12, M =   2, PTx = -19.0 dBm: BER = 1.325e-02
+    K = 12, M =   2, PTx = -18.0 dBm: BER = 7.912e-03
+  K = 12, M =   2 (  192 ports): required PTx = -18.0 dBm
+    K = 12, M =   4, PTx = -18.0 dBm: BER = 4.716e-02
+    K = 12, M =   4, PTx = -17.0 dBm: BER = 3.340e-02
+    K = 12, M =   4, PTx = -16.0 dBm: BER = 2.227e-02
+    K = 12, M =   4, PTx = -15.0 dBm: BER = 1.400e-02
+    K = 12, M =   4, PTx = -14.0 dBm: BER = 8.587e-03
+  K = 12, M =   4 (  384 ports): required PTx = -14.0 dBm
+    K = 12, M =   8, PTx = -14.0 dBm: BER = 4.830e-02
+    K = 12, M =   8, PTx = -13.0 dBm: BER = 3.491e-02
+    K = 12, M =   8, PTx = -12.0 dBm: BER = 2.388e-02
+    K = 12, M =   8, PTx = -11.0 dBm: BER = 1.550e-02
+    K = 12, M =   8, PTx = -10.0 dBm: BER = 9.825e-03
+  K = 12, M =   8 (  768 ports): required PTx = -10.0 dBm
+    K = 12, M =  16, PTx = -10.0 dBm: BER = 5.139e-02
+    K = 12, M =  16, PTx =  -9.0 dBm: BER = 3.687e-02
+    K = 12, M =  16, PTx =  -8.0 dBm: BER = 2.538e-02
+    K = 12, M =  16, PTx =  -7.0 dBm: BER = 1.707e-02
+    K = 12, M =  16, PTx =  -6.0 dBm: BER = 1.130e-02
+    K = 12, M =  16, PTx =  -5.0 dBm: BER = 7.112e-03
+  K = 12, M =  16 ( 1536 ports): required PTx =  -5.0 dBm
+    K = 12, M =  32, PTx =  -5.0 dBm: BER = 4.105e-02
+    K = 12, M =  32, PTx =  -4.0 dBm: BER = 3.025e-02
+    K = 12, M =  32, PTx =  -3.0 dBm: BER = 2.209e-02
+    K = 12, M =  32, PTx =  -2.0 dBm: BER = 1.564e-02
+    K = 12, M =  32, PTx =  -1.0 dBm: BER = 1.080e-02
+    K = 12, M =  32, PTx =   0.0 dBm: BER = 7.262e-03
+  K = 12, M =  32 ( 3072 ports): required PTx =   0.0 dBm
+    K = 12, M =  64, PTx =   0.0 dBm: BER = 3.968e-02
+    K = 12, M =  64, PTx =   1.0 dBm: BER = 3.069e-02
+    K = 12, M =  64, PTx =   2.0 dBm: BER = 2.339e-02
+    K = 12, M =  64, PTx =   3.0 dBm: BER = 1.801e-02
+    K = 12, M =  64, PTx =   4.0 dBm: BER = 1.359e-02
+    K = 12, M =  64, PTx =   5.0 dBm: BER = 1.080e-02
+    K = 12, M =  64, PTx =   6.0 dBm: BER = 8.650e-03
+  K = 12, M =  64 ( 6144 ports): required PTx =   6.0 dBm
+    K = 12, M = 128, PTx =   6.0 dBm: BER = 4.266e-02
+    K = 12, M = 128, PTx =   7.0 dBm: BER = 3.686e-02
+    K = 12, M = 128, PTx =   8.0 dBm: BER = 3.235e-02
+    K = 12, M = 128, PTx =   9.0 dBm: BER = 2.866e-02
+    K = 12, M = 128, PTx =  10.0 dBm: BER = 2.611e-02
+    K = 12, M = 128, PTx =  11.0 dBm: BER = 2.379e-02
+    K = 12, M = 128, PTx =  12.0 dBm: BER = 2.208e-02
+    K = 12, M = 128, PTx =  13.0 dBm: BER = 2.077e-02
+    K = 12, M = 128, PTx =  14.0 dBm: BER = 1.969e-02
+    K = 12, M = 128, PTx =  15.0 dBm: BER = 1.880e-02
+  K = 12, M = 128 (12288 ports): required PTx =   NaN dBm
+209 operating points in 34.6 s (0.17 s per point)
+
+Required transmitter power [dBm], rows K, columns M = [2 4 8 16 32 64 128]
+  K =  1 :   -5.0   -1.0    3.0    8.0   12.0    NaN    NaN
+  K =  2 :   -8.0   -4.0    0.0    4.0    9.0   15.0    NaN
+  K =  4 :  -12.0   -8.0   -3.0    1.0    6.0   12.0    NaN
+  K =  8 :  -15.0  -11.0   -6.0   -2.0    3.0    9.0    NaN
+  K = 12 :  -18.0  -14.0  -10.0   -5.0    0.0    6.0    NaN
+
+Saved in C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results: claude_two_stage_common_20261016_140702.{mat,_required_PTx.csv,_portcount.csv,png}

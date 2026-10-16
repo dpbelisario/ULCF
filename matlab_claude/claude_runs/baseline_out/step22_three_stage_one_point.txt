@@ -1,0 +1,36 @@
+
+==================== step22_three_stage_one_point ====================
+Operating point : PTx = 4.0 dBm, space switches 64 x 64, Scheme A2
+Switch size     : 6144 x 6144 ports (M*N = 64*96)
+BER             : 8.700e-03 (696 errors in 80000 bits), FEC limit 1e-02
+
+Power after every block [dBm] (one polarization, inside the band Fs)
+  block               simulation      budget      budget
+                         (total)     (total)    (target)
+  [1] Tx                   1.000       1.000       1.000
+  [2] Fan-in/out           1.000       1.000       1.000
+  [3] Switch 1            -5.000      -5.000      -5.000
+  [4] Coupler            -29.500     -29.500     -29.500
+  [5] EDFA                -2.813      -2.809      -2.872
+  [6] AWG                 -9.221      -9.218      -9.268
+  [7] Switch 3           -33.141     -33.133     -33.268
+  [8] Fan-in/out         -33.141     -33.133     -33.268
+  [9] Pre-amp              7.020       7.020       6.794
+  ASE of EDFA            -21.233     -21.245
+  ASE of pre-amp          -9.846      -9.810
+  sigpw (block [7])       -9.240      -9.236
+
+SNR contributions in the signal bandwidth [dB]
+  ASE of the EDFA                   21.38
+  crosstalk of the stage-1 switch   52.01
+  crosstalk of the stage-3 switch   16.94
+  ASE of the pre-amplifier          19.58
+  all together (budget)             14.15
+  simulation                        14.19
+  (noise gain of the equalizer behind the AWG: 0.03 dB)
+BER of Gaussian noise with the SNR of the budget: 8.494e-03
+
+Self-check 1 passed: power after every block = budget within 0.1 dB (largest difference 0.008 dB)
+Self-check 2 passed: simulated SNR = SNR budget within 0.7 dB (difference +0.05 dB)
+
+[claude] step22_three_stage_one_point finished in 0.7 s

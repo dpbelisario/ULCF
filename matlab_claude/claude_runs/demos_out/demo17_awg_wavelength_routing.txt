@@ -1,0 +1,35 @@
+
+==================== demo17_awg_wavelength_routing ====================
+Loss of a 24-GBd signal in the AWG passband (FWHM 66.6 GHz)
+    K   deviation [GHz]   loss, simulation [dB]   loss, theory [dB]
+    1               5.0                   0.191               0.193
+    2               5.0                   0.191               0.193
+    4               8.0                   0.289               0.292
+    8              12.5                   0.523               0.528
+   12              16.0                   0.776               0.783
+Self-check 1 passed: simulated loss = Gaussian formula within 0.05 dB
+
+Routing table: N = 8 channels, K = 4 input ports
+(row = input port, column = output port, entry = channel)
+     1     2     3     4     5     6     7     8
+     2     3     4     5     6     7     8     1
+     3     4     5     6     7     8     1     2
+     4     5     6     7     8     1     2     3
+
+Example: input port 2 -> output port 5 uses channel 6
+  channel 6 from input port 1 leaves at output port 6
+  channel 6 from input port 2 leaves at output port 5
+  channel 6 from input port 3 leaves at output port 4
+  channel 6 from input port 4 leaves at output port 3
+Self-check 2 passed: each channel once per row, at most once per column
+
+Aggregation coupler before the EDFA (N = 96 wavelength channels)
+    K    coupler   loss [dB]   saving [dB]   EDFAs
+    1    96 x 1        24.5           0.0       1
+    2    48 x 1        21.0           3.5       2
+    4    24 x 1        17.5           7.0       4
+    8    12 x 1        14.0          10.5       8
+   12     8 x 1        10.5          14.0      12
+Self-check 3 passed: saving = 3.5 dB x (number of saved coupler stages)
+
+[claude] demo17_awg_wavelength_routing finished in 0.1 s

@@ -1,0 +1,39 @@
+
+==================== demo12_units_power_budget ====================
+Power in dBm and in mW
+   -30.0 dBm =    0.0010 mW
+   -10.0 dBm =    0.1000 mW
+     0.0 dBm =    1.0000 mW
+     3.0 dBm =    1.9953 mW
+    10.0 dBm =   10.0000 mW
+    20.0 dBm =  100.0000 mW
+96 channels of 0.18 dBm (1.042 mW) each: total 100.0 mW = 20.00 dBm
+Self-check 1 passed: W <-> dBm; 96 channels add up to 20 dBm
+
+x (set to 0.0 dBm) : mean(abs(x).^2) = 1.0000 mW
+y (x after 3.0 dB) : mean(abs(y).^2) = 0.5012 mW = -3.000 dBm
+Amplitude factor 0.7079 = 10^(-3.0/20), power factor 0.5012 = 10^(-3.0/10)
+Self-check 2 passed: a loss of 3.0 dB = field times 0.7079
+
+Loss [dB] for D ports (number of stages = ceil(log2(D)))
+      D   stages   selector    coupler   DC switch
+      2        1        0.5        3.5         4.0
+      4        2        1.0        7.0         8.0
+      8        3        1.5       10.5        12.0
+     16        4        2.0       14.0        16.0
+     32        5        2.5       17.5        20.0
+     64        6        3.0       21.0        24.0
+     96        7        3.5       24.5        28.0
+    128        7        3.5       24.5        28.0
+Self-check 3 passed: loss rules; coupler_loss(96) = 24.5 dB
+
+Power after every stage [dBm] (PTx = 0.0 dBm, 16 x 16 DC switch)
+  stage           agg. coupler 96 x 1   agg. coupler 8 x 1
+  Tx                              0.0                  0.0
+  Selector                       -2.0                 -2.0
+  Coupler                       -16.0                -16.0
+  Agg. coupler                  -40.5                -26.5
+EDFA input with the small coupler: 14.0 dB higher
+Self-check 4 passed: field power = budget in dB at every stage (both cases)
+
+[claude] demo12_units_power_budget finished in 1.7 s

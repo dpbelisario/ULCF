@@ -1,0 +1,364 @@
+MATLAB version : 26.1.0.3203278 (R2026a) (this package needs R2020b or later)
+Package folder : C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude
+Path is set (lib, demos, main, work, tests).
+Search: 30000 symbols per point, 23 powers from -12.0 to 10.0 dBm, xt_wave_max = 16
+    K =  1, A1, dispersed    M =  16, PTx = -12.0 dBm: BER = 1.190e-01 (budget SNR 7.38 dB)
+    K =  1, A1, dispersed    M =  16, PTx = -11.0 dBm: BER = 9.631e-02 (budget SNR 8.38 dB)
+    K =  1, A1, dispersed    M =  16, PTx = -10.0 dBm: BER = 7.585e-02 (budget SNR 9.38 dB)
+    K =  1, A1, dispersed    M =  16, PTx =  -9.0 dBm: BER = 5.597e-02 (budget SNR 10.38 dB)
+    K =  1, A1, dispersed    M =  16, PTx =  -8.0 dBm: BER = 3.925e-02 (budget SNR 11.37 dB)
+    K =  1, A1, dispersed    M =  16, PTx =  -7.0 dBm: BER = 2.515e-02 (budget SNR 12.37 dB)
+    K =  1, A1, dispersed    M =  16, PTx =  -6.0 dBm: BER = 1.457e-02 (budget SNR 13.37 dB)
+    K =  1, A1, dispersed    M =  16, PTx =  -5.0 dBm: BER = 7.763e-03 (budget SNR 14.37 dB)
+  K =  1, A1, dispersed    M =  16 ( 1536 ports): required PTx =  -5.0 dBm
+    K =  1, A1, dispersed    M =  32, PTx =  -5.0 dBm: BER = 1.501e-02 (budget SNR 13.37 dB)
+    K =  1, A1, dispersed    M =  32, PTx =  -4.0 dBm: BER = 7.463e-03 (budget SNR 14.36 dB)
+  K =  1, A1, dispersed    M =  32 ( 3072 ports): required PTx =  -4.0 dBm
+    K =  1, A1, dispersed    M =  64, PTx =  -4.0 dBm: BER = 1.511e-02 (budget SNR 13.36 dB)
+    K =  1, A1, dispersed    M =  64, PTx =  -3.0 dBm: BER = 7.463e-03 (budget SNR 14.36 dB)
+  K =  1, A1, dispersed    M =  64 ( 6144 ports): required PTx =  -3.0 dBm
+    K =  1, A1, dispersed    M = 128, PTx =  -3.0 dBm: BER = 1.506e-02 (budget SNR 13.36 dB)
+    K =  1, A1, dispersed    M = 128, PTx =  -2.0 dBm: BER = 7.525e-03 (budget SNR 14.35 dB)
+  K =  1, A1, dispersed    M = 128 (12288 ports): required PTx =  -2.0 dBm
+    K =  1, A2, dispersed    M =  16, PTx = -12.0 dBm: BER = 1.222e-01 (budget SNR 7.20 dB)
+    K =  1, A2, dispersed    M =  16, PTx = -11.0 dBm: BER = 1.010e-01 (budget SNR 8.16 dB)
+    K =  1, A2, dispersed    M =  16, PTx = -10.0 dBm: BER = 8.040e-02 (budget SNR 9.11 dB)
+    K =  1, A2, dispersed    M =  16, PTx =  -9.0 dBm: BER = 6.118e-02 (budget SNR 10.05 dB)
+    K =  1, A2, dispersed    M =  16, PTx =  -8.0 dBm: BER = 4.523e-02 (budget SNR 10.98 dB)
+    K =  1, A2, dispersed    M =  16, PTx =  -7.0 dBm: BER = 3.118e-02 (budget SNR 11.89 dB)
+    K =  1, A2, dispersed    M =  16, PTx =  -6.0 dBm: BER = 2.053e-02 (budget SNR 12.78 dB)
+    K =  1, A2, dispersed    M =  16, PTx =  -5.0 dBm: BER = 1.264e-02 (budget SNR 13.64 dB)
+    K =  1, A2, dispersed    M =  16, PTx =  -4.0 dBm: BER = 7.038e-03 (budget SNR 14.48 dB)
+  K =  1, A2, dispersed    M =  16 ( 1536 ports): required PTx =  -4.0 dBm
+    K =  1, A2, dispersed    M =  32, PTx =  -4.0 dBm: BER = 1.911e-02 (budget SNR 12.90 dB)
+    K =  1, A2, dispersed    M =  32, PTx =  -3.0 dBm: BER = 1.266e-02 (budget SNR 13.60 dB)
+    K =  1, A2, dispersed    M =  32, PTx =  -2.0 dBm: BER = 8.162e-03 (budget SNR 14.25 dB)
+  K =  1, A2, dispersed    M =  32 ( 3072 ports): required PTx =  -2.0 dBm
+    K =  1, A2, dispersed    M =  64, PTx =  -2.0 dBm: BER = 2.738e-02 (budget SNR 12.15 dB)
+    K =  1, A2, dispersed    M =  64, PTx =  -1.0 dBm: BER = 2.206e-02 (budget SNR 12.61 dB)
+    K =  1, A2, dispersed    M =  64, PTx =   0.0 dBm: BER = 1.796e-02 (budget SNR 13.02 dB)
+    K =  1, A2, dispersed    M =  64, PTx =   1.0 dBm: BER = 1.434e-02 (budget SNR 13.37 dB)
+    K =  1, A2, dispersed    M =  64, PTx =   2.0 dBm: BER = 1.184e-02 (budget SNR 13.67 dB)
+    K =  1, A2, dispersed    M =  64, PTx =   3.0 dBm: BER = 9.763e-03 (budget SNR 13.93 dB)
+  K =  1, A2, dispersed    M =  64 ( 6144 ports): required PTx =   3.0 dBm
+    K =  1, A2, dispersed    M = 128, PTx =   3.0 dBm: BER = 4.526e-02 (budget SNR 10.95 dB)
+    K =  1, A2, dispersed    M = 128, PTx =   4.0 dBm: BER = 4.299e-02 (budget SNR 11.09 dB)
+    K =  1, A2, dispersed    M = 128, PTx =   5.0 dBm: BER = 4.106e-02 (budget SNR 11.21 dB)
+    K =  1, A2, dispersed    M = 128, PTx =   6.0 dBm: BER = 3.952e-02 (budget SNR 11.30 dB)
+    K =  1, A2, dispersed    M = 128, PTx =   7.0 dBm: BER = 3.861e-02 (budget SNR 11.38 dB)
+    K =  1, A2, dispersed    M = 128, PTx =   8.0 dBm: BER = 3.765e-02 (budget SNR 11.44 dB)
+    K =  1, A2, dispersed    M = 128, PTx =   9.0 dBm: BER = 3.685e-02 (budget SNR 11.49 dB)
+    K =  1, A2, dispersed    M = 128, PTx =  10.0 dBm: BER = 3.614e-02 (budget SNR 11.53 dB)
+  K =  1, A2, dispersed    M = 128 (12288 ports): required PTx =   NaN dBm
+    K =  2, A1, dispersed    M =  16, PTx = -12.0 dBm: BER = 4.830e-02 (budget SNR 10.83 dB)
+    K =  2, A1, dispersed    M =  16, PTx = -11.0 dBm: BER = 3.300e-02 (budget SNR 11.82 dB)
+    K =  2, A1, dispersed    M =  16, PTx = -10.0 dBm: BER = 2.020e-02 (budget SNR 12.80 dB)
+    K =  2, A1, dispersed    M =  16, PTx =  -9.0 dBm: BER = 1.132e-02 (budget SNR 13.79 dB)
+    K =  2, A1, dispersed    M =  16, PTx =  -8.0 dBm: BER = 5.975e-03 (budget SNR 14.76 dB)
+  K =  2, A1, dispersed    M =  16 ( 1536 ports): required PTx =  -8.0 dBm
+    K =  2, A1, dispersed    M =  32, PTx =  -8.0 dBm: BER = 1.174e-02 (budget SNR 13.78 dB)
+    K =  2, A1, dispersed    M =  32, PTx =  -7.0 dBm: BER = 5.450e-03 (budget SNR 14.75 dB)
+  K =  2, A1, dispersed    M =  32 ( 3072 ports): required PTx =  -7.0 dBm
+    K =  2, A1, dispersed    M =  64, PTx =  -7.0 dBm: BER = 1.145e-02 (budget SNR 13.77 dB)
+    K =  2, A1, dispersed    M =  64, PTx =  -6.0 dBm: BER = 5.525e-03 (budget SNR 14.74 dB)
+  K =  2, A1, dispersed    M =  64 ( 6144 ports): required PTx =  -6.0 dBm
+    K =  2, A1, dispersed    M = 128, PTx =  -6.0 dBm: BER = 1.159e-02 (budget SNR 13.76 dB)
+    K =  2, A1, dispersed    M = 128, PTx =  -5.0 dBm: BER = 5.575e-03 (budget SNR 14.73 dB)
+  K =  2, A1, dispersed    M = 128 (12288 ports): required PTx =  -5.0 dBm
+    K =  2, A1, concentrated M =  16, PTx = -12.0 dBm: BER = 4.864e-02 (budget SNR 10.83 dB)
+    K =  2, A1, concentrated M =  16, PTx = -11.0 dBm: BER = 3.269e-02 (budget SNR 11.82 dB)
+    K =  2, A1, concentrated M =  16, PTx = -10.0 dBm: BER = 2.001e-02 (budget SNR 12.80 dB)
+    K =  2, A1, concentrated M =  16, PTx =  -9.0 dBm: BER = 1.106e-02 (budget SNR 13.79 dB)
+    K =  2, A1, concentrated M =  16, PTx =  -8.0 dBm: BER = 5.862e-03 (budget SNR 14.76 dB)
+  K =  2, A1, concentrated M =  16 ( 1536 ports): required PTx =  -8.0 dBm
+    K =  2, A1, concentrated M =  32, PTx =  -8.0 dBm: BER = 1.146e-02 (budget SNR 13.78 dB)
+    K =  2, A1, concentrated M =  32, PTx =  -7.0 dBm: BER = 5.488e-03 (budget SNR 14.75 dB)
+  K =  2, A1, concentrated M =  32 ( 3072 ports): required PTx =  -7.0 dBm
+    K =  2, A1, concentrated M =  64, PTx =  -7.0 dBm: BER = 1.151e-02 (budget SNR 13.77 dB)
+    K =  2, A1, concentrated M =  64, PTx =  -6.0 dBm: BER = 5.500e-03 (budget SNR 14.74 dB)
+  K =  2, A1, concentrated M =  64 ( 6144 ports): required PTx =  -6.0 dBm
+    K =  2, A1, concentrated M = 128, PTx =  -6.0 dBm: BER = 1.151e-02 (budget SNR 13.76 dB)
+    K =  2, A1, concentrated M = 128, PTx =  -5.0 dBm: BER = 5.537e-03 (budget SNR 14.73 dB)
+  K =  2, A1, concentrated M = 128 (12288 ports): required PTx =  -5.0 dBm
+    K =  2, A2, dispersed    M =  16, PTx = -12.0 dBm: BER = 5.393e-02 (budget SNR 10.51 dB)
+    K =  2, A2, dispersed    M =  16, PTx = -11.0 dBm: BER = 3.849e-02 (budget SNR 11.43 dB)
+    K =  2, A2, dispersed    M =  16, PTx = -10.0 dBm: BER = 2.627e-02 (budget SNR 12.32 dB)
+    K =  2, A2, dispersed    M =  16, PTx =  -9.0 dBm: BER = 1.663e-02 (budget SNR 13.20 dB)
+    K =  2, A2, dispersed    M =  16, PTx =  -8.0 dBm: BER = 1.001e-02 (budget SNR 14.05 dB)
+    K =  2, A2, dispersed    M =  16, PTx =  -7.0 dBm: BER = 5.600e-03 (budget SNR 14.86 dB)
+  K =  2, A2, dispersed    M =  16 ( 1536 ports): required PTx =  -7.0 dBm
+    K =  2, A2, dispersed    M =  32, PTx =  -7.0 dBm: BER = 1.589e-02 (budget SNR 13.19 dB)
+    K =  2, A2, dispersed    M =  32, PTx =  -6.0 dBm: BER = 1.093e-02 (budget SNR 13.85 dB)
+    K =  2, A2, dispersed    M =  32, PTx =  -5.0 dBm: BER = 6.800e-03 (budget SNR 14.47 dB)
+  K =  2, A2, dispersed    M =  32 ( 3072 ports): required PTx =  -5.0 dBm
+    K =  2, A2, dispersed    M =  64, PTx =  -5.0 dBm: BER = 2.786e-02 (budget SNR 12.13 dB)
+    K =  2, A2, dispersed    M =  64, PTx =  -4.0 dBm: BER = 2.272e-02 (budget SNR 12.54 dB)
+    K =  2, A2, dispersed    M =  64, PTx =  -3.0 dBm: BER = 1.909e-02 (budget SNR 12.90 dB)
+    K =  2, A2, dispersed    M =  64, PTx =  -2.0 dBm: BER = 1.596e-02 (budget SNR 13.21 dB)
+    K =  2, A2, dispersed    M =  64, PTx =  -1.0 dBm: BER = 1.367e-02 (budget SNR 13.47 dB)
+    K =  2, A2, dispersed    M =  64, PTx =   0.0 dBm: BER = 1.218e-02 (budget SNR 13.69 dB)
+    K =  2, A2, dispersed    M =  64, PTx =   1.0 dBm: BER = 1.073e-02 (budget SNR 13.88 dB)
+    K =  2, A2, dispersed    M =  64, PTx =   2.0 dBm: BER = 9.838e-03 (budget SNR 14.03 dB)
+  K =  2, A2, dispersed    M =  64 ( 6144 ports): required PTx =   2.0 dBm
+    K =  2, A2, dispersed    M = 128, PTx =   2.0 dBm: BER = 5.173e-02 (budget SNR 10.59 dB)
+    K =  2, A2, dispersed    M = 128, PTx =   3.0 dBm: BER = 5.024e-02 (budget SNR 10.66 dB)
+    K =  2, A2, dispersed    M = 128, PTx =   4.0 dBm: BER = 4.934e-02 (budget SNR 10.72 dB)
+    K =  2, A2, dispersed    M = 128, PTx =   5.0 dBm: BER = 4.844e-02 (budget SNR 10.77 dB)
+    K =  2, A2, dispersed    M = 128, PTx =   6.0 dBm: BER = 4.800e-02 (budget SNR 10.81 dB)
+    K =  2, A2, dispersed    M = 128, PTx =   7.0 dBm: BER = 4.746e-02 (budget SNR 10.84 dB)
+    K =  2, A2, dispersed    M = 128, PTx =   8.0 dBm: BER = 4.685e-02 (budget SNR 10.86 dB)
+    K =  2, A2, dispersed    M = 128, PTx =   9.0 dBm: BER = 4.665e-02 (budget SNR 10.88 dB)
+    K =  2, A2, dispersed    M = 128, PTx =  10.0 dBm: BER = 4.648e-02 (budget SNR 10.90 dB)
+  K =  2, A2, dispersed    M = 128 (12288 ports): required PTx =   NaN dBm
+    K =  2, A2, concentrated M =  16, PTx = -12.0 dBm: BER = 5.655e-02 (budget SNR 10.38 dB)
+    K =  2, A2, concentrated M =  16, PTx = -11.0 dBm: BER = 4.094e-02 (budget SNR 11.26 dB)
+    K =  2, A2, concentrated M =  16, PTx = -10.0 dBm: BER = 2.829e-02 (budget SNR 12.13 dB)
+    K =  2, A2, concentrated M =  16, PTx =  -9.0 dBm: BER = 1.825e-02 (budget SNR 12.96 dB)
+    K =  2, A2, concentrated M =  16, PTx =  -8.0 dBm: BER = 1.141e-02 (budget SNR 13.77 dB)
+    K =  2, A2, concentrated M =  16, PTx =  -7.0 dBm: BER = 6.725e-03 (budget SNR 14.53 dB)
+  K =  2, A2, concentrated M =  16 ( 1536 ports): required PTx =  -7.0 dBm
+    K =  2, A2, concentrated M =  32, PTx =  -7.0 dBm: BER = 2.050e-02 (budget SNR 12.74 dB)
+    K =  2, A2, concentrated M =  32, PTx =  -6.0 dBm: BER = 1.489e-02 (budget SNR 13.34 dB)
+    K =  2, A2, concentrated M =  32, PTx =  -5.0 dBm: BER = 1.060e-02 (budget SNR 13.88 dB)
+    K =  2, A2, concentrated M =  32, PTx =  -4.0 dBm: BER = 7.550e-03 (budget SNR 14.36 dB)
+  K =  2, A2, concentrated M =  32 ( 3072 ports): required PTx =  -4.0 dBm
+    K =  2, A2, concentrated M =  64, PTx =  -4.0 dBm: BER = 3.194e-02 (budget SNR 11.80 dB)
+    K =  2, A2, concentrated M =  64, PTx =  -3.0 dBm: BER = 2.836e-02 (budget SNR 12.10 dB)
+    K =  2, A2, concentrated M =  64, PTx =  -2.0 dBm: BER = 2.526e-02 (budget SNR 12.36 dB)
+    K =  2, A2, concentrated M =  64, PTx =  -1.0 dBm: BER = 2.254e-02 (budget SNR 12.58 dB)
+    K =  2, A2, concentrated M =  64, PTx =   0.0 dBm: BER = 2.030e-02 (budget SNR 12.76 dB)
+    K =  2, A2, concentrated M =  64, PTx =   1.0 dBm: BER = 1.885e-02 (budget SNR 12.91 dB)
+    K =  2, A2, concentrated M =  64, PTx =   2.0 dBm: BER = 1.774e-02 (budget SNR 13.03 dB)
+    K =  2, A2, concentrated M =  64, PTx =   3.0 dBm: BER = 1.698e-02 (budget SNR 13.13 dB)
+    K =  2, A2, concentrated M =  64, PTx =   4.0 dBm: BER = 1.625e-02 (budget SNR 13.21 dB)
+    K =  2, A2, concentrated M =  64, PTx =   5.0 dBm: BER = 1.572e-02 (budget SNR 13.27 dB)
+    K =  2, A2, concentrated M =  64, PTx =   6.0 dBm: BER = 1.515e-02 (budget SNR 13.32 dB)
+    K =  2, A2, concentrated M =  64, PTx =   7.0 dBm: BER = 1.476e-02 (budget SNR 13.36 dB)
+    K =  2, A2, concentrated M =  64, PTx =   8.0 dBm: BER = 1.426e-02 (budget SNR 13.40 dB)
+    K =  2, A2, concentrated M =  64, PTx =   9.0 dBm: BER = 1.411e-02 (budget SNR 13.42 dB)
+    K =  2, A2, concentrated M =  64, PTx =  10.0 dBm: BER = 1.404e-02 (budget SNR 13.45 dB)
+  K =  2, A2, concentrated M =  64 ( 6144 ports): required PTx =   NaN dBm
+  K =  2, A2, concentrated M = 128 (12288 ports): required PTx =   NaN dBm
+    K =  4, A1, dispersed    M =  16, PTx = -12.0 dBm: BER = 9.038e-03 (budget SNR 14.14 dB)
+  K =  4, A1, dispersed    M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K =  4, A1, dispersed    M =  32, PTx = -12.0 dBm: BER = 1.641e-02 (budget SNR 13.18 dB)
+    K =  4, A1, dispersed    M =  32, PTx = -11.0 dBm: BER = 9.125e-03 (budget SNR 14.13 dB)
+  K =  4, A1, dispersed    M =  32 ( 3072 ports): required PTx = -11.0 dBm
+    K =  4, A1, dispersed    M =  64, PTx = -11.0 dBm: BER = 1.639e-02 (budget SNR 13.18 dB)
+    K =  4, A1, dispersed    M =  64, PTx = -10.0 dBm: BER = 9.275e-03 (budget SNR 14.13 dB)
+  K =  4, A1, dispersed    M =  64 ( 6144 ports): required PTx = -10.0 dBm
+    K =  4, A1, dispersed    M = 128, PTx = -10.0 dBm: BER = 1.632e-02 (budget SNR 13.17 dB)
+    K =  4, A1, dispersed    M = 128, PTx =  -9.0 dBm: BER = 8.950e-03 (budget SNR 14.12 dB)
+  K =  4, A1, dispersed    M = 128 (12288 ports): required PTx =  -9.0 dBm
+    K =  4, A1, concentrated M =  16, PTx = -12.0 dBm: BER = 9.012e-03 (budget SNR 14.14 dB)
+  K =  4, A1, concentrated M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K =  4, A1, concentrated M =  32, PTx = -12.0 dBm: BER = 1.629e-02 (budget SNR 13.18 dB)
+    K =  4, A1, concentrated M =  32, PTx = -11.0 dBm: BER = 8.950e-03 (budget SNR 14.13 dB)
+  K =  4, A1, concentrated M =  32 ( 3072 ports): required PTx = -11.0 dBm
+    K =  4, A1, concentrated M =  64, PTx = -11.0 dBm: BER = 1.630e-02 (budget SNR 13.18 dB)
+    K =  4, A1, concentrated M =  64, PTx = -10.0 dBm: BER = 9.038e-03 (budget SNR 14.13 dB)
+  K =  4, A1, concentrated M =  64 ( 6144 ports): required PTx = -10.0 dBm
+    K =  4, A1, concentrated M = 128, PTx = -10.0 dBm: BER = 1.634e-02 (budget SNR 13.17 dB)
+    K =  4, A1, concentrated M = 128, PTx =  -9.0 dBm: BER = 8.962e-03 (budget SNR 14.12 dB)
+  K =  4, A1, concentrated M = 128 (12288 ports): required PTx =  -9.0 dBm
+    K =  4, A2, dispersed    M =  16, PTx = -12.0 dBm: BER = 1.159e-02 (budget SNR 13.82 dB)
+    K =  4, A2, dispersed    M =  16, PTx = -11.0 dBm: BER = 6.175e-03 (budget SNR 14.69 dB)
+  K =  4, A2, dispersed    M =  16 ( 1536 ports): required PTx = -11.0 dBm
+    K =  4, A2, dispersed    M =  32, PTx = -11.0 dBm: BER = 1.459e-02 (budget SNR 13.38 dB)
+    K =  4, A2, dispersed    M =  32, PTx = -10.0 dBm: BER = 9.062e-03 (budget SNR 14.17 dB)
+  K =  4, A2, dispersed    M =  32 ( 3072 ports): required PTx = -10.0 dBm
+    K =  4, A2, dispersed    M =  64, PTx = -10.0 dBm: BER = 2.396e-02 (budget SNR 12.50 dB)
+    K =  4, A2, dispersed    M =  64, PTx =  -9.0 dBm: BER = 1.701e-02 (budget SNR 13.13 dB)
+    K =  4, A2, dispersed    M =  64, PTx =  -8.0 dBm: BER = 1.215e-02 (budget SNR 13.72 dB)
+    K =  4, A2, dispersed    M =  64, PTx =  -7.0 dBm: BER = 8.438e-03 (budget SNR 14.24 dB)
+  K =  4, A2, dispersed    M =  64 ( 6144 ports): required PTx =  -7.0 dBm
+    K =  4, A2, dispersed    M = 128, PTx =  -7.0 dBm: BER = 3.321e-02 (budget SNR 11.75 dB)
+    K =  4, A2, dispersed    M = 128, PTx =  -6.0 dBm: BER = 2.874e-02 (budget SNR 12.09 dB)
+    K =  4, A2, dispersed    M = 128, PTx =  -5.0 dBm: BER = 2.525e-02 (budget SNR 12.38 dB)
+    K =  4, A2, dispersed    M = 128, PTx =  -4.0 dBm: BER = 2.245e-02 (budget SNR 12.63 dB)
+    K =  4, A2, dispersed    M = 128, PTx =  -3.0 dBm: BER = 2.011e-02 (budget SNR 12.83 dB)
+    K =  4, A2, dispersed    M = 128, PTx =  -2.0 dBm: BER = 1.830e-02 (budget SNR 13.00 dB)
+    K =  4, A2, dispersed    M = 128, PTx =  -1.0 dBm: BER = 1.699e-02 (budget SNR 13.14 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   0.0 dBm: BER = 1.595e-02 (budget SNR 13.25 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   1.0 dBm: BER = 1.496e-02 (budget SNR 13.35 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   2.0 dBm: BER = 1.440e-02 (budget SNR 13.42 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   3.0 dBm: BER = 1.391e-02 (budget SNR 13.48 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   4.0 dBm: BER = 1.358e-02 (budget SNR 13.53 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   5.0 dBm: BER = 1.326e-02 (budget SNR 13.57 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   6.0 dBm: BER = 1.299e-02 (budget SNR 13.60 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   7.0 dBm: BER = 1.276e-02 (budget SNR 13.63 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   8.0 dBm: BER = 1.257e-02 (budget SNR 13.65 dB)
+    K =  4, A2, dispersed    M = 128, PTx =   9.0 dBm: BER = 1.255e-02 (budget SNR 13.66 dB)
+    K =  4, A2, dispersed    M = 128, PTx =  10.0 dBm: BER = 1.238e-02 (budget SNR 13.68 dB)
+  K =  4, A2, dispersed    M = 128 (12288 ports): required PTx =   NaN dBm
+    K =  4, A2, concentrated M =  16, PTx = -12.0 dBm: BER = 1.406e-02 (budget SNR 13.42 dB)
+    K =  4, A2, concentrated M =  16, PTx = -11.0 dBm: BER = 8.637e-03 (budget SNR 14.21 dB)
+  K =  4, A2, concentrated M =  16 ( 1536 ports): required PTx = -11.0 dBm
+    K =  4, A2, concentrated M =  32, PTx = -11.0 dBm: BER = 2.129e-02 (budget SNR 12.69 dB)
+    K =  4, A2, concentrated M =  32, PTx = -10.0 dBm: BER = 1.464e-02 (budget SNR 13.35 dB)
+    K =  4, A2, concentrated M =  32, PTx =  -9.0 dBm: BER = 9.975e-03 (budget SNR 13.96 dB)
+  K =  4, A2, concentrated M =  32 ( 3072 ports): required PTx =  -9.0 dBm
+    K =  4, A2, concentrated M =  64, PTx =  -9.0 dBm: BER = 3.184e-02 (budget SNR 11.91 dB)
+    K =  4, A2, concentrated M =  64, PTx =  -8.0 dBm: BER = 2.590e-02 (budget SNR 12.35 dB)
+    K =  4, A2, concentrated M =  64, PTx =  -7.0 dBm: BER = 2.135e-02 (budget SNR 12.73 dB)
+    K =  4, A2, concentrated M =  64, PTx =  -6.0 dBm: BER = 1.787e-02 (budget SNR 13.07 dB)
+    K =  4, A2, concentrated M =  64, PTx =  -5.0 dBm: BER = 1.531e-02 (budget SNR 13.35 dB)
+    K =  4, A2, concentrated M =  64, PTx =  -4.0 dBm: BER = 1.339e-02 (budget SNR 13.59 dB)
+    K =  4, A2, concentrated M =  64, PTx =  -3.0 dBm: BER = 1.176e-02 (budget SNR 13.78 dB)
+    K =  4, A2, concentrated M =  64, PTx =  -2.0 dBm: BER = 1.046e-02 (budget SNR 13.95 dB)
+    K =  4, A2, concentrated M =  64, PTx =  -1.0 dBm: BER = 9.538e-03 (budget SNR 14.09 dB)
+  K =  4, A2, concentrated M =  64 ( 6144 ports): required PTx =  -1.0 dBm
+    K =  4, A2, concentrated M = 128, PTx =  -1.0 dBm: BER = 4.573e-02 (budget SNR 11.00 dB)
+    K =  4, A2, concentrated M = 128, PTx =   0.0 dBm: BER = 4.478e-02 (budget SNR 11.07 dB)
+    K =  4, A2, concentrated M = 128, PTx =   1.0 dBm: BER = 4.378e-02 (budget SNR 11.13 dB)
+    K =  4, A2, concentrated M = 128, PTx =   2.0 dBm: BER = 4.289e-02 (budget SNR 11.17 dB)
+    K =  4, A2, concentrated M = 128, PTx =   3.0 dBm: BER = 4.231e-02 (budget SNR 11.21 dB)
+    K =  4, A2, concentrated M = 128, PTx =   4.0 dBm: BER = 4.195e-02 (budget SNR 11.24 dB)
+    K =  4, A2, concentrated M = 128, PTx =   5.0 dBm: BER = 4.146e-02 (budget SNR 11.26 dB)
+    K =  4, A2, concentrated M = 128, PTx =   6.0 dBm: BER = 4.111e-02 (budget SNR 11.28 dB)
+    K =  4, A2, concentrated M = 128, PTx =   7.0 dBm: BER = 4.096e-02 (budget SNR 11.30 dB)
+    K =  4, A2, concentrated M = 128, PTx =   8.0 dBm: BER = 4.091e-02 (budget SNR 11.31 dB)
+    K =  4, A2, concentrated M = 128, PTx =   9.0 dBm: BER = 4.074e-02 (budget SNR 11.32 dB)
+    K =  4, A2, concentrated M = 128, PTx =  10.0 dBm: BER = 4.060e-02 (budget SNR 11.33 dB)
+  K =  4, A2, concentrated M = 128 (12288 ports): required PTx =   NaN dBm
+    K =  8, A1, dispersed    M =  16, PTx = -12.0 dBm: BER = 7.000e-04 (budget SNR 16.79 dB)
+  K =  8, A1, dispersed    M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K =  8, A1, dispersed    M =  32, PTx = -12.0 dBm: BER = 1.700e-03 (budget SNR 15.99 dB)
+  K =  8, A1, dispersed    M =  32 ( 3072 ports): required PTx = -12.0 dBm
+    K =  8, A1, dispersed    M =  64, PTx = -12.0 dBm: BER = 4.237e-03 (budget SNR 15.15 dB)
+  K =  8, A1, dispersed    M =  64 ( 6144 ports): required PTx = -12.0 dBm
+    K =  8, A1, dispersed    M = 128, PTx = -12.0 dBm: BER = 8.037e-03 (budget SNR 14.28 dB)
+  K =  8, A1, dispersed    M = 128 (12288 ports): required PTx = -12.0 dBm
+    K =  8, A1, concentrated M =  16, PTx = -12.0 dBm: BER = 7.500e-04 (budget SNR 16.79 dB)
+  K =  8, A1, concentrated M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K =  8, A1, concentrated M =  32, PTx = -12.0 dBm: BER = 1.613e-03 (budget SNR 15.98 dB)
+  K =  8, A1, concentrated M =  32 ( 3072 ports): required PTx = -12.0 dBm
+    K =  8, A1, concentrated M =  64, PTx = -12.0 dBm: BER = 4.063e-03 (budget SNR 15.15 dB)
+  K =  8, A1, concentrated M =  64 ( 6144 ports): required PTx = -12.0 dBm
+    K =  8, A1, concentrated M = 128, PTx = -12.0 dBm: BER = 8.100e-03 (budget SNR 14.28 dB)
+  K =  8, A1, concentrated M = 128 (12288 ports): required PTx = -12.0 dBm
+    K =  8, A2, dispersed    M =  16, PTx = -12.0 dBm: BER = 9.750e-04 (budget SNR 16.52 dB)
+  K =  8, A2, dispersed    M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K =  8, A2, dispersed    M =  32, PTx = -12.0 dBm: BER = 3.075e-03 (budget SNR 15.41 dB)
+  K =  8, A2, dispersed    M =  32 ( 3072 ports): required PTx = -12.0 dBm
+    K =  8, A2, dispersed    M =  64, PTx = -12.0 dBm: BER = 9.538e-03 (budget SNR 14.03 dB)
+  K =  8, A2, dispersed    M =  64 ( 6144 ports): required PTx = -12.0 dBm
+    K =  8, A2, dispersed    M = 128, PTx = -12.0 dBm: BER = 2.662e-02 (budget SNR 12.27 dB)
+    K =  8, A2, dispersed    M = 128, PTx = -11.0 dBm: BER = 2.004e-02 (budget SNR 12.81 dB)
+    K =  8, A2, dispersed    M = 128, PTx = -10.0 dBm: BER = 1.566e-02 (budget SNR 13.29 dB)
+    K =  8, A2, dispersed    M = 128, PTx =  -9.0 dBm: BER = 1.218e-02 (budget SNR 13.71 dB)
+    K =  8, A2, dispersed    M = 128, PTx =  -8.0 dBm: BER = 9.600e-03 (budget SNR 14.08 dB)
+  K =  8, A2, dispersed    M = 128 (12288 ports): required PTx =  -8.0 dBm
+    K =  8, A2, concentrated M =  16, PTx = -12.0 dBm: BER = 2.563e-03 (budget SNR 15.70 dB)
+  K =  8, A2, concentrated M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K =  8, A2, concentrated M =  32, PTx = -12.0 dBm: BER = 8.438e-03 (budget SNR 14.19 dB)
+  K =  8, A2, concentrated M =  32 ( 3072 ports): required PTx = -12.0 dBm
+    K =  8, A2, concentrated M =  64, PTx = -12.0 dBm: BER = 2.631e-02 (budget SNR 12.35 dB)
+    K =  8, A2, concentrated M =  64, PTx = -11.0 dBm: BER = 2.066e-02 (budget SNR 12.78 dB)
+    K =  8, A2, concentrated M =  64, PTx = -10.0 dBm: BER = 1.704e-02 (budget SNR 13.16 dB)
+    K =  8, A2, concentrated M =  64, PTx =  -9.0 dBm: BER = 1.380e-02 (budget SNR 13.48 dB)
+    K =  8, A2, concentrated M =  64, PTx =  -8.0 dBm: BER = 1.174e-02 (budget SNR 13.75 dB)
+    K =  8, A2, concentrated M =  64, PTx =  -7.0 dBm: BER = 1.018e-02 (budget SNR 13.99 dB)
+    K =  8, A2, concentrated M =  64, PTx =  -6.0 dBm: BER = 8.988e-03 (budget SNR 14.18 dB)
+  K =  8, A2, concentrated M =  64 ( 6144 ports): required PTx =  -6.0 dBm
+    K =  8, A2, concentrated M = 128, PTx =  -6.0 dBm: BER = 3.742e-02 (budget SNR 11.50 dB)
+    K =  8, A2, concentrated M = 128, PTx =  -5.0 dBm: BER = 3.547e-02 (budget SNR 11.61 dB)
+    K =  8, A2, concentrated M = 128, PTx =  -4.0 dBm: BER = 3.439e-02 (budget SNR 11.70 dB)
+    K =  8, A2, concentrated M = 128, PTx =  -3.0 dBm: BER = 3.345e-02 (budget SNR 11.77 dB)
+    K =  8, A2, concentrated M = 128, PTx =  -2.0 dBm: BER = 3.272e-02 (budget SNR 11.83 dB)
+    K =  8, A2, concentrated M = 128, PTx =  -1.0 dBm: BER = 3.220e-02 (budget SNR 11.88 dB)
+    K =  8, A2, concentrated M = 128, PTx =   0.0 dBm: BER = 3.170e-02 (budget SNR 11.92 dB)
+    K =  8, A2, concentrated M = 128, PTx =   1.0 dBm: BER = 3.109e-02 (budget SNR 11.95 dB)
+    K =  8, A2, concentrated M = 128, PTx =   2.0 dBm: BER = 3.083e-02 (budget SNR 11.97 dB)
+    K =  8, A2, concentrated M = 128, PTx =   3.0 dBm: BER = 3.060e-02 (budget SNR 11.99 dB)
+    K =  8, A2, concentrated M = 128, PTx =   4.0 dBm: BER = 3.039e-02 (budget SNR 12.01 dB)
+    K =  8, A2, concentrated M = 128, PTx =   5.0 dBm: BER = 3.024e-02 (budget SNR 12.02 dB)
+    K =  8, A2, concentrated M = 128, PTx =   6.0 dBm: BER = 3.022e-02 (budget SNR 12.03 dB)
+    K =  8, A2, concentrated M = 128, PTx =   7.0 dBm: BER = 3.002e-02 (budget SNR 12.04 dB)
+    K =  8, A2, concentrated M = 128, PTx =   8.0 dBm: BER = 3.000e-02 (budget SNR 12.04 dB)
+    K =  8, A2, concentrated M = 128, PTx =   9.0 dBm: BER = 2.985e-02 (budget SNR 12.05 dB)
+    K =  8, A2, concentrated M = 128, PTx =  10.0 dBm: BER = 2.973e-02 (budget SNR 12.05 dB)
+  K =  8, A2, concentrated M = 128 (12288 ports): required PTx =   NaN dBm
+    K = 12, A1, dispersed    M =  16, PTx = -12.0 dBm: BER = 7.500e-05 (budget SNR 18.36 dB)
+  K = 12, A1, dispersed    M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K = 12, A1, dispersed    M =  32, PTx = -12.0 dBm: BER = 1.625e-04 (budget SNR 17.83 dB)
+  K = 12, A1, dispersed    M =  32 ( 3072 ports): required PTx = -12.0 dBm
+    K = 12, A1, dispersed    M =  64, PTx = -12.0 dBm: BER = 3.750e-04 (budget SNR 17.24 dB)
+  K = 12, A1, dispersed    M =  64 ( 6144 ports): required PTx = -12.0 dBm
+    K = 12, A1, dispersed    M = 128, PTx = -12.0 dBm: BER = 8.375e-04 (budget SNR 16.59 dB)
+  K = 12, A1, dispersed    M = 128 (12288 ports): required PTx = -12.0 dBm
+    K = 12, A1, concentrated M =  16, PTx = -12.0 dBm: BER = 7.500e-05 (budget SNR 18.36 dB)
+  K = 12, A1, concentrated M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K = 12, A1, concentrated M =  32, PTx = -12.0 dBm: BER = 1.500e-04 (budget SNR 17.83 dB)
+  K = 12, A1, concentrated M =  32 ( 3072 ports): required PTx = -12.0 dBm
+    K = 12, A1, concentrated M =  64, PTx = -12.0 dBm: BER = 3.625e-04 (budget SNR 17.24 dB)
+  K = 12, A1, concentrated M =  64 ( 6144 ports): required PTx = -12.0 dBm
+    K = 12, A1, concentrated M = 128, PTx = -12.0 dBm: BER = 7.875e-04 (budget SNR 16.59 dB)
+  K = 12, A1, concentrated M = 128 (12288 ports): required PTx = -12.0 dBm
+    K = 12, A2, dispersed    M =  16, PTx = -12.0 dBm: BER = 1.375e-04 (budget SNR 18.07 dB)
+  K = 12, A2, dispersed    M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K = 12, A2, dispersed    M =  32, PTx = -12.0 dBm: BER = 5.125e-04 (budget SNR 17.22 dB)
+  K = 12, A2, dispersed    M =  32 ( 3072 ports): required PTx = -12.0 dBm
+    K = 12, A2, dispersed    M =  64, PTx = -12.0 dBm: BER = 1.800e-03 (budget SNR 15.99 dB)
+  K = 12, A2, dispersed    M =  64 ( 6144 ports): required PTx = -12.0 dBm
+    K = 12, A2, dispersed    M = 128, PTx = -12.0 dBm: BER = 8.100e-03 (budget SNR 14.31 dB)
+  K = 12, A2, dispersed    M = 128 (12288 ports): required PTx = -12.0 dBm
+    K = 12, A2, concentrated M =  16, PTx = -12.0 dBm: BER = 7.250e-04 (budget SNR 16.93 dB)
+  K = 12, A2, concentrated M =  16 ( 1536 ports): required PTx = -12.0 dBm
+    K = 12, A2, concentrated M =  32, PTx = -12.0 dBm: BER = 3.425e-03 (budget SNR 15.43 dB)
+  K = 12, A2, concentrated M =  32 ( 3072 ports): required PTx = -12.0 dBm
+    K = 12, A2, concentrated M =  64, PTx = -12.0 dBm: BER = 1.383e-02 (budget SNR 13.51 dB)
+    K = 12, A2, concentrated M =  64, PTx = -11.0 dBm: BER = 1.190e-02 (budget SNR 13.76 dB)
+    K = 12, A2, concentrated M =  64, PTx = -10.0 dBm: BER = 1.021e-02 (budget SNR 13.96 dB)
+    K = 12, A2, concentrated M =  64, PTx =  -9.0 dBm: BER = 9.250e-03 (budget SNR 14.13 dB)
+  K = 12, A2, concentrated M =  64 ( 6144 ports): required PTx =  -9.0 dBm
+    K = 12, A2, concentrated M = 128, PTx =  -9.0 dBm: BER = 3.575e-02 (budget SNR 11.64 dB)
+    K = 12, A2, concentrated M = 128, PTx =  -8.0 dBm: BER = 3.450e-02 (budget SNR 11.74 dB)
+    K = 12, A2, concentrated M = 128, PTx =  -7.0 dBm: BER = 3.352e-02 (budget SNR 11.83 dB)
+    K = 12, A2, concentrated M = 128, PTx =  -6.0 dBm: BER = 3.263e-02 (budget SNR 11.89 dB)
+    K = 12, A2, concentrated M = 128, PTx =  -5.0 dBm: BER = 3.159e-02 (budget SNR 11.95 dB)
+    K = 12, A2, concentrated M = 128, PTx =  -4.0 dBm: BER = 3.109e-02 (budget SNR 11.99 dB)
+    K = 12, A2, concentrated M = 128, PTx =  -3.0 dBm: BER = 3.061e-02 (budget SNR 12.03 dB)
+    K = 12, A2, concentrated M = 128, PTx =  -2.0 dBm: BER = 3.010e-02 (budget SNR 12.05 dB)
+    K = 12, A2, concentrated M = 128, PTx =  -1.0 dBm: BER = 2.965e-02 (budget SNR 12.08 dB)
+    K = 12, A2, concentrated M = 128, PTx =   0.0 dBm: BER = 2.921e-02 (budget SNR 12.09 dB)
+    K = 12, A2, concentrated M = 128, PTx =   1.0 dBm: BER = 2.896e-02 (budget SNR 12.11 dB)
+    K = 12, A2, concentrated M = 128, PTx =   2.0 dBm: BER = 2.877e-02 (budget SNR 12.12 dB)
+    K = 12, A2, concentrated M = 128, PTx =   3.0 dBm: BER = 2.869e-02 (budget SNR 12.13 dB)
+    K = 12, A2, concentrated M = 128, PTx =   4.0 dBm: BER = 2.864e-02 (budget SNR 12.13 dB)
+    K = 12, A2, concentrated M = 128, PTx =   5.0 dBm: BER = 2.851e-02 (budget SNR 12.14 dB)
+    K = 12, A2, concentrated M = 128, PTx =   6.0 dBm: BER = 2.854e-02 (budget SNR 12.14 dB)
+    K = 12, A2, concentrated M = 128, PTx =   7.0 dBm: BER = 2.851e-02 (budget SNR 12.15 dB)
+    K = 12, A2, concentrated M = 128, PTx =   8.0 dBm: BER = 2.848e-02 (budget SNR 12.15 dB)
+    K = 12, A2, concentrated M = 128, PTx =   9.0 dBm: BER = 2.842e-02 (budget SNR 12.15 dB)
+    K = 12, A2, concentrated M = 128, PTx =  10.0 dBm: BER = 2.848e-02 (budget SNR 12.16 dB)
+  K = 12, A2, concentrated M = 128 (12288 ports): required PTx =   NaN dBm
+259 operating points in 39.4 s (0.15 s per point)
+
+Required transmitter power [dBm] (NaN = not reached up to 10.0 dBm), columns M = [16 32 64 128]
+Scheme A1, dispersed traffic
+  K =  1 :   -5.0   -4.0   -3.0   -2.0
+  K =  2 :   -8.0   -7.0   -6.0   -5.0
+  K =  4 :  -12.0  -11.0  -10.0   -9.0
+  K =  8 :  -12.0  -12.0  -12.0  -12.0
+  K = 12 :  -12.0  -12.0  -12.0  -12.0
+Scheme A1, concentrated traffic
+  K =  1 :   -5.0   -4.0   -3.0   -2.0
+  K =  2 :   -8.0   -7.0   -6.0   -5.0
+  K =  4 :  -12.0  -11.0  -10.0   -9.0
+  K =  8 :  -12.0  -12.0  -12.0  -12.0
+  K = 12 :  -12.0  -12.0  -12.0  -12.0
+Scheme A2, dispersed traffic
+  K =  1 :   -4.0   -2.0    3.0    NaN
+  K =  2 :   -7.0   -5.0    2.0    NaN
+  K =  4 :  -11.0  -10.0   -7.0    NaN
+  K =  8 :  -12.0  -12.0  -12.0   -8.0
+  K = 12 :  -12.0  -12.0  -12.0  -12.0
+Scheme A2, concentrated traffic
+  K =  1 :   -4.0   -2.0    3.0    NaN
+  K =  2 :   -7.0   -4.0    NaN    NaN
+  K =  4 :  -11.0   -9.0   -1.0    NaN
+  K =  8 :  -12.0  -12.0   -6.0    NaN
+  K = 12 :  -12.0  -12.0   -9.0    NaN
+
+Saved in C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results: claude_three_stage_proposed_20261016_140534.{mat,_required_PTx.csv,_portcount.csv,png}

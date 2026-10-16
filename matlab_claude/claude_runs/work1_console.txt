@@ -1,0 +1,112 @@
+MATLAB version : 26.1.0.3203278 (R2026a) (this package needs R2020b or later)
+Package folder : C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude
+Path is set (lib, demos, main, work, tests).
+=== 2. Wavelength rule, small example: N = 8, K = 4, M = 3 ===
+group of first-stage switch i: g(i) = floor((i-1)*K/N) + 1
+  i    :   1  2  3  4  5  6  7  8
+  g(i) :   1  1  2  2  3  3  4  4
+channel of the connection i -> j: ch = awg_channel(g(i), j, N) = mod(j + g(i) - 2, N) + 1
+rows = first-stage switch i, columns = third-stage switch j
+  i\j    1   2   3   4   5   6   7   8
+   1     1   2   3   4   5   6   7   8
+   2     1   2   3   4   5   6   7   8
+   3     2   3   4   5   6   7   8   1
+   4     2   3   4   5   6   7   8   1
+   5     3   4   5   6   7   8   1   2
+   6     3   4   5   6   7   8   1   2
+   7     4   5   6   7   8   1   2   3
+   8     4   5   6   7   8   1   2   3
+Hand check: i = 5 is in group 3, so i = 5 -> j = 2 uses channel 2 + 3 - 1 = 4;
+            i = 7 is in group 4, so i = 7 -> j = 8 uses channel 8 + 4 - 1 = 11 -> 3 (cyclic).
+Check: the channel of every connection is the same through all 3 WR switches.
+       A rearrangement (move to another WR switch) never changes a wavelength.
+Counter-example (groups rotated per WR switch): 64 of 64 connections would need
+       another wavelength on WR switch 2 than on WR switch 1 -> laser retune on rearrangement.
+Check: K = 1 gives ch = j for every connection (conventional switch, page 22 Eq. (1)).
+
+=== 3. Coupler condition ===
+Small example: any two signals of one group with different destinations differ in channel.
+N = 96: 20 random full-load traffic matrices for every K and M: no coupler ever
+       carries two signals of the same channel. (Two signals of the same channel can
+       meet only at different input ports of the AWG pair: the ULCF AWG crosstalk.)
+
+=== 4. In-band leaks in one third-stage switch (M inputs, full load) ===
+dispersed (ceil(M/K) - 1), rows K, columns M = [16 32 64 128]
+  K =  1 :    15    31    63   127
+  K =  2 :     7    15    31    63
+  K =  4 :     3     7    15    31
+  K =  6 :     2     5    10    21
+  K =  8 :     1     3     7    15
+  K = 12 :     1     2     5    10
+  K = 16 :     0     1     3     7
+concentrated (M - 1)
+  K =  1 :    15    31    63   127
+  K =  2 :    15    31    63   127
+  K =  4 :    15    31    63   127
+  K =  6 :    15    31    63   127
+  K =  8 :    15    31    63   127
+  K = 12 :    15    31    63   127
+  K = 16 :    15    31    63   127
+random uniform traffic, mean over 400 matrices (theory (M-1)/K)
+  K =  1 : 15.00 31.00 63.00127.00
+  K =  2 :  7.51 15.50 31.50 63.47
+  K =  4 :  3.75  7.75 15.77 31.77
+  K =  6 :  2.51  5.17 10.50 21.18
+  K =  8 :  1.88  3.88  7.88 15.89
+  K = 12 :  1.25  2.57  5.26 10.59
+  K = 16 :  0.93  1.94  3.95  7.93
+random uniform traffic, largest value seen
+  K =  1 :    15    31    63   127
+  K =  2 :    14    27    47    86
+  K =  4 :    11    19    31    52
+  K =  6 :    11    15    24    43
+  K =  8 :     9    12    20    33
+  K = 12 :     7    12    16    24
+  K = 16 :     6     9    13    20
+Check: K = 1 gives M - 1 leaks (step22 block [7]); concentrated traffic gives M - 1 for every K.
+
+=== 5. SXR of the third-stage switch [dB], ER = 35 dB ===
+Scheme A2 (couplers), dispersed; 16QAM needs about 14 dB in total
+  K =  1 :   23.2   20.1   17.0   14.0
+  K =  2 :   26.5   23.2   20.1   17.0
+  K =  4 :   30.2   26.5   23.2   20.1
+  K =  6 :   32.0   28.0   25.0   21.8
+  K =  8 :   35.0   30.2   26.5   23.2
+  K = 12 :   35.0   32.0   28.0   25.0
+  K = 16 :  191.5   35.0   30.2   26.5
+Scheme A2 (couplers), concentrated (= conventional)
+  K =  1 :   23.2   20.1   17.0   14.0
+  K =  2 :   23.2   20.1   17.0   14.0
+  K =  4 :   23.2   20.1   17.0   14.0
+  K =  6 :   23.2   20.1   17.0   14.0
+  K =  8 :   23.2   20.1   17.0   14.0
+  K = 12 :   23.2   20.1   17.0   14.0
+  K = 16 :   23.2   20.1   17.0   14.0
+Scheme A1 (selectors), dispersed
+  K =  1 :   58.2   55.1   52.0   49.0
+  K =  2 :   61.5   58.2   55.1   52.0
+  K =  4 :   65.2   61.5   58.2   55.1
+  K =  6 :   67.0   63.0   60.0   56.8
+  K =  8 :   70.0   65.2   61.5   58.2
+  K = 12 :   70.0   67.0   63.0   60.0
+  K = 16 :  226.5   70.0   65.2   61.5
+For comparison, ULCF AWG crosstalk SXR = AWG_XT - 10log10(K-1) [dB]: K=1: 188.5; K=2: 32.0; K=4: 27.2; K=6: 25.0; K=8: 23.5; K=12: 21.6; K=16: 20.2;
+
+=== Answers to the questions of the task ===
+- What changes the wavelength: the first-stage switch (through its group) and the
+  third-stage switch. The WR switch does not.
+- Division into groups: any division into K groups of N/K switches works. The rule
+  and the leak counts only use the group index, so the division does not matter for
+  the counts; it decides which racks share a wavelength at a given destination.
+- Likely traffic in a datacenter: dispersed (a rack talks to many racks). Worst case:
+  concentrated, which gives the conventional count M - 1 again.
+- A leak on another wavelength is (g2 - g1) channels away: at least 1 channel = 50 GHz.
+  At 32 GBd the receive band ends at 16 GHz, so the nearest leak is 34 GHz outside it.
+- First-stage leaks: the M inputs of first-stage switch i are all in group g(i); their
+  wavelengths differ when their destinations differ, exactly as in the conventional
+  switch. step22 takes the worst case (all in band) and so does work2: no change.
+- Receiver: output j can receive K different wavelengths, one per group. A NEW
+  connection from another group needs the local oscillator of the receiver retuned
+  (frequency selection, > 100 us). A REARRANGEMENT never does: only selectors switch.
+
+Saved: C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results\claude_work1_20261016_135945.{png,mat,_inband_leaks.csv,_example_rule.csv}

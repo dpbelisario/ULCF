@@ -1,0 +1,55 @@
+MATLAB version : 26.1.0.3203278 (R2026a) (this package needs R2020b or later)
+Package folder : C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude
+Path is set (lib, demos, main, work, tests).
+=== claude_test_proposed ===
+Operating point : PTx = 4.0 dBm, space switches 64 x 64, Scheme A2
+Switch size     : 6144 x 6144 ports (M*N = 64*96)
+BER             : 8.700e-03 (696 errors in 80000 bits), FEC limit 1e-02
+
+Power after every block [dBm] (one polarization, inside the band Fs)
+  block               simulation      budget      budget
+                         (total)     (total)    (target)
+  [1] Tx                   1.000       1.000       1.000
+  [2] Fan-in/out           1.000       1.000       1.000
+  [3] Switch 1            -5.000      -5.000      -5.000
+  [4] Coupler            -29.500     -29.500     -29.500
+  [5] EDFA                -2.813      -2.809      -2.872
+  [6] AWG                 -9.221      -9.218      -9.268
+  [7] Switch 3           -33.141     -33.133     -33.268
+  [8] Fan-in/out         -33.141     -33.133     -33.268
+  [9] Pre-amp              7.020       7.020       6.794
+  ASE of EDFA            -21.233     -21.245
+  ASE of pre-amp          -9.846      -9.810
+  sigpw (block [7])       -9.240      -9.236
+
+SNR contributions in the signal bandwidth [dB]
+  ASE of the EDFA                   21.38
+  crosstalk of the stage-1 switch   52.01
+  crosstalk of the stage-3 switch   16.94
+  ASE of the pre-amplifier          19.58
+  all together (budget)             14.15
+  simulation                        14.19
+  (noise gain of the equalizer behind the AWG: 0.03 dB)
+BER of Gaussian noise with the SNR of the budget: 8.494e-03
+
+Self-check 1 passed: power after every block = budget within 0.1 dB (largest difference 0.008 dB)
+Self-check 2 passed: simulated SNR = SNR budget within 0.7 dB (difference +0.05 dB)
+Test 1 passed: K = 1 reproduces step22 (BER 8.700e-03, SNR 14.19 dB), bit for bit.
+Test 2 passed: for K = 1 both traffic patterns give the same result.
+Test 3.1 passed: K = 12 dispersed    A2 PTx =  +4 up = 2 oob = 0 awg = ulcf: BER 5.000e-05, SNR sim 18.54 / budget 18.61 dB, power diff 0.009 dB
+Test 3.2 passed: K = 12 concentrated A2 PTx =  +4 up = 2 oob = 0 awg = ulcf: BER 5.763e-03, SNR sim 14.82 / budget 14.82 dB, power diff 0.009 dB
+Test 3.3 passed: K = 12 dispersed    A1 PTx =  -4 up = 2 oob = 0 awg = ulcf: BER 0.000e+00, SNR sim 20.40 / budget 20.40 dB, power diff 0.011 dB
+Test 3.4 passed: K =  4 dispersed    A2 PTx =  +2 up = 2 oob = 0 awg = ulcf: BER 8.250e-04, SNR sim 16.71 / budget 16.73 dB, power diff 0.009 dB
+Test 3.5 passed: K =  1 dispersed    A2 PTx =  +4 up = 2 oob = 0 awg = ulcf: BER 3.923e-02, SNR sim 11.28 / budget 11.23 dB, power diff 0.010 dB
+Test 3.6 passed: K = 12 dispersed    A2 PTx =  +4 up = 5 oob = 1 awg = ulcf: BER 5.000e-05, SNR sim 18.61 / budget 18.61 dB, power diff 0.010 dB
+Test 4: up = 5, K = 12, A2, PTx = 4 dBm: BER without / with 12 leaks at +-50 GHz: 3.750e-05 / 5.000e-05
+        (different random numbers after block [8]; the difference must be within the
+         statistical error, about 4 percent of the BER)
+{Error using assert
+the out-of-band leaks changed the BER by more than 15 percent
+
+Error in claude_test_proposed (line 75)
+assert(abs(r1.BER - r0.BER)/r0.BER < 0.15, 'the out-of-band leaks changed the BER by more than 15 percent');
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+} 
+ERROR: MATLAB error Exit Status: 0x00000001

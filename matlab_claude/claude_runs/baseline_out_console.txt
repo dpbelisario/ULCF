@@ -1,0 +1,272 @@
+MATLAB version : 26.1.0.3203278 (R2026a) (this package needs R2020b or later)
+Package folder : C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude
+Path is set (lib, demos, main, work, tests).
+
+==================== run_all_tests ====================
+Check 1 passed: attenuation
+Check 2 passed: calc_signal_power
+Check 3 passed: set_signal_power
+Check 4 passed: selector_loss, coupler_loss, DCS_loss (96 ports -> 24.5 dB)
+Check 5 passed: power budget -22.5 dBm
+Check 6 passed: awg_channel
+Check 7 passed: ULCF_dev_freq
+Check 8 passed: plot_level_diagram
+test_lib_power_loss: all passed
+Check 1 passed: freq_axis (even and odd N)
+Check 2 passed: rcosfilter, nyquistfilter (one bin per symbol, edges)
+Check 3 passed: apply_filter
+Check 4 passed: gaussfilter, awg (3-dB width, floor 32 dB, shift)
+Check 5 passed: freqoff (bin shift, errors)
+Check 6 passed: plot_spectrum
+Check 7 passed: my_qammod, my_qamdemod (4, 16, 32, 64 points)
+Check 8 passed: TL_QAM and ideal receiver (EVM below 1e-10, BER 0)
+Check 9 passed: measure_BER_QAM (0, 7 and 1 wrong bits, all bits wrong)
+   4QAM: RMS error 0.121 -> 0.0044, BER 0.0e+00 -> 0
+  16QAM: RMS error 0.121 -> 0.0048, BER 0.0e+00 -> 0
+  32QAM: RMS error 0.122 -> 0.0050, BER 2.3e-03 -> 0
+  64QAM: RMS error 0.121 -> 0.0043, BER 2.1e-02 -> 0
+Check 10 passed: adequalizet without noise (BER 0 for 4, 16, 32, 64QAM)
+   4QAM, SNR  7 dB: BER theory 1.259e-02, ideal rx 1.302e-02, equalizer 1.325e-02
+         SNR of the equalized symbols 7.73 dB (SNR + 1 = 7.79 dB)
+  16QAM, SNR 14 dB: BER theory 9.376e-03, ideal rx 9.575e-03, equalizer 1.029e-02
+         SNR of the equalized symbols 14.14 dB (SNR + 1 = 14.17 dB)
+  64QAM, SNR 20 dB: BER theory 8.486e-03, ideal rx 8.485e-03, equalizer 8.648e-03
+         SNR of the equalized symbols 20.04 dB (SNR + 1 = 20.04 dB)
+Check 11 passed: BER in white Gaussian noise agrees with the theory
+test_lib_filters_qam: all passed
+  G 20 dB, NF 5 dB, Fs 120 GHz: ASE -26.147 dBm, theory -26.155 dBm
+  G 30 dB, NF 5 dB, Fs 120 GHz: ASE -16.138 dBm, theory -16.142 dBm
+  G 30 dB, NF 4 dB, Fs  96 GHz: ASE -18.108 dBm, theory -18.112 dBm
+  G 25 dB, NF 6 dB, Fs 160 GHz: ASE -18.891 dBm, theory -18.895 dBm
+  G 10 dB, NF 3 dB, Fs 120 GHz: ASE -38.369 dBm, theory -38.364 dBm
+  G  0 dB, NF 5 dB, Fs 120 GHz: ASE -47.796 dBm, theory -47.792 dBm
+Check 1 passed: ASE power = (G*F - 1)*h*f*Fs/2 within 0.05 dB
+Check 2 passed: the ASE is white complex Gaussian noise
+Check 3 passed: gain
+Check 4 passed: output power limit (sat, N, B_ref, polarization multiplexing)
+  SNR in Fs: DP 23.14 dB (theory 23.13), single pol. 26.14 dB (theory 26.14)
+Check 5 passed: SNR in the band Fs follows the polarization convention
+  SNR in 24 GHz: measured 30.13 dB, theory 30.12 dB
+Check 6 passed: SNR = P_in/(F*h*f*B) for a polarization-multiplexed signal
+  up 2, Fs  48 GHz: signal after the amplifier 6.9912 dBm, SNR 30.14 dB
+  up 4, Fs  96 GHz: signal after the amplifier 6.9912 dBm, SNR 30.14 dB
+  up 8, Fs 192 GHz: signal after the amplifier 6.9912 dBm, SNR 30.12 dB
+Check 7 passed: level and SNR after the amplifier do not depend on up
+Check 8 passed: random numbers
+Check 9 passed: errors
+test_lib_edfa: all passed
+All tests passed.
+
+[claude] run_all_tests finished in 3.5 s
+
+==================== step21_two_stage_one_point ====================
+Operating point : PTx = -4.0 dBm, DC switch 8 x 8, AWG with 12 inputs
+Switch size     : 768 x 768 ports (M*N = 8*96)
+BER             : 7.630e-03 (763 errors in 100000 bits), FEC limit 1e-02
+Legacy code     : 7.726e-03 at this point (150000 symbols, legacy settings); this run / legacy = 0.99
+
+Power after every block [dBm] (one polarization, inside the band Fs)
+  block               simulation      budget      budget
+                         (total)     (total)    (target)
+  [1] Tx                  -7.000      -7.000      -7.000
+  [2] Fan-in/out         -10.000     -10.000     -10.000
+  [3] DC switch          -21.991     -21.992     -22.000
+  [4] Coupler            -32.491     -32.492     -32.500
+  [5] EDFA                 7.963       7.966       7.884
+  [6] AWG                 -6.757      -6.740      -6.821
+  [7] AWG crosstalk       -6.727      -6.710      -6.821
+  [8] Fan-in/out          -9.727      -9.710      -9.821
+  [9] Pre-amp              7.000       7.000       6.888
+  ASE of EDFA             -9.683      -9.737
+  ASE of pre-amp         -34.417     -34.448
+  sigpw (block [7])       -6.794      -6.776
+
+SNR contributions in the signal bandwidth [dB]
+  ASE of the EDFA              20.63
+  crosstalk of the DC switch   27.55
+  crosstalk of the AWG         21.27
+  ASE of the pre-amplifier     44.08
+  all together (budget)        17.47
+  simulation                   17.40
+  (noise gain of the equalizer behind the AWG: 0.27 dB)
+
+Self-check 1 passed: power after every block = budget within 0.1 dB (largest difference 0.017 dB)
+Self-check 2 passed: simulated SNR = SNR budget within 0.7 dB (difference -0.07 dB)
+
+[claude] step21_two_stage_one_point finished in 2.8 s
+
+==================== step22_three_stage_one_point ====================
+Operating point : PTx = 4.0 dBm, space switches 64 x 64, Scheme A2
+Switch size     : 6144 x 6144 ports (M*N = 64*96)
+BER             : 8.700e-03 (696 errors in 80000 bits), FEC limit 1e-02
+
+Power after every block [dBm] (one polarization, inside the band Fs)
+  block               simulation      budget      budget
+                         (total)     (total)    (target)
+  [1] Tx                   1.000       1.000       1.000
+  [2] Fan-in/out           1.000       1.000       1.000
+  [3] Switch 1            -5.000      -5.000      -5.000
+  [4] Coupler            -29.500     -29.500     -29.500
+  [5] EDFA                -2.813      -2.809      -2.872
+  [6] AWG                 -9.221      -9.218      -9.268
+  [7] Switch 3           -33.141     -33.133     -33.268
+  [8] Fan-in/out         -33.141     -33.133     -33.268
+  [9] Pre-amp              7.020       7.020       6.794
+  ASE of EDFA            -21.233     -21.245
+  ASE of pre-amp          -9.846      -9.810
+  sigpw (block [7])       -9.240      -9.236
+
+SNR contributions in the signal bandwidth [dB]
+  ASE of the EDFA                   21.38
+  crosstalk of the stage-1 switch   52.01
+  crosstalk of the stage-3 switch   16.94
+  ASE of the pre-amplifier          19.58
+  all together (budget)             14.15
+  simulation                        14.19
+  (noise gain of the equalizer behind the AWG: 0.03 dB)
+BER of Gaussian noise with the SNR of the budget: 8.494e-03
+
+Self-check 1 passed: power after every block = budget within 0.1 dB (largest difference 0.008 dB)
+Self-check 2 passed: simulated SNR = SNR budget within 0.7 dB (difference +0.05 dB)
+
+[claude] step22_three_stage_one_point finished in 0.7 s
+
+==================== main_two_stage_ULCF ====================
+Search: 30000 symbols per point, 31 powers from -20.0 to 10.0 dBm
+  K =  1, M =  2 ( 192 ports): required PTx =  -1.0 dBm
+  K =  1, M =  4 ( 384 ports): required PTx =   3.0 dBm
+  K =  1, M =  8 ( 768 ports): required PTx =   8.0 dBm
+  K =  1, M = 16 (1536 ports): required PTx =   NaN dBm
+  K =  1, M = 32 (3072 ports): required PTx =   NaN dBm
+  K =  2, M =  2 ( 192 ports): required PTx =  -4.0 dBm
+  K =  2, M =  4 ( 384 ports): required PTx =   0.0 dBm
+  K =  2, M =  8 ( 768 ports): required PTx =   4.0 dBm
+  K =  2, M = 16 (1536 ports): required PTx =   9.0 dBm
+  K =  2, M = 32 (3072 ports): required PTx =   NaN dBm
+  K =  4, M =  2 ( 192 ports): required PTx =  -8.0 dBm
+  K =  4, M =  4 ( 384 ports): required PTx =  -3.0 dBm
+  K =  4, M =  8 ( 768 ports): required PTx =   1.0 dBm
+  K =  4, M = 16 (1536 ports): required PTx =   5.0 dBm
+  K =  4, M = 32 (3072 ports): required PTx =   NaN dBm
+  K =  8, M =  2 ( 192 ports): required PTx = -10.0 dBm
+  K =  8, M =  4 ( 384 ports): required PTx =  -6.0 dBm
+  K =  8, M =  8 ( 768 ports): required PTx =  -2.0 dBm
+  K =  8, M = 16 (1536 ports): required PTx =   3.0 dBm
+  K =  8, M = 32 (3072 ports): required PTx =   9.0 dBm
+  K = 12, M =  2 ( 192 ports): required PTx = -13.0 dBm
+  K = 12, M =  4 ( 384 ports): required PTx =  -9.0 dBm
+  K = 12, M =  8 ( 768 ports): required PTx =  -4.0 dBm
+  K = 12, M = 16 (1536 ports): required PTx =   1.0 dBm
+  K = 12, M = 32 (3072 ports): required PTx =   7.0 dBm
+170 operating points in 18.3 s (0.11 s per point)
+
+Required transmitter power [dBm] (NaN = not reached up to 10.0 dBm)
+  K \ M          2       4       8      16      32
+  1           -1.0     3.0     8.0     NaN     NaN
+  2           -4.0     0.0     4.0     9.0     NaN
+  4           -8.0    -3.0     1.0     5.0     NaN
+  8          -10.0    -6.0    -2.0     3.0     9.0
+  12         -13.0    -9.0    -4.0     1.0     7.0
+
+Required transmitter power of the legacy code [dBm] (NaN = not reached, or not in the file)
+  K \ M          2       4       8      16      32
+  1           -1.0     3.0     7.0     NaN     NaN
+  2           -4.5    -0.5     3.5     8.5     NaN
+  4           -8.0    -3.5     0.5     5.0     NaN
+  8          -10.5    -6.5    -2.0     2.5     8.5
+  12         -13.0    -9.0    -4.5     0.5     7.5
+
+Difference: this run - legacy code [dB]
+  K \ M          2       4       8      16      32
+  1           +0.0    +0.0    +1.0     NaN     NaN
+  2           +0.5    +0.5    +0.5    +0.5     NaN
+  4           +0.0    +0.5    +0.5    +0.0     NaN
+  8           +0.5    +0.5    +0.0    +0.5    +0.5
+  12          +0.0    +0.0    +0.5    +0.5    -0.5
+Expected with the legacy parameters: 0 or -0.5 dB for quick_flag = 0 (within 1 dB for quick_flag = 1).
+
+Self-check 1 passed: a larger DC switch has the higher BER at the same power (19 pairs of sizes)
+Self-check 2 passed: the BER falls when the power rises (146 power steps)
+Bookkeeping check passed: required power and port count fit together
+
+Saved in C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results
+  two_stage_ULCF_20261016_135158.mat
+  two_stage_ULCF_20261016_135158_portcount.csv
+  two_stage_ULCF_20261016_135158_required_PTx.csv
+  two_stage_ULCF_20261016_135158.png
+
+[claude] main_two_stage_ULCF finished in 20.2 s
+
+==================== main_three_stage_conventional ====================
+Search: 30000 symbols per point, 21 powers from -10.0 to 10.0 dBm
+    A1, M =  16, PTx = -10.0 dBm: BER = 7.585e-02
+    A1, M =  16, PTx =  -9.0 dBm: BER = 5.597e-02
+    A1, M =  16, PTx =  -8.0 dBm: BER = 3.925e-02
+    A1, M =  16, PTx =  -7.0 dBm: BER = 2.515e-02
+    A1, M =  16, PTx =  -6.0 dBm: BER = 1.457e-02
+    A1, M =  16, PTx =  -5.0 dBm: BER = 7.763e-03
+  Scheme A1, M =  16 ( 1536 ports): required PTx =  -5.0 dBm
+    A1, M =  32, PTx =  -5.0 dBm: BER = 1.443e-02
+    A1, M =  32, PTx =  -4.0 dBm: BER = 7.275e-03
+  Scheme A1, M =  32 ( 3072 ports): required PTx =  -4.0 dBm
+    A1, M =  64, PTx =  -4.0 dBm: BER = 1.399e-02
+    A1, M =  64, PTx =  -3.0 dBm: BER = 7.387e-03
+  Scheme A1, M =  64 ( 6144 ports): required PTx =  -3.0 dBm
+    A1, M = 128, PTx =  -3.0 dBm: BER = 1.456e-02
+    A1, M = 128, PTx =  -2.0 dBm: BER = 7.763e-03
+  Scheme A1, M = 128 (12288 ports): required PTx =  -2.0 dBm
+    A2, M =  16, PTx = -10.0 dBm: BER = 8.040e-02
+    A2, M =  16, PTx =  -9.0 dBm: BER = 6.118e-02
+    A2, M =  16, PTx =  -8.0 dBm: BER = 4.523e-02
+    A2, M =  16, PTx =  -7.0 dBm: BER = 3.118e-02
+    A2, M =  16, PTx =  -6.0 dBm: BER = 2.053e-02
+    A2, M =  16, PTx =  -5.0 dBm: BER = 1.264e-02
+    A2, M =  16, PTx =  -4.0 dBm: BER = 7.038e-03
+  Scheme A2, M =  16 ( 1536 ports): required PTx =  -4.0 dBm
+    A2, M =  32, PTx =  -4.0 dBm: BER = 1.891e-02
+    A2, M =  32, PTx =  -3.0 dBm: BER = 1.275e-02
+    A2, M =  32, PTx =  -2.0 dBm: BER = 8.488e-03
+  Scheme A2, M =  32 ( 3072 ports): required PTx =  -2.0 dBm
+    A2, M =  64, PTx =  -2.0 dBm: BER = 2.669e-02
+    A2, M =  64, PTx =  -1.0 dBm: BER = 2.162e-02
+    A2, M =  64, PTx =   0.0 dBm: BER = 1.723e-02
+    A2, M =  64, PTx =   1.0 dBm: BER = 1.388e-02
+    A2, M =  64, PTx =   2.0 dBm: BER = 1.151e-02
+    A2, M =  64, PTx =   3.0 dBm: BER = 1.008e-02
+    A2, M =  64, PTx =   4.0 dBm: BER = 8.700e-03
+  Scheme A2, M =  64 ( 6144 ports): required PTx =   4.0 dBm
+    A2, M = 128, PTx =   4.0 dBm: BER = 4.301e-02
+    A2, M = 128, PTx =   5.0 dBm: BER = 4.105e-02
+    A2, M = 128, PTx =   6.0 dBm: BER = 3.973e-02
+    A2, M = 128, PTx =   7.0 dBm: BER = 3.860e-02
+    A2, M = 128, PTx =   8.0 dBm: BER = 3.776e-02
+    A2, M = 128, PTx =   9.0 dBm: BER = 3.707e-02
+    A2, M = 128, PTx =  10.0 dBm: BER = 3.644e-02
+  Scheme A2, M = 128 (12288 ports): required PTx =   NaN dBm
+36 operating points in 12.4 s (0.34 s per point)
+
+Required transmitter power [dBm] (NaN = not reached up to 10.0 dBm)
+  scheme      M   ports   this run   JLT 2025  difference
+  A1         16    1536       -5.0       -4.5        -0.5
+  A1         32    3072       -4.0       -3.5        -0.5
+  A1         64    6144       -3.0       -2.5        -0.5
+  A1        128   12288       -2.0       -1.5        -0.5
+  A2         16    1536       -4.0       -4.0        +0.0
+  A2         32    3072       -2.0       -2.0        +0.0
+  A2         64    6144        4.0        4.0        +0.0
+  A2        128   12288        NaN        NaN         NaN
+(JLT 2025 = Table V of the paper; NaN there = infeasible, above 5 dBm)
+
+Self-check 1 passed: a larger space switch has the higher BER at the same power (6 pairs of sizes)
+Self-check 2 passed: the BER falls when the power rises (28 power steps)
+Bookkeeping check passed: required power and port count fit together
+
+Saved in C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results
+  three_stage_conventional_20261016_135212.mat
+  three_stage_conventional_20261016_135212_portcount.csv
+  three_stage_conventional_20261016_135212_required_PTx.csv
+  three_stage_conventional_20261016_135212.png
+
+[claude] main_three_stage_conventional finished in 13.9 s
+
+[claude] baseline done

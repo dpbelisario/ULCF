@@ -1,0 +1,36 @@
+
+==================== step21_two_stage_one_point ====================
+Operating point : PTx = -4.0 dBm, DC switch 8 x 8, AWG with 12 inputs
+Switch size     : 768 x 768 ports (M*N = 8*96)
+BER             : 7.630e-03 (763 errors in 100000 bits), FEC limit 1e-02
+Legacy code     : 7.726e-03 at this point (150000 symbols, legacy settings); this run / legacy = 0.99
+
+Power after every block [dBm] (one polarization, inside the band Fs)
+  block               simulation      budget      budget
+                         (total)     (total)    (target)
+  [1] Tx                  -7.000      -7.000      -7.000
+  [2] Fan-in/out         -10.000     -10.000     -10.000
+  [3] DC switch          -21.991     -21.992     -22.000
+  [4] Coupler            -32.491     -32.492     -32.500
+  [5] EDFA                 7.963       7.966       7.884
+  [6] AWG                 -6.757      -6.740      -6.821
+  [7] AWG crosstalk       -6.727      -6.710      -6.821
+  [8] Fan-in/out          -9.727      -9.710      -9.821
+  [9] Pre-amp              7.000       7.000       6.888
+  ASE of EDFA             -9.683      -9.737
+  ASE of pre-amp         -34.417     -34.448
+  sigpw (block [7])       -6.794      -6.776
+
+SNR contributions in the signal bandwidth [dB]
+  ASE of the EDFA              20.63
+  crosstalk of the DC switch   27.55
+  crosstalk of the AWG         21.27
+  ASE of the pre-amplifier     44.08
+  all together (budget)        17.47
+  simulation                   17.40
+  (noise gain of the equalizer behind the AWG: 0.27 dB)
+
+Self-check 1 passed: power after every block = budget within 0.1 dB (largest difference 0.017 dB)
+Self-check 2 passed: simulated SNR = SNR budget within 0.7 dB (difference -0.07 dB)
+
+[claude] step21_two_stage_one_point finished in 2.8 s

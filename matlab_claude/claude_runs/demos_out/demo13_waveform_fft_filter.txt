@@ -1,0 +1,19 @@
+
+==================== demo13_waveform_fft_filter ====================
+Samples         : 4000 symbols x 4 samples per symbol = 16000 samples
+Simulated band  : -48.000 GHz to +47.994 GHz (Fs = 96 GHz)
+Bin spacing     : Fs/nsamp = 6.000 MHz
+Transmitter     : 16000 bits -> 4000 symbols (16-QAM) -> 16000 samples
+First symbol    : bits 0 1 0 0 -> point -1+3i
+Mean power      : 1.0000 mW (pin = 0.0 dBm)
+Self-check 1 passed: pulse shaping by hand = TL_QAM (difference 0.0e+00)
+Symbol instants : transmitted symbol -> sample/scale (scale = 1.0055e-02)
+  symbol 1      : -1+3i -> -1.000000000+3.000000000i
+  symbol 2      : -3+3i -> -3.000000000+3.000000000i
+  symbol 3      : -1+1i -> -1.000000000+1.000000000i
+Self-check 2 passed: samples at the symbol instants = symbols (largest error 3.0e-14)
+Occupied band   : -12.000 GHz to +11.994 GHz
+Occupied width  : 4000 bins x 6.000 MHz = 24.000 GHz
+Self-check 3 passed: occupied width = baudrate*(1 + rolloff) = 24.000 GHz (within 2 bins)
+
+[claude] demo13_waveform_fft_filter finished in 0.6 s

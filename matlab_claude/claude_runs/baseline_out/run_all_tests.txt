@@ -1,0 +1,57 @@
+
+==================== run_all_tests ====================
+Check 1 passed: attenuation
+Check 2 passed: calc_signal_power
+Check 3 passed: set_signal_power
+Check 4 passed: selector_loss, coupler_loss, DCS_loss (96 ports -> 24.5 dB)
+Check 5 passed: power budget -22.5 dBm
+Check 6 passed: awg_channel
+Check 7 passed: ULCF_dev_freq
+Check 8 passed: plot_level_diagram
+test_lib_power_loss: all passed
+Check 1 passed: freq_axis (even and odd N)
+Check 2 passed: rcosfilter, nyquistfilter (one bin per symbol, edges)
+Check 3 passed: apply_filter
+Check 4 passed: gaussfilter, awg (3-dB width, floor 32 dB, shift)
+Check 5 passed: freqoff (bin shift, errors)
+Check 6 passed: plot_spectrum
+Check 7 passed: my_qammod, my_qamdemod (4, 16, 32, 64 points)
+Check 8 passed: TL_QAM and ideal receiver (EVM below 1e-10, BER 0)
+Check 9 passed: measure_BER_QAM (0, 7 and 1 wrong bits, all bits wrong)
+   4QAM: RMS error 0.121 -> 0.0044, BER 0.0e+00 -> 0
+  16QAM: RMS error 0.121 -> 0.0048, BER 0.0e+00 -> 0
+  32QAM: RMS error 0.122 -> 0.0050, BER 2.3e-03 -> 0
+  64QAM: RMS error 0.121 -> 0.0043, BER 2.1e-02 -> 0
+Check 10 passed: adequalizet without noise (BER 0 for 4, 16, 32, 64QAM)
+   4QAM, SNR  7 dB: BER theory 1.259e-02, ideal rx 1.302e-02, equalizer 1.325e-02
+         SNR of the equalized symbols 7.73 dB (SNR + 1 = 7.79 dB)
+  16QAM, SNR 14 dB: BER theory 9.376e-03, ideal rx 9.575e-03, equalizer 1.029e-02
+         SNR of the equalized symbols 14.14 dB (SNR + 1 = 14.17 dB)
+  64QAM, SNR 20 dB: BER theory 8.486e-03, ideal rx 8.485e-03, equalizer 8.648e-03
+         SNR of the equalized symbols 20.04 dB (SNR + 1 = 20.04 dB)
+Check 11 passed: BER in white Gaussian noise agrees with the theory
+test_lib_filters_qam: all passed
+  G 20 dB, NF 5 dB, Fs 120 GHz: ASE -26.147 dBm, theory -26.155 dBm
+  G 30 dB, NF 5 dB, Fs 120 GHz: ASE -16.138 dBm, theory -16.142 dBm
+  G 30 dB, NF 4 dB, Fs  96 GHz: ASE -18.108 dBm, theory -18.112 dBm
+  G 25 dB, NF 6 dB, Fs 160 GHz: ASE -18.891 dBm, theory -18.895 dBm
+  G 10 dB, NF 3 dB, Fs 120 GHz: ASE -38.369 dBm, theory -38.364 dBm
+  G  0 dB, NF 5 dB, Fs 120 GHz: ASE -47.796 dBm, theory -47.792 dBm
+Check 1 passed: ASE power = (G*F - 1)*h*f*Fs/2 within 0.05 dB
+Check 2 passed: the ASE is white complex Gaussian noise
+Check 3 passed: gain
+Check 4 passed: output power limit (sat, N, B_ref, polarization multiplexing)
+  SNR in Fs: DP 23.14 dB (theory 23.13), single pol. 26.14 dB (theory 26.14)
+Check 5 passed: SNR in the band Fs follows the polarization convention
+  SNR in 24 GHz: measured 30.13 dB, theory 30.12 dB
+Check 6 passed: SNR = P_in/(F*h*f*B) for a polarization-multiplexed signal
+  up 2, Fs  48 GHz: signal after the amplifier 6.9912 dBm, SNR 30.14 dB
+  up 4, Fs  96 GHz: signal after the amplifier 6.9912 dBm, SNR 30.14 dB
+  up 8, Fs 192 GHz: signal after the amplifier 6.9912 dBm, SNR 30.12 dB
+Check 7 passed: level and SNR after the amplifier do not depend on up
+Check 8 passed: random numbers
+Check 9 passed: errors
+test_lib_edfa: all passed
+All tests passed.
+
+[claude] run_all_tests finished in 3.5 s

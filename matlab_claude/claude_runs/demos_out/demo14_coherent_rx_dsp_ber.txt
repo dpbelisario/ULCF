@@ -1,0 +1,22 @@
+
+==================== demo14_coherent_rx_dsp_ber ====================
+BER in white Gaussian noise (20000 symbols counted)
+  SNR [dB]  16QAM theory  16QAM simulation |  SNR [dB]  32QAM simulation
+    11.0    4.221e-02      4.644e-02     |    14.0      4.507e-02
+    12.0    2.813e-02      2.810e-02     |    15.0      3.046e-02
+    13.0    1.716e-02      1.713e-02     |    16.0      1.788e-02
+    14.0    9.376e-03      9.800e-03     |    17.0      1.043e-02
+    15.0    4.465e-03      4.875e-03     |    18.0      5.160e-03
+Required SNR at the FEC limit 1e-02 [dB]
+  theory    : QPSK 7.33, 16QAM 13.90, 64QAM 19.74
+  simulation: 16QAM 13.96, 32QAM 17.06
+16QAM, SNR 14 dB, interferer/target power 0 dB
+  no interferer          : BER = 9.687e-03
+  interferer at +50 GHz  : BER = 9.687e-03
+  interferer at   0 GHz  : BER = 3.127e-01
+Self-check 1 passed: BER of 16QAM = theory within 0.1 decades
+Self-check 2 passed: required SNR of 16QAM = theory within 0.3 dB
+Self-check 3 passed: interferer outside the receive filter = same BER
+Self-check 4 passed: interferer on the same wavelength = higher BER
+
+[claude] demo14_coherent_rx_dsp_ber finished in 1.2 s

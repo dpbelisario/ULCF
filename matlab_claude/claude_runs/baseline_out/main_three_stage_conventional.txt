@@ -1,0 +1,72 @@
+
+==================== main_three_stage_conventional ====================
+Search: 30000 symbols per point, 21 powers from -10.0 to 10.0 dBm
+    A1, M =  16, PTx = -10.0 dBm: BER = 7.585e-02
+    A1, M =  16, PTx =  -9.0 dBm: BER = 5.597e-02
+    A1, M =  16, PTx =  -8.0 dBm: BER = 3.925e-02
+    A1, M =  16, PTx =  -7.0 dBm: BER = 2.515e-02
+    A1, M =  16, PTx =  -6.0 dBm: BER = 1.457e-02
+    A1, M =  16, PTx =  -5.0 dBm: BER = 7.763e-03
+  Scheme A1, M =  16 ( 1536 ports): required PTx =  -5.0 dBm
+    A1, M =  32, PTx =  -5.0 dBm: BER = 1.443e-02
+    A1, M =  32, PTx =  -4.0 dBm: BER = 7.275e-03
+  Scheme A1, M =  32 ( 3072 ports): required PTx =  -4.0 dBm
+    A1, M =  64, PTx =  -4.0 dBm: BER = 1.399e-02
+    A1, M =  64, PTx =  -3.0 dBm: BER = 7.387e-03
+  Scheme A1, M =  64 ( 6144 ports): required PTx =  -3.0 dBm
+    A1, M = 128, PTx =  -3.0 dBm: BER = 1.456e-02
+    A1, M = 128, PTx =  -2.0 dBm: BER = 7.763e-03
+  Scheme A1, M = 128 (12288 ports): required PTx =  -2.0 dBm
+    A2, M =  16, PTx = -10.0 dBm: BER = 8.040e-02
+    A2, M =  16, PTx =  -9.0 dBm: BER = 6.118e-02
+    A2, M =  16, PTx =  -8.0 dBm: BER = 4.523e-02
+    A2, M =  16, PTx =  -7.0 dBm: BER = 3.118e-02
+    A2, M =  16, PTx =  -6.0 dBm: BER = 2.053e-02
+    A2, M =  16, PTx =  -5.0 dBm: BER = 1.264e-02
+    A2, M =  16, PTx =  -4.0 dBm: BER = 7.038e-03
+  Scheme A2, M =  16 ( 1536 ports): required PTx =  -4.0 dBm
+    A2, M =  32, PTx =  -4.0 dBm: BER = 1.891e-02
+    A2, M =  32, PTx =  -3.0 dBm: BER = 1.275e-02
+    A2, M =  32, PTx =  -2.0 dBm: BER = 8.488e-03
+  Scheme A2, M =  32 ( 3072 ports): required PTx =  -2.0 dBm
+    A2, M =  64, PTx =  -2.0 dBm: BER = 2.669e-02
+    A2, M =  64, PTx =  -1.0 dBm: BER = 2.162e-02
+    A2, M =  64, PTx =   0.0 dBm: BER = 1.723e-02
+    A2, M =  64, PTx =   1.0 dBm: BER = 1.388e-02
+    A2, M =  64, PTx =   2.0 dBm: BER = 1.151e-02
+    A2, M =  64, PTx =   3.0 dBm: BER = 1.008e-02
+    A2, M =  64, PTx =   4.0 dBm: BER = 8.700e-03
+  Scheme A2, M =  64 ( 6144 ports): required PTx =   4.0 dBm
+    A2, M = 128, PTx =   4.0 dBm: BER = 4.301e-02
+    A2, M = 128, PTx =   5.0 dBm: BER = 4.105e-02
+    A2, M = 128, PTx =   6.0 dBm: BER = 3.973e-02
+    A2, M = 128, PTx =   7.0 dBm: BER = 3.860e-02
+    A2, M = 128, PTx =   8.0 dBm: BER = 3.776e-02
+    A2, M = 128, PTx =   9.0 dBm: BER = 3.707e-02
+    A2, M = 128, PTx =  10.0 dBm: BER = 3.644e-02
+  Scheme A2, M = 128 (12288 ports): required PTx =   NaN dBm
+36 operating points in 12.4 s (0.34 s per point)
+
+Required transmitter power [dBm] (NaN = not reached up to 10.0 dBm)
+  scheme      M   ports   this run   JLT 2025  difference
+  A1         16    1536       -5.0       -4.5        -0.5
+  A1         32    3072       -4.0       -3.5        -0.5
+  A1         64    6144       -3.0       -2.5        -0.5
+  A1        128   12288       -2.0       -1.5        -0.5
+  A2         16    1536       -4.0       -4.0        +0.0
+  A2         32    3072       -2.0       -2.0        +0.0
+  A2         64    6144        4.0        4.0        +0.0
+  A2        128   12288        NaN        NaN         NaN
+(JLT 2025 = Table V of the paper; NaN there = infeasible, above 5 dBm)
+
+Self-check 1 passed: a larger space switch has the higher BER at the same power (6 pairs of sizes)
+Self-check 2 passed: the BER falls when the power rises (28 power steps)
+Bookkeeping check passed: required power and port count fit together
+
+Saved in C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results
+  three_stage_conventional_20261016_135212.mat
+  three_stage_conventional_20261016_135212_portcount.csv
+  three_stage_conventional_20261016_135212_required_PTx.csv
+  three_stage_conventional_20261016_135212.png
+
+[claude] main_three_stage_conventional finished in 13.9 s

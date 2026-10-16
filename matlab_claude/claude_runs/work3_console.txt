@@ -1,0 +1,198 @@
+MATLAB version : 26.1.0.3203278 (R2026a) (this package needs R2020b or later)
+Package folder : C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude
+Path is set (lib, demos, main, work, tests).
+Check 1 passed: attenuation
+Check 2 passed: calc_signal_power
+Check 3 passed: set_signal_power
+Check 4 passed: selector_loss, coupler_loss, DCS_loss (96 ports -> 24.5 dB)
+Check 5 passed: power budget -22.5 dBm
+Check 6 passed: awg_channel
+Check 7 passed: ULCF_dev_freq
+Check 8 passed: plot_level_diagram
+test_lib_power_loss: all passed
+Check 1 passed: freq_axis (even and odd N)
+Check 2 passed: rcosfilter, nyquistfilter (one bin per symbol, edges)
+Check 3 passed: apply_filter
+Check 4 passed: gaussfilter, awg (3-dB width, floor 32 dB, shift)
+Check 5 passed: freqoff (bin shift, errors)
+Check 6 passed: plot_spectrum
+Check 7 passed: my_qammod, my_qamdemod (4, 16, 32, 64 points)
+Check 8 passed: TL_QAM and ideal receiver (EVM below 1e-10, BER 0)
+Check 9 passed: measure_BER_QAM (0, 7 and 1 wrong bits, all bits wrong)
+   4QAM: RMS error 0.121 -> 0.0044, BER 0.0e+00 -> 0
+  16QAM: RMS error 0.121 -> 0.0048, BER 0.0e+00 -> 0
+  32QAM: RMS error 0.122 -> 0.0050, BER 2.3e-03 -> 0
+  64QAM: RMS error 0.121 -> 0.0043, BER 2.1e-02 -> 0
+Check 10 passed: adequalizet without noise (BER 0 for 4, 16, 32, 64QAM)
+   4QAM, SNR  7 dB: BER theory 1.259e-02, ideal rx 1.302e-02, equalizer 1.325e-02
+         SNR of the equalized symbols 7.73 dB (SNR + 1 = 7.79 dB)
+  16QAM, SNR 14 dB: BER theory 9.376e-03, ideal rx 9.575e-03, equalizer 1.029e-02
+         SNR of the equalized symbols 14.14 dB (SNR + 1 = 14.17 dB)
+  64QAM, SNR 20 dB: BER theory 8.486e-03, ideal rx 8.485e-03, equalizer 8.648e-03
+         SNR of the equalized symbols 20.04 dB (SNR + 1 = 20.04 dB)
+Check 11 passed: BER in white Gaussian noise agrees with the theory
+test_lib_filters_qam: all passed
+  G 20 dB, NF 5 dB, Fs 120 GHz: ASE -26.147 dBm, theory -26.155 dBm
+  G 30 dB, NF 5 dB, Fs 120 GHz: ASE -16.138 dBm, theory -16.142 dBm
+  G 30 dB, NF 4 dB, Fs  96 GHz: ASE -18.108 dBm, theory -18.112 dBm
+  G 25 dB, NF 6 dB, Fs 160 GHz: ASE -18.891 dBm, theory -18.895 dBm
+  G 10 dB, NF 3 dB, Fs 120 GHz: ASE -38.369 dBm, theory -38.364 dBm
+  G  0 dB, NF 5 dB, Fs 120 GHz: ASE -47.796 dBm, theory -47.792 dBm
+Check 1 passed: ASE power = (G*F - 1)*h*f*Fs/2 within 0.05 dB
+Check 2 passed: the ASE is white complex Gaussian noise
+Check 3 passed: gain
+Check 4 passed: output power limit (sat, N, B_ref, polarization multiplexing)
+  SNR in Fs: DP 23.14 dB (theory 23.13), single pol. 26.14 dB (theory 26.14)
+Check 5 passed: SNR in the band Fs follows the polarization convention
+  SNR in 24 GHz: measured 30.13 dB, theory 30.12 dB
+Check 6 passed: SNR = P_in/(F*h*f*B) for a polarization-multiplexed signal
+  up 2, Fs  48 GHz: signal after the amplifier 6.9912 dBm, SNR 30.14 dB
+  up 4, Fs  96 GHz: signal after the amplifier 6.9912 dBm, SNR 30.14 dB
+  up 8, Fs 192 GHz: signal after the amplifier 6.9912 dBm, SNR 30.12 dB
+Check 7 passed: level and SNR after the amplifier do not depend on up
+Check 8 passed: random numbers
+Check 9 passed: errors
+test_lib_edfa: all passed
+All tests passed.
+Files: C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results\claude_two_stage_common_20261016_140702.mat
+       C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results\three_stage_conventional_20261016_135212.mat
+       C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results\claude_three_stage_proposed_seed1_20261016_140943.mat
+       C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results\claude_three_stage_proposed_seed2_20261016_141159.mat
+
+=== Common parameter set ===
+  mod_flag                     4 (16QAM)                                JLT 2025 signal: 200-Gbps DP-16QAM; the port-count reference of the paper
+  baudrate                     32 GBd                                   same reason; 16 GHz half-width fits the 50-GHz grid
+  signal_interval              50 GHz                                   the grid of both papers
+  N                            96                                       channels in the C band (both papers)
+  pol_flag                     1                                        polarization multiplexing in both papers
+  fiber_flag                   0 (single-core)                          JLT paper; the multicore fan-in/out of step21 belongs to that earlier study
+  NF                           6 dB                                     JLT paper value of the EDFA
+  edfa_sat1 / edfa_sat2 / NF2  20 dBm / 10 dBm / 4 dB                   identical in step21 and step22
+  extinction ratio             35 dB                                    JLT paper; used for the DC switch (dcs_ex_ratio) and for every selector
+  flg_NWDM                     0                                        carrier on the AWG passband centre (50-GHz grid); only the ULCF deviation remains
+  AWG, K = 1                   6 dB, 50 GHz                             the single-input AWG of step22 (JLT) for every switch with one input port
+  AWG, K > 1                   9 + 3.5 dB, 66.6 GHz, XT 32 dB, deviation ULCF_dev_freq(K) ULCF pair + 1 x 2 splitter of step21 (JOCN) for every switch with K input ports
+  rolloff / up / Morder        0 / 2 / 16                               the given scripts; up = 2 is enough with all leaks in band or left out
+  datasize / grid              3e4 symbols / 1 dB                       quick setting: about 3.5 percent error of the BER, 1 dB resolution
+  seed                         1 (and 2)                                every point repeatable; the second seed measures the random error
+  BER_limit                    1e-2                                     FEC limit of both papers
+  architecture-only            DC switch (two-stage) vs selector + selector (three-stage); K couplers/EDFAs these rows cannot be made equal: they ARE the switches
+
+=== Consistency checks ===
+Proposed switch with K = 1 and the step22 AWG = conventional three-stage curve (every size, both schemes).
+Concentrated traffic has M - 1 in-band leaks for every K (work1): only the middle stage differs.
+Selectors per port of the conventional switch (4(M-1) for A1, 3(M-1) for A2) = jlt2025_three_stage_ref.csv.
+
+=== Required transmitter power [dBm], columns M = [16 32 64 128] (ports [1536 3072 6144 12288]) ===
+Two-stage (common set), rows K; M of the DC switch = [2 4 8 16 32 64 128]
+  K =  1 :   -5.0   -1.0    3.0    8.0   12.0    NaN    NaN
+  K =  2 :   -8.0   -4.0    0.0    4.0    9.0   15.0    NaN
+  K =  4 :  -12.0   -8.0   -3.0    1.0    6.0   12.0    NaN
+  K =  8 :  -15.0  -11.0   -6.0   -2.0    3.0    9.0    NaN
+  K = 12 :  -18.0  -14.0  -10.0   -5.0    0.0    6.0    NaN
+Three-stage A1, dispersed (K = 1 is the conventional switch)
+  K =  1 :   -5.0   -4.0   -3.0   -2.0
+  K =  2 :   -8.0   -7.0   -6.0   -5.0
+  K =  4 :  -12.0  -11.0  -10.0   -9.0
+  K =  8 :  -15.0  -14.0  -13.0  -12.0
+  K = 12 :  -18.0  -17.0  -16.0  -15.0
+Three-stage A1, concentrated (K = 1 is the conventional switch)
+  K =  1 :   -5.0   -4.0   -3.0   -2.0
+  K =  2 :   -8.0   -7.0   -6.0   -5.0
+  K =  4 :  -12.0  -11.0  -10.0   -9.0
+  K =  8 :  -15.0  -14.0  -13.0  -12.0
+  K = 12 :  -18.0  -17.0  -16.0  -15.0
+Three-stage A2, dispersed (K = 1 is the conventional switch)
+  K =  1 :   -4.0   -2.0    4.0    NaN
+  K =  2 :   -7.0   -5.0    2.0    NaN
+  K =  4 :  -11.0  -10.0   -7.0    NaN
+  K =  8 :  -15.0  -13.0  -12.0   -8.0
+  K = 12 :  -18.0  -17.0  -15.0  -12.0
+Three-stage A2, concentrated (K = 1 is the conventional switch)
+  K =  1 :   -4.0   -2.0    4.0    NaN
+  K =  2 :   -7.0   -4.0    NaN    NaN
+  K =  4 :  -11.0   -8.0   -1.0    NaN
+  K =  8 :  -14.0  -12.0   -7.0    NaN
+  K = 12 :  -17.0  -15.0   -9.0    NaN
+
+Random error: seed 2 against seed 1 over 71 entries: 63 equal, largest difference 1.0 dB, NaN mismatches 0
+  (a 1-dB difference at one point = the point sits at the FEC limit; a real difference
+   between switches must be larger than this, see the 0.5 dB question of the task)
+
+=== Largest feasible switch with PTx <= 5 dBm (200 Gbit/s per port) ===
+  switch          K A   pattern           ports       Tbit/s  PTx[dBm]
+  two-stage       1 -   -                   768        153.6       3.0
+  two-stage       2 -   -                  1536        307.2       4.0
+  two-stage       4 -   -                  1536        307.2       1.0
+  two-stage       8 -   -                  3072        614.4       3.0
+  two-stage      12 -   -                  3072        614.4       0.0
+  conventional    1 A1  -                 12288       2457.6      -2.0
+  conventional    1 A2  -                  6144       1228.8       4.0
+  proposed        2 A1  dispersed         12288       2457.6      -5.0
+  proposed        2 A1  concentrated      12288       2457.6      -5.0
+  proposed        2 A2  dispersed          6144       1228.8       3.0
+  proposed        2 A2  concentrated       3072        614.4      -4.0
+  proposed        4 A1  dispersed         12288       2457.6      -9.0
+  proposed        4 A1  concentrated      12288       2457.6      -9.0
+  proposed        4 A2  dispersed          6144       1228.8      -7.0
+  proposed        4 A2  concentrated       6144       1228.8      -1.0
+  proposed        8 A1  dispersed         12288       2457.6     -12.0
+  proposed        8 A1  concentrated      12288       2457.6     -12.0
+  proposed        8 A2  dispersed         12288       2457.6      -8.0
+  proposed        8 A2  concentrated       6144       1228.8      -6.0
+  proposed       12 A1  dispersed         12288       2457.6     -15.0
+  proposed       12 A1  concentrated      12288       2457.6     -15.0
+  proposed       12 A2  dispersed         12288       2457.6     -12.0
+  proposed       12 A2  concentrated       6144       1228.8      -9.0
+
+=== Hardware per port (selectors in 1x2 elements, couplers in 2x1 elements) ===
+  switch          K A      M   ports  selectors   couplers    EDFAs     AWGs  splitters
+  two-stage       1 -     16    1536      15.00      15.99   0.0104   0.0104     0.0000
+  conventional    1 A1    16    1536      60.00       0.99   0.0104   0.0104     0.0000
+  conventional    1 A2    16    1536      45.00      15.99   0.0104   0.0104     0.0000
+  two-stage      12 -     16    1536      15.00      15.88   0.1250   0.0208     0.1250
+  proposed       12 A1    16    1536      60.00       0.88   0.1250   0.0208     0.1250
+  proposed       12 A2    16    1536      45.00      15.88   0.1250   0.0208     0.1250
+  two-stage       1 -     32    3072      31.00      31.99   0.0104   0.0104     0.0000
+  conventional    1 A1    32    3072     124.00       0.99   0.0104   0.0104     0.0000
+  conventional    1 A2    32    3072      93.00      31.99   0.0104   0.0104     0.0000
+  two-stage      12 -     32    3072      31.00      31.88   0.1250   0.0208     0.1250
+  proposed       12 A1    32    3072     124.00       0.88   0.1250   0.0208     0.1250
+  proposed       12 A2    32    3072      93.00      31.88   0.1250   0.0208     0.1250
+  two-stage       1 -     64    6144      63.00      63.99   0.0104   0.0104     0.0000
+  conventional    1 A1    64    6144     252.00       0.99   0.0104   0.0104     0.0000
+  conventional    1 A2    64    6144     189.00      63.99   0.0104   0.0104     0.0000
+  two-stage      12 -     64    6144      63.00      63.88   0.1250   0.0208     0.1250
+  proposed       12 A1    64    6144     252.00       0.88   0.1250   0.0208     0.1250
+  proposed       12 A2    64    6144     189.00      63.88   0.1250   0.0208     0.1250
+  two-stage       1 -    128   12288     127.00     127.99   0.0104   0.0104     0.0000
+  conventional    1 A1   128   12288     508.00       0.99   0.0104   0.0104     0.0000
+  conventional    1 A2   128   12288     381.00     127.99   0.0104   0.0104     0.0000
+  two-stage      12 -    128   12288     127.00     127.88   0.1250   0.0208     0.1250
+  proposed       12 A1   128   12288     508.00       0.88   0.1250   0.0208     0.1250
+  proposed       12 A2   128   12288     381.00     127.88   0.1250   0.0208     0.1250
+  (K = 12: 12 EDFAs per WR switch = 0.125 EDFA per port instead of 0.0104; 2 AWGs and 12 splitters per WR switch)
+
+=== Split of the SNR gain at the required power of the conventional switch, K = 12 ===
+  A      M      PTx |  SNR(a)  SNR(b)  SNR(c) |   middle      oob | limiting term of (c)
+  A1   16     -5.0 |   14.37   20.60   20.60 |    +6.23    +0.00 | ULCF AWG XT (21.4 dB)
+  A1   32     -4.0 |   14.36   20.59   20.59 |    +6.23    +0.00 | ULCF AWG XT (21.4 dB)
+  A1   64     -3.0 |   14.36   20.58   20.59 |    +6.22    +0.00 | ULCF AWG XT (21.4 dB)
+  A1  128     -2.0 |   14.35   20.57   20.57 |    +6.21    +0.01 | ULCF AWG XT (21.4 dB)
+  A2   16     -4.0 |   14.48   18.52   20.26 |    +4.05    +1.73 | ULCF AWG XT (21.4 dB)
+  A2   32     -2.0 |   14.25   16.94   19.73 |    +2.69    +2.79 | ULCF AWG XT (21.4 dB)
+  A2   64      4.0 |   14.15   14.82   18.61 |    +0.68    +3.78 | ULCF AWG XT (21.4 dB)
+  A2  128      5.0 |   11.21   12.14   16.49 |    +0.93    +4.35 | pre-amp ASE (19.3 dB)
+
+=== Conclusion ===
+1. With selectors in the third stage (Scheme A1) the proposed switch lowers the required transmitter power by 3, 7, 10 and 13 dB for K = 2, 4, 8 and 12 at every size, for dispersed and for concentrated traffic alike: the third-stage leaks pass two selectors (SXR above 49 dB) and never matter, so this whole gain is the middle stage (coupler saving 3.5 to 14 dB, minus 0.5 to 1 dB for the ULCF pair: splitter, passband deviation, AWG crosstalk).
+2. With couplers in the third stage (Scheme A2) and dispersed traffic the gain splits into the two sources the task asks for: at the required power of the conventional switch and K = 12 the middle stage adds 4.1 / 2.7 / 0.7 / 0.9 dB of SNR and the leaks on other wavelengths add 1.7 / 2.8 / 3.8 / 4.4 dB for M = 16 / 32 / 64 / 128; the second source grows with M because the stage-3 crosstalk of the conventional A2 switch grows with M.
+3. The practical consequence is that Scheme A2 (25 percent fewer selector elements) becomes feasible at 12288 ports: -8 dBm with K = 8 and -12 dBm with K = 12, where the conventional A2 switch is infeasible even at 10 dBm; the proposal can buy the simpler third stage instead of more power.
+4. With concentrated traffic the third-stage leaks are all in band again and the gain of Scheme A2 shrinks with M and turns into a loss: at 6144 ports the required power goes from 4 dBm (conventional) to above 10 dBm (K = 2), -1 (K = 4), -7 (K = 8) and -9 dBm (K = 12), and 12288 ports stay infeasible for every K; the reason is that the EDFA output per channel is fixed by its saturation power, so the extra 6.5 dB of the ULCF pair and splitter in front of the 24 to 28 dB third-stage coupler and the pre-amplifier caps the SNR (13.45 dB at K = 2) regardless of transmitter power.
+5. The ULCF AWG crosstalk (K-1 leaks at 32 dB, SXR 21.4 dB at K = 12) is the term that limits the proposed switch with dispersed traffic in every case but A2 at 12288 ports, where the pre-amplifier noise limits; a better AWG crosstalk, not more input ports, is the next lever, and K = 8 already gives most of the gain.
+6. The price is hardware in the middle stage: K EDFAs, two AWGs and K splitters per WR switch instead of one EDFA and one AWG (0.125 instead of 0.0104 EDFAs per port at K = 12), while the selector count per port is unchanged; against 252 to 508 selector elements per port this is a small addition, and with A2 it saves 63 to 127 selector elements per port.
+7. The two-stage switch on the same parameter set reaches 768 ports at 3 dBm with K = 1 (the paper: 384 ports at 0 dBm) and 3072 ports at 0 dBm with K = 12, but 6144 ports need 6 dBm and 12288 are out of reach, so it does not compete with the three-stage switches above about 3000 ports.
+8. The advantage of the proposal is gone when the traffic is concentrated and the third stage uses couplers; with selectors in the third stage the advantage does not depend on the traffic at all. It would also be gone if the wavelength of a connection depended on the middle-stage switch (groups not identical in every WR switch), because then every rearrangement would need a laser retune.
+9. All required powers carry a resolution of 1 dB and a random error of one grid step at points near the FEC limit (seed 2 against seed 1: 63 of 71 entries equal, the rest differ by 1 dB); differences of 1 dB between curves are not significant, differences of 3 dB and more are.
+
+Saved: C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results\claude_work3_20261016_141346_{common_parameters.csv, portcount.png, throughput.csv, hardware_per_port.csv, gain_split.csv, conclusion.txt, .mat}

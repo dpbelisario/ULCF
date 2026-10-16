@@ -1,0 +1,66 @@
+
+==================== main_two_stage_ULCF ====================
+Search: 30000 symbols per point, 31 powers from -20.0 to 10.0 dBm
+  K =  1, M =  2 ( 192 ports): required PTx =  -1.0 dBm
+  K =  1, M =  4 ( 384 ports): required PTx =   3.0 dBm
+  K =  1, M =  8 ( 768 ports): required PTx =   8.0 dBm
+  K =  1, M = 16 (1536 ports): required PTx =   NaN dBm
+  K =  1, M = 32 (3072 ports): required PTx =   NaN dBm
+  K =  2, M =  2 ( 192 ports): required PTx =  -4.0 dBm
+  K =  2, M =  4 ( 384 ports): required PTx =   0.0 dBm
+  K =  2, M =  8 ( 768 ports): required PTx =   4.0 dBm
+  K =  2, M = 16 (1536 ports): required PTx =   9.0 dBm
+  K =  2, M = 32 (3072 ports): required PTx =   NaN dBm
+  K =  4, M =  2 ( 192 ports): required PTx =  -8.0 dBm
+  K =  4, M =  4 ( 384 ports): required PTx =  -3.0 dBm
+  K =  4, M =  8 ( 768 ports): required PTx =   1.0 dBm
+  K =  4, M = 16 (1536 ports): required PTx =   5.0 dBm
+  K =  4, M = 32 (3072 ports): required PTx =   NaN dBm
+  K =  8, M =  2 ( 192 ports): required PTx = -10.0 dBm
+  K =  8, M =  4 ( 384 ports): required PTx =  -6.0 dBm
+  K =  8, M =  8 ( 768 ports): required PTx =  -2.0 dBm
+  K =  8, M = 16 (1536 ports): required PTx =   3.0 dBm
+  K =  8, M = 32 (3072 ports): required PTx =   9.0 dBm
+  K = 12, M =  2 ( 192 ports): required PTx = -13.0 dBm
+  K = 12, M =  4 ( 384 ports): required PTx =  -9.0 dBm
+  K = 12, M =  8 ( 768 ports): required PTx =  -4.0 dBm
+  K = 12, M = 16 (1536 ports): required PTx =   1.0 dBm
+  K = 12, M = 32 (3072 ports): required PTx =   7.0 dBm
+170 operating points in 18.3 s (0.11 s per point)
+
+Required transmitter power [dBm] (NaN = not reached up to 10.0 dBm)
+  K \ M          2       4       8      16      32
+  1           -1.0     3.0     8.0     NaN     NaN
+  2           -4.0     0.0     4.0     9.0     NaN
+  4           -8.0    -3.0     1.0     5.0     NaN
+  8          -10.0    -6.0    -2.0     3.0     9.0
+  12         -13.0    -9.0    -4.0     1.0     7.0
+
+Required transmitter power of the legacy code [dBm] (NaN = not reached, or not in the file)
+  K \ M          2       4       8      16      32
+  1           -1.0     3.0     7.0     NaN     NaN
+  2           -4.5    -0.5     3.5     8.5     NaN
+  4           -8.0    -3.5     0.5     5.0     NaN
+  8          -10.5    -6.5    -2.0     2.5     8.5
+  12         -13.0    -9.0    -4.5     0.5     7.5
+
+Difference: this run - legacy code [dB]
+  K \ M          2       4       8      16      32
+  1           +0.0    +0.0    +1.0     NaN     NaN
+  2           +0.5    +0.5    +0.5    +0.5     NaN
+  4           +0.0    +0.5    +0.5    +0.0     NaN
+  8           +0.5    +0.5    +0.0    +0.5    +0.5
+  12          +0.0    +0.0    +0.5    +0.5    -0.5
+Expected with the legacy parameters: 0 or -0.5 dB for quick_flag = 0 (within 1 dB for quick_flag = 1).
+
+Self-check 1 passed: a larger DC switch has the higher BER at the same power (19 pairs of sizes)
+Self-check 2 passed: the BER falls when the power rises (146 power steps)
+Bookkeeping check passed: required power and port count fit together
+
+Saved in C:\Users\David\Downloads\toDavid_04\toDavid_04\matlab_claude\results
+  two_stage_ULCF_20261016_135158.mat
+  two_stage_ULCF_20261016_135158_portcount.csv
+  two_stage_ULCF_20261016_135158_required_PTx.csv
+  two_stage_ULCF_20261016_135158.png
+
+[claude] main_two_stage_ULCF finished in 20.2 s
