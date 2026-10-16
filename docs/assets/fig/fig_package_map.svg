@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="544" viewBox="0 0 1150 544">
+<defs>
+  <marker id="ar_nav" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#1F4E79"/></marker>
+</defs>
+<rect x="0" y="0" width="1150" height="544" fill="white"/>
+<text x="575" y="36" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle" fill="#222" font-weight="bold">The package: read, then run, then build</text>
+
+<!-- panel 1: READ -->
+<rect x="30" y="58" width="330" height="420" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<circle cx="62" cy="92" r="15" fill="#1F4E79"/>
+<text x="62" y="98" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle" fill="white" font-weight="bold">1</text>
+<text x="88" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#1F4E79" font-weight="bold">READ</text>
+<text x="48" y="128" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">HTML pages: open them in a web browser</text>
+
+<rect x="44" y="144" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="58" y="164" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">START_HERE.html</text>
+<text x="58" y="182" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">this page: set-up and reading order</text>
+
+<rect x="44" y="198" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="58" y="218" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">docs/  01 to 04</text>
+<text x="58" y="236" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">orientation: theme, plan, MATLAB guide</text>
+
+<rect x="44" y="252" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="58" y="272" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">docs/  11 to 17</text>
+<text x="58" y="290" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">background, one topic per page</text>
+
+<rect x="44" y="306" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="58" y="326" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">docs/  21 to 23</text>
+<text x="58" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">research: baselines and your switch</text>
+
+<rect x="44" y="360" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="58" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">docs/  91</text>
+<text x="58" y="398" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">glossary</text>
+
+<text x="48" y="436" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">Read in the order of the page numbers.</text>
+<text x="48" y="455" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">The sidebar of every page lists them.</text>
+
+<!-- arrows READ -> RUN, one per row -->
+<line x1="363" y1="167" x2="404" y2="167" stroke="#1F4E79" stroke-width="2.4" marker-end="url(#ar_nav)"/>
+<line x1="363" y1="221" x2="404" y2="221" stroke="#1F4E79" stroke-width="2.4" marker-end="url(#ar_nav)"/>
+<line x1="363" y1="275" x2="404" y2="275" stroke="#1F4E79" stroke-width="2.4" marker-end="url(#ar_nav)"/>
+<line x1="363" y1="329" x2="404" y2="329" stroke="#1F4E79" stroke-width="2.4" marker-end="url(#ar_nav)"/>
+
+<!-- panel 2: RUN -->
+<rect x="410" y="58" width="330" height="420" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<circle cx="442" cy="92" r="15" fill="#1F4E79"/>
+<text x="442" y="98" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle" fill="white" font-weight="bold">2</text>
+<text x="468" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#1F4E79" font-weight="bold">RUN</text>
+<text x="428" y="128" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">given MATLAB code in matlab/</text>
+
+<rect x="424" y="144" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="438" y="164" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">setup_path.m,  tests/</text>
+<text x="438" y="182" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">set the path, then test the library</text>
+
+<rect x="424" y="198" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="438" y="218" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">lib/</text>
+<text x="438" y="236" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">23 functions that the scripts call</text>
+
+<rect x="424" y="252" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="438" y="272" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">demos/</text>
+<text x="438" y="290" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">demo12 to demo17 for pages 12 to 17</text>
+
+<rect x="424" y="306" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="438" y="326" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">main/</text>
+<text x="438" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">baseline switches of pages 21 and 22</text>
+
+<rect x="424" y="360" width="302" height="46" rx="6" fill="white" stroke="#34495E" stroke-width="1.2"/>
+<text x="438" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">ref_data/</text>
+<text x="438" y="398" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">4 CSV files of reference values</text>
+
+<rect x="424" y="414" width="302" height="46" rx="6" fill="white" stroke="#7F8C8D" stroke-width="1.4" stroke-dasharray="6,4"/>
+<text x="438" y="434" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">results/</text>
+<text x="438" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">output files: .mat, .csv, .png</text>
+
+<!-- arrow RUN -> BUILD -->
+<line x1="743" y1="329" x2="784" y2="329" stroke="#1F4E79" stroke-width="2.4" marker-end="url(#ar_nav)"/>
+
+<!-- panel 3: BUILD (yours) -->
+<rect x="790" y="58" width="330" height="420" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<circle cx="822" cy="92" r="15" fill="#B7791F"/>
+<text x="822" y="98" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle" fill="white" font-weight="bold">3</text>
+<text x="848" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#B7791F" font-weight="bold">BUILD</text>
+<text x="808" y="128" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">your MATLAB code in matlab/work/</text>
+
+<text x="808" y="172" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">Each file holds a task, not a solution.</text>
+<text x="808" y="191" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">Below its header there is no code yet:</text>
+<text x="808" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">the code is yours.</text>
+<text x="808" y="248" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">Start after page 23, when both baseline</text>
+<text x="808" y="267" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">switches run on your PC.</text>
+
+<rect x="804" y="306" width="302" height="46" rx="6" fill="white" stroke="#B7791F" stroke-width="1.4"/>
+<text x="818" y="326" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">work1_wavelength_rule.m</text>
+<text x="818" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">which wavelength does a connection use?</text>
+
+<rect x="804" y="360" width="302" height="46" rx="6" fill="white" stroke="#B7791F" stroke-width="1.4"/>
+<text x="818" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">work2_three_stage_proposed.m</text>
+<text x="818" y="398" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">simulation of the proposed switch</text>
+
+<rect x="804" y="414" width="302" height="46" rx="6" fill="white" stroke="#B7791F" stroke-width="1.4"/>
+<text x="818" y="434" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">work3_comparison.m</text>
+<text x="818" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#555">three switches, one parameter set</text>
+
+<!-- legend -->
+<rect x="30" y="502" width="34" height="20" rx="5" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="74" y="517" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222">given</text>
+<rect x="150" y="502" width="34" height="20" rx="5" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="194" y="517" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222">yours</text>
+<rect x="270" y="502" width="34" height="20" rx="5" fill="white" stroke="#7F8C8D" stroke-width="1.4" stroke-dasharray="6,4"/>
+<text x="314" y="517" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222">created when the main scripts run</text>
+<line x1="590" y1="512" x2="626" y2="512" stroke="#1F4E79" stroke-width="2.4" marker-end="url(#ar_nav)"/>
+<text x="642" y="517" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222">then</text>
+</svg>

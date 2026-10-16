@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>17 AWG and wavelength routing | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a class="current" href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Background</p>
+<h1><span class="num nt">17</span>AWG and wavelength routing</h1>
+<p class="lead">In a wavelength-routing (WR) switch nothing is switched: the wavelength of a signal decides at which output port it leaves. The element that does this is the arrayed-waveguide grating (AWG). This page explains its passband, the routing rule of an AWG with several input ports, and the AWG of this research, the ULCF AWG in the interleaved configuration. It shows what \(K\) input ports gain and what they cost.</p>
+
+<div class="pair"><span><b>Script:</b> <code>matlab/demos/demo17_awg_wavelength_routing.m</code></span><span><b>Library:</b> <code>awg</code>, <code>gaussfilter</code>, <code>awg_channel</code>, <code>ULCF_dev_freq</code>, <code>coupler_loss</code></span></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Why you need this</a></li>
+<li><a href="#s2">Wavelength channels and the AWG</a></li>
+<li><a href="#s3">The wavelength-routing switch and cyclic routing</a></li>
+<li><a href="#s4">The ULCF AWG and the interleaved configuration</a></li>
+<li><a href="#s5">AWG crosstalk</a></li>
+<li><a href="#s6">Run the demo</a></li>
+<li><a href="#s7">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Why you need this</h2>
+<p>Every switch in this research contains one stage of WR switches, and the proposal changes exactly this stage. The "low-loss wavelength routing" in the title of your research is an AWG with \(K\) input ports. It lets \(K\) small couplers replace the one large coupler in front of the EDFA, the optical amplifier. <a href="15_edfa_ase.html">Page 15</a> showed why this matters: a loss before the EDFA lowers the SNR by the same number of dB.</p>
+<p>The same AWG has a second property. The wavelength that reaches one of its output ports depends on the input port of the signal. In the two-stage switch (<a href="21_two_stage_ulcf_switch.html">page 21</a>) this is only a rule for tuning the lasers. In the proposed three-stage switch it decides which leaks have the wavelength of the target signal (<a href="23_three_stage_proposal.html">page 23</a>). To use both properties you need the routing rule of the AWG. To judge their price you need its passband, its loss and its crosstalk.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>An AWG with \(K\) input ports removes loss before the EDFA and adds loss after the EDFA, where it does little harm. The price is \(K\) EDFAs in place of one, a passband that is not centered on the signal, and up to \(K-1\) leaks on the wavelength of the signal.</p></div>
+<div class="box note"><span class="label">Sources</span>
+<p>The facts about the AWGs come from the JOCN paper. The values of the conventional three-stage switch come from the JLT paper. The JOCN paper writes \(n\) for the number of input ports of the AWG; these pages write \(K\) (<code>ULCF_deg</code> in the code).</p>
+<ul>
+<li><span class="nt">Nagai et al., "Design and Verification of Large-Scale Optical Circuit Switch Using ULCF AWGs for Datacenter Application," J. Opt. Commun. Netw., 2018</span></li>
+<li><span class="nt">Mitsuya et al., "Three-Stage Optical Circuit Switch Architectures for Intra-Datacenter Networking," J. Lightw. Technol., vol. 43, no. 2, pp. 400-407, 2025 (doi 10.1109/JLT.2024.3465208)</span></li>
+</ul></div>
+</section>
+
+<section id="s2">
+<h2>2. Wavelength channels and the AWG</h2>
+<h3>Wavelength channels</h3>
+<p>Signals with different laser frequencies can share one fiber and can be separated again. This is called <strong>wavelength-division multiplexing (WDM)</strong>. Each laser frequency that a system uses is one <strong>wavelength channel</strong>. Frequency and wavelength describe the same light (wavelength = speed of light / frequency), so the two words are used side by side. The frequencies lie on a fixed <strong>grid</strong>: on the 50-GHz grid, neighboring channels are 50 GHz apart.</p>
+<p>Both papers use \(N = 96\) channels on the 50-GHz grid in the full C band. The C band is the wavelength range that an EDFA amplifies. The AWGs that were built for the JOCN paper cover <span class="nt">191.500 THz</span> to <span class="nt">196.250 THz</span>, which are the wavelengths <span class="nt">1565.5 nm</span> to <span class="nt">1527.6 nm</span>: <span class="nt">(196.250 - 191.500)/0.050 + 1 = 96</span> channels. These pages number the channels 1 to \(N\) (<code>N = 96</code> in the scripts).</p>
+<p>Every transmitter has a <strong>tunable laser</strong>, a laser that can be set to any of the \(N\) channels. The letters TL in the name of the transmitter function <code>TL_QAM</code> stand for it.</p>
+<p>The simulation holds only one channel, the channel of the target signal. Its frequency axis is measured from the carrier of this signal: 0 Hz is the laser frequency of the target signal (<a href="13_waveform_fft_filter.html">page 13</a>). The neighboring channels would lie at <span class="nt">+50 GHz</span> and <span class="nt">-50 GHz</span>.</p>
+
+<h3>The AWG separates the channels</h3>
+<p>An <strong>arrayed-waveguide grating (AWG)</strong> is a passive optical element that separates wavelengths. In its basic form it has one input port and \(N\) output ports, and light on channel \(j\) leaves at output port \(j\). Such an element is called a wavelength demultiplexer.</p>
+<p>An output port does not pass one exact frequency. It passes a range of frequencies, its <strong>passband</strong>. This package models the passband as a Gaussian curve. At the frequency \(f\), the output port passes the fraction \(T(f)\) of the power:</p>
+<div class="eq" id="e1"><div class="m">\[ T(f) = 2^{-x^{2}}, \qquad x = \frac{2\,(f - f_c)}{W} \]</div><span class="eqno nt">(1)</span></div>
+<p>Here \(f_c\) is the center of the passband, and \(W\) is its <strong>full width at half maximum (FWHM)</strong>, also called the 3-dB width: at \(f - f_c = \pm W/2\) the fraction is exactly 1/2. In dB, with \(\Delta f = f - f_c\):</p>
+<div class="eq" id="e2"><div class="m">\[ T_{\mathrm{dB}}(\Delta f) = -3.01\left(\frac{2\,\Delta f}{W}\right)^{2}\ \mathrm{dB} \]</div><span class="eqno nt">(2)</span></div>
+<p>Example for \(W\)&nbsp;=&nbsp;<span class="nt">66.6 GHz</span>: the passband removes <span class="nt">0.04 dB</span> at a distance of 4 GHz from its center, <span class="nt">0.69 dB</span> at 16 GHz and <span class="nt">2.13 dB</span> at 28 GHz.</p>
+<p>An AWG causes two losses, and you must keep them apart.</p>
+<ul>
+<li>The <strong>insertion loss</strong> is the loss at the center of the passband. It is the same for all frequencies. The scripts use <span class="nt">6 dB</span> for the AWG of the conventional three-stage switch (<code>AWG_loss</code> in <code>step22_three_stage_one_point</code>, value of the JLT paper) and <span class="nt">9 dB</span> for the AWG of the two-stage ULCF switch (<code>AWG_loss</code> in <code>step21_two_stage_one_point</code>, <a href="#s4">section 4</a>).</li>
+<li>The loss from the shape of the passband depends on where the signal lies. If the carrier is not at the center of the passband, the signal lies on the slope of the curve and loses more.</li>
+</ul>
+<p>A signal with the symbol rate \(B\) (<code>baudrate</code>) and roll-off 0 has a flat spectrum from \(-B/2\) to \(+B/2\) around its carrier (page 13). Measure \(f\) from the carrier, so that \(f_c\) is the distance of the passband center from the carrier. The signal then keeps the mean of \(T\) over its band, and the loss from the shape is</p>
+<div class="eq" id="e3"><div class="m">\[ L_{\mathrm{shape}} = -10\log_{10}\!\left(\frac{1}{B}\int_{-B/2}^{+B/2} T(f)\,\mathrm{d}f\right)\ \mathrm{dB} \]</div><span class="eqno nt">(3)</span></div>
+<p>For a 24-GBd signal (\(B\)&nbsp;=&nbsp;<span class="nt">24 GHz</span>) and \(W\)&nbsp;=&nbsp;<span class="nt">66.6 GHz</span>, Eq. (3) gives <span class="nt">0.13 dB</span> for \(f_c = 0\) and <span class="nt">0.78 dB</span> for \(f_c\)&nbsp;=&nbsp;<span class="nt">16 GHz</span>. The demo calculates these numbers and measures them on a simulated signal.</p>
+<p>The slope also tilts the spectrum of the signal: one edge of the signal loses more than the other. The adaptive equalizer of the receiver (<a href="14_coherent_rx_dsp_ber.html">page 14</a>) removes the tilt.</p>
+
+<h3>In the code</h3>
+<p>The function <code>awg</code> applies both losses to a signal. It multiplies the spectrum of the signal by a Gaussian mask, which the function <code>gaussfilter</code> builds on the frequency axis of the simulation, and then applies the insertion loss with <code>attenuation</code>.</p>
+<pre><code>signal_output = awg(signal_input, loss, shift, Fs, FWHM, er_dB, m)</code></pre>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. The arguments of <code>awg</code> and their values in <code>step21</code> (two-stage ULCF switch) and <code>step22</code> (conventional three-stage switch).</caption>
+<thead><tr><th>Argument</th><th>Meaning</th><th><code>step21</code></th><th><code>step22</code></th></tr></thead>
+<tbody>
+<tr><td><code>signal_input</code></td><td>optical field, one signal per column, in \(\sqrt{\mathrm{W}}\)</td><td><code>signal</code></td><td><code>signal</code></td></tr>
+<tr><td><code>loss</code></td><td>insertion loss at the center of the passband [dB]</td><td><code>AWG_loss + splitter_loss</code>&nbsp;=&nbsp;<span class="nt">12.5</span></td><td><code>AWG_loss</code>&nbsp;=&nbsp;<span class="nt">6</span></td></tr>
+<tr><td><code>shift</code></td><td>\(f_c\): center of the passband, measured from the carrier [Hz]; 0 = passband centered on the signal</td><td><code>12.5e9 + ULCF_dev_freq(ULCF_deg)</code></td><td class="nt">0</td></tr>
+<tr><td><code>Fs</code></td><td>sampling rate \(F_s\) [Hz]</td><td class="nt">48e9</td><td class="nt">64e9</td></tr>
+<tr><td><code>FWHM</code></td><td>\(W\): 3-dB width of the passband [Hz]</td><td><code>FWHM_AWG</code>&nbsp;=&nbsp;<span class="nt">66.6e9</span></td><td><code>FWHM_AWG</code>&nbsp;=&nbsp;<span class="nt">50e9</span></td></tr>
+<tr><td><code>er_dB</code></td><td>floor of the passband shape [dB]: \(T\) never falls below <code>-er_dB</code></td><td><code>AWG_XT</code>&nbsp;=&nbsp;<span class="nt">32</span></td><td><code>AWG_XT</code>&nbsp;=&nbsp;<span class="nt">32</span></td></tr>
+<tr><td><code>m</code></td><td>order of the shape; 1 = the Gaussian curve of Eq. (1)</td><td class="nt">1</td><td class="nt">1</td></tr>
+</tbody></table></div>
+<ul>
+<li><code>gaussfilter(N, shift, Fs, FWHM, er_dB, m)</code> has the last five arguments of <code>awg</code>. Its first argument <code>N</code> is the number of samples here, not the number of channels. It returns the amplitude mask, which is the square root of \(T\) in Eq. (1), because a power ratio acts on the field as its square root (<a href="12_units_power_budget.html">page 12</a>).</li>
+<li>With the values of both scripts, the floor lies outside the simulated band, so <code>er_dB</code> does not change the result. For <span class="nt">66.6 GHz</span> and <span class="nt">32 dB</span> the floor starts <span class="nt">108.6 GHz</span> from the center of the passband. The value of <code>AWG_XT</code> matters only in block [7] of <code>step21</code>, where it is the level of the AWG crosstalk (<a href="#s5">section 5</a>).</li>
+<li>The mask covers only the simulated band, which is \(F_s\) wide: from <span class="nt">-24 GHz</span> to <span class="nt">+24 GHz</span> in <code>step21</code>. The center of the passband can lie outside this band. In <code>step21</code> it is <span class="nt">28.5 GHz</span> from the carrier for \(K = 12\) (<a href="#s4">section 4</a>). This does no harm, because the mask is needed only where the signal is.</li>
+<li>The two passband widths are values of the laboratory code. The JLT paper does not state the width of its AWG. For the ULCF AWG that was built, the JOCN paper reports a 3-dB width of about 65 GHz.</li>
+<li><code>awg</code> makes no crosstalk. The main scripts add crosstalk as separate signals (<a href="#s5">section 5</a>).</li>
+</ul>
+<p>After <code>setup_path</code> you can try the function in the Command Window:</p>
+<pre><code>Fs = 2*24e9;                                 % up = 2, baudrate = 24e9
+Hrcos = rcosfilter(3e4*2, 24e9, Fs, 0);      % transmit mask, roll-off 0
+x = TL_QAM(3e4, 2, Hrcos, 0, 5);             % 32QAM signal with 0 dBm
+y = awg(x, 12.5, 16e9, Fs, 66.6e9, 32, 1);   % passband center 16 GHz above the carrier
+calc_signal_power(y)                         % about -13.28 dBm = -(12.5 + 0.78)</code></pre>
+</section>
+
+<section id="s3">
+<h2>3. The wavelength-routing switch and cyclic routing</h2>
+<h3>One coupler, one EDFA, one AWG</h3>
+<p>A WR switch of size \(N \times N\) has three parts in a row (<a href="#f2">Fig. 2(a)</a> in section 4): an \(N \times 1\) coupler, which is called the <strong>aggregation coupler</strong>, an EDFA, and a \(1 \times N\) AWG. The coupler adds up to \(N\) signals into one fiber. The EDFA amplifies them together. The AWG sends channel \(j\) to output port \(j\).</p>
+<p>The transmitter therefore chooses the output port by choosing its wavelength. To reach the receiver at output port \(j\), it tunes its laser to channel \(j\). Two signals on the same channel never enter the same coupler, because they would go to the same receiver.</p>
+<p>One EDFA serves \(N\) signals, so the switch needs only \(1/N\) EDFA per port. The weak point is the \(N \times 1\) coupler in front of the EDFA: <code>coupler_loss(96)</code>&nbsp;=&nbsp;<span class="nt">24.5 dB</span> (<a href="12_units_power_budget.html">page 12</a>).</p>
+
+<h3>An AWG with several input ports</h3>
+<p>An AWG can have more than one input port. From input port 1, output port \(j\) receives channel \(j\), as before. From the next input port, every output port receives the next channel. In general, a signal that enters at input port \(a\) leaves at output port \(j\) only if it is on the channel</p>
+<div class="eq" id="e4"><div class="m">\[ c = \bigl((j + a - 2) \bmod N\bigr) + 1 \]</div><span class="eqno nt">(4)</span></div>
+<p>In words: channel = out + in − 1, counted cyclically. The operation \(x \bmod N\) is the remainder when \(x\) is divided by \(N\) (<code>mod(x, N)</code> in MATLAB). After channel \(N\) comes channel 1 again, and the word <strong>cyclic</strong> names this return. Equation (4) is the rule that Fig. 4 of the JOCN paper writes at the output ports of its WR switch (the paper writes \(\alpha\) for \(a - 1\)). Figure 1 shows the rule for a small AWG with \(N = 8\).</p>
+<figure id="f1"><img src="assets/fig/fig_awg_cyclic_routing.svg" alt="Left: an AWG with four input ports and eight output ports; channel 6 enters at all four input ports and leaves at output ports 6, 5, 4 and 3. Right: table of the channel number for every pair of input port and output port.">
+<figcaption><b>Fig. 1.</b> Cyclic routing of an AWG with <span class="nt">N&nbsp;=&nbsp;8</span> channels. <span class="nt">K&nbsp;=&nbsp;4</span> of its input ports are in use. Left: channel 6 enters at each of the four input ports and leaves at four different output ports. Right: the channel of Eq. (4) for every pair of ports. The amber cells are the four signals of the left drawing. The blue frame marks output port 5, which receives the channels 5, 6, 7 and 8 from the four input ports.</figcaption></figure>
+<p>Read the table of Fig. 1 in three ways.</p>
+<ul>
+<li><strong>Along a row (one input port).</strong> The \(N\) output ports have \(N\) different channels. From every input port, a transmitter can still reach every output port. It only has to use the right channel.</li>
+<li><strong>Along a column (one output port).</strong> The channels from different input ports are all different. The wavelength that arrives at an output port tells through which input port the signal came.</li>
+<li><strong>One channel (amber cells).</strong> From different input ports, the same channel leaves at different output ports. Signals on the same channel can therefore pass the AWG at the same time, one at each input port, and they do not meet.</li>
+</ul>
+<p><strong>In the code.</strong> The function <code>awg_channel(in_port, out_port, N)</code> returns the channel of Eq. (4). The ports can be arrays: a column of input ports and a row of output ports give the whole table.</p>
+<pre><code>awg_channel(1, 5, 96)            % 5: from input port 1, output port j receives channel j
+awg_channel(3, 5, 96)            % 7 = 5 + 3 - 1
+awg_channel(3, 96, 96)           % 2: channel 98 becomes channel 2
+awg_channel((1:4).', 1:8, 8)     % rows 1 to 4 of the table in Fig. 1</code></pre>
+<p>The rule read backwards gives the output port: <code>out_port = mod(ch - in_port, N) + 1</code>. The four given scripts of the folder main do not call <code>awg_channel</code>. They simulate one signal on its own wavelength and need no channel numbers. The function is a tool for your own work (<code>matlab/work/work1_wavelength_rule.m</code>).</p>
+<div class="box note"><span class="label">Note</span>
+<p>Which port has the number 1, and in which direction the channels shift, are conventions. The size of the shift is not a convention: it is a property of the device. The examples in the JOCN paper do not all follow Eq. (4). In its Fig. 2, a 4 x 4 ULCF AWG, the channel number falls by one from one input port to the next. In its Fig. 3, an 8 x 8 WR switch with a pair of AWGs (the configuration of <a href="#s4">section 4</a>), it falls by two. The three properties above hold in all these cases. These pages and <code>awg_channel</code> use Eq. (4). If a result of your work depends on the exact rule of a device, settle the rule with your supervisor first.</p></div>
+
+<h3>Consequence 1: \(K\) small couplers replace the large one</h3>
+<p>Signals at different input ports do not meet, even on the same channel. The \(N\) inputs of the WR switch therefore do not have to pass one coupler. They are divided into \(K\) groups of \(N/K\) inputs. Each group has its own \((N/K) \times 1\) coupler and its own EDFA, and it enters one input port of the AWG (<a href="#f2">Fig. 2(b)</a>). In the words of the JOCN paper, the AWG with \(K\) input ports works as a \(K \times 1\) coupler and as a \(1 \times N\) AWG at the same time.</p>
+<p>The loss of one coupler falls from \(3.5\lceil\log_2 N\rceil\) dB to \(3.5\lceil\log_2 (N/K)\rceil\) dB (page 12; the brackets \(\lceil\ \rceil\) mean rounding up to the next integer). The loss before the EDFA drops by</p>
+<div class="eq" id="e5"><div class="m">\[ \Delta L = 3.5\left(\lceil \log_2 N \rceil - \lceil \log_2 (N/K) \rceil\right)\ \mathrm{dB} \]</div><span class="eqno nt">(5)</span></div>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. The aggregation coupler for <span class="nt">N&nbsp;=&nbsp;96</span> (values of <code>coupler_loss</code>, printed by the demo).</caption>
+<thead><tr><th class="num">\(K\)</th><th>Coupler</th><th class="num">Loss [dB]</th><th class="num">Saving \(\Delta L\) [dB]</th><th class="num">EDFAs per WR switch</th></tr></thead>
+<tbody>
+<tr><td class="num nt">1</td><td class="nt">96 x 1</td><td class="num nt">24.5</td><td class="num nt">0.0</td><td class="num nt">1</td></tr>
+<tr><td class="num nt">2</td><td class="nt">48 x 1</td><td class="num nt">21.0</td><td class="num nt">3.5</td><td class="num nt">2</td></tr>
+<tr><td class="num nt">4</td><td class="nt">24 x 1</td><td class="num nt">17.5</td><td class="num nt">7.0</td><td class="num nt">4</td></tr>
+<tr><td class="num nt">8</td><td class="nt">12 x 1</td><td class="num nt">14.0</td><td class="num nt">10.5</td><td class="num nt">8</td></tr>
+<tr><td class="num nt">12</td><td class="nt">8 x 1</td><td class="num nt">10.5</td><td class="num nt">14.0</td><td class="num nt">12</td></tr>
+</tbody></table></div>
+<p>The last column is the price: \(K\) EDFAs for every WR switch, which is \(K/N\) EDFAs per port (Table III of the JOCN paper). Each EDFA then carries only \(N/K\) wavelengths. Page 15 shows what this means for its output power per channel.</p>
+<p>The JOCN paper reports the gain. In its simulation, the required transmitter power falls by about \(3.5\lceil\log_2 K\rceil\) dB for the same switch size. For the rows of Table 2 this is the same number as \(\Delta L\). In its experiment with \(K = 12\), the required transmitter power fell by about <span class="nt">13 dB</span>.</p>
+<p><strong>In the code.</strong> Block [4] of <code>step21_two_stage_one_point</code> chooses the coupler:</p>
+<pre><code>N_agg = N;  % number of wavelengths on one coupler and one EDFA
+if ULCF_flag == 1
+    N_agg = N_agg/ULCF_deg;
+end
+agg_coupler_loss = coupler_loss(N_agg);</code></pre>
+
+<h3>Consequence 2: the wavelength depends on the input port</h3>
+<p>With one input port, output port \(j\) always carries channel \(j\). With \(K\) input ports, the channel at output port \(j\) is one of \(K\) channels. Equation (4) says which one: it depends on the input port, that is, on the coupler through which the signal enters. A transmitter must know its group before it can tune its laser, and a receiver gets different wavelengths from different groups.</p>
+<div class="box"><span class="label">Remember this for page 23</span>
+<p>In the conventional three-stage switch, all signals that arrive at one third-stage switch have the same wavelength, because every AWG has one input port (<a href="22_three_stage_conventional.html">page 22</a>). With \(K\) input ports this is no longer true in general. What follows from it is the first task of your own work.</p></div>
+</section>
+
+<section id="s4">
+<h2>4. The ULCF AWG and the interleaved configuration</h2>
+<h3>Why a special AWG is needed</h3>
+<p>An AWG that returns to channel 1 after channel \(N\) by itself, as in Eq. (4), is called a cyclic AWG. It can be used with several input ports as it is, but it has a weakness: the centers of its passbands are not exactly at the channel frequencies. The difference between the channel frequency and the real center of the passband is the <strong>passband-center deviation</strong>. In a cyclic AWG it grows with the number of input ports that are used, and for a large \(K\) it becomes unacceptable (JOCN paper). The paper compares three types of AWG (Table 3).</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. Three types of AWG with \(K\) input ports and \(N\) output ports (Table II of the JOCN paper).</caption>
+<thead><tr><th>Type</th><th>Wavelengths that are needed</th><th>Passband-center deviation</th><th class="num">Typical insertion loss</th></tr></thead>
+<tbody>
+<tr><td>Cyclic AWG</td><td>\(N\)</td><td>large</td><td class="num nt">5 dB</td></tr>
+<tr><td>Acyclic AWG</td><td>\(N + K - 1\)</td><td>small</td><td class="num nt">5 dB</td></tr>
+<tr><td>ULCF AWG</td><td>\(N\)</td><td>small</td><td class="num nt">9 dB</td></tr>
+</tbody></table></div>
+<p>An acyclic AWG does not return to channel 1 after channel \(N\). The channels of the higher input ports continue beyond channel \(N\), so \(K - 1\) more wavelengths are needed. The <strong>uniform-loss and cyclic-frequency (ULCF) AWG</strong> has both advantages: it needs only \(N\) wavelengths, and its deviation is small. It is built from an acyclic AWG with more output ports, and 2 x 1 couplers join these output ports in pairs, so that the channels leave cyclically. Fig. 2 of the JOCN paper shows a 4 x 4 ULCF AWG that is made from a 4 x 8 acyclic AWG.</p>
+<p>The price is a higher insertion loss: <span class="nt">9 dB</span> against <span class="nt">5 dB</span>. This loss lies after the EDFA. The JOCN paper notes that it hardly changes the SNR, because the SNR is mostly decided by the power at the input of the EDFA (page 15).</p>
+<p>A ULCF AWG still has some deviation. For the JOCN paper, a pair of 12 x 48 ULCF AWGs was built. Their worst insertion loss is <span class="nt">9.2 dB</span>, and their 3-dB width is about 65 GHz. The outer input ports deviate more. The largest deviation, <span class="nt">16 GHz</span>, was measured at input port 12 (Fig. 8 of the paper).</p>
+<p><strong>In the code.</strong> The function <code>ULCF_dev_freq(ULCF_deg)</code> returns the deviation of the worst input port of an AWG with \(K\) input ports, in Hz (Table 4). <code>step21_two_stage_one_point</code> and <code>main_two_stage_ULCF</code> always simulate this worst port. The values are the specification values of the ULCF AWG device in the laboratory. The <span class="nt">16 GHz</span> for \(K = 12\) agrees with the largest deviation that the JOCN paper reports for its 12 x 48 ULCF AWGs. For any other \(K\) the function stops with an error.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. Deviation of the worst input port (<code>ULCF_dev_freq</code>; specification values of the ULCF AWG device in the laboratory) and the loss \(L_{\mathrm{shape}}\) of Eq. (3) for a 24-GBd signal and \(W\)&nbsp;=&nbsp;<span class="nt">66.6 GHz</span>. Without deviation, \(L_{\mathrm{shape}}\) is <span class="nt">0.13 dB</span>.</caption>
+<thead><tr><th>\(K\) (<code>ULCF_deg</code>)</th><th class="num nt">1</th><th class="num nt">2</th><th class="num nt">4</th><th class="num nt">6</th><th class="num nt">8</th><th class="num nt">12</th><th class="num nt">16</th></tr></thead>
+<tbody>
+<tr><td>Deviation [GHz]</td><td class="num nt">5</td><td class="num nt">5</td><td class="num nt">8</td><td class="num nt">11</td><td class="num nt">12.5</td><td class="num nt">16</td><td class="num nt">17</td></tr>
+<tr><td>\(L_{\mathrm{shape}}\) [dB]</td><td class="num nt">0.19</td><td class="num nt">0.19</td><td class="num nt">0.29</td><td class="num nt">0.44</td><td class="num nt">0.53</td><td class="num nt">0.78</td><td class="num nt">0.87</td></tr>
+</tbody></table></div>
+
+<h3>The interleaved configuration</h3>
+<p>On the 50-GHz grid, a single AWG must separate neighbors that are only 50 GHz apart. Its passbands must therefore be narrow, and a deviation of 16 GHz is a large part of a narrow passband. The JOCN paper therefore divides the channels between two AWGs (Fig. 2(b)).</p>
+<ol>
+<li>A <strong><span class="nt">1 × 2</span> splitter</strong> behind each EDFA divides the light into two equal parts. Each part holds all channels. A \(1 \times 2\) splitter is a 2 x 1 coupler that is used in the other direction, and the scripts give it the same loss: <code>coupler_loss(2)</code>&nbsp;=&nbsp;<span class="nt">3.5 dB</span> (page 12).</li>
+<li>Each part goes to one of two ULCF AWGs. Each AWG has \(K\) input ports, \(N/2\) output ports and a channel spacing of 100 GHz. The passbands of the two AWGs are shifted against each other by 50 GHz (Fig. 2(c)): seen from input port 1, one AWG passes the odd-numbered channels and the other the even-numbered channels. The paper calls them interleaved.</li>
+</ol>
+<p>This is the <strong>interleaved configuration</strong>. One WR switch then contains \(K\) couplers, \(K\) EDFAs, \(K\) \(1 \times 2\) splitters and one pair of \(K \times (N/2)\) ULCF AWGs. The pair as a whole routes like one AWG with \(K\) input ports and \(N\) output ports. One AWG of the pair has the odd-numbered output ports, the other has the even-numbered ones (AWG 1 and AWG 2 in Fig. 2). Which of the two AWGs routes a channel that comes from one of the input ports 2 to \(K\) depends on the size of the shift between input ports (Note in <a href="#s3">section 3</a>).</p>
+<p>In the JOCN paper, the element behind each EDFA is a <strong>de-interleaver</strong>: a filter with one input and two outputs that sends the odd-numbered channels to one AWG and the even-numbered channels to the other. The paper notes that a coherent receiver allows a \(1 \times 2\) splitter in its place, if its loss is acceptable. Each AWG then receives all channels and routes its own set to its output ports. This package uses the \(1 \times 2\) splitter and models only its loss. The loss has the value that the earlier laboratory code used for this element, so this choice does not change the results.</p>
+<figure id="f2"><img src="assets/fig/fig_ulcf_interleaved.svg" alt="Three panels. (a) N signals, an N x 1 coupler, an EDFA and a 1 x N AWG. (b) K branches, each with an (N/K) x 1 coupler, an EDFA and a 1 x 2 splitter whose two outputs go to two ULCF AWGs. (c) Gaussian passbands of the two AWGs on a channel axis: each AWG has a passband every 100 GHz, and the two sets are 50 GHz apart.">
+<figcaption><b>Fig. 2.</b> (a) WR switch with a single-input AWG. (b) WR switch in the interleaved configuration; only the first and the last of the <span class="nt">K</span> branches are drawn, and the amber parts replace the AWG of (a). Each <span class="nt">1 × 2</span> splitter sends half of the light, with all its channels, to each of the two AWGs. (c) Passbands of the two AWGs as seen from input port 1: power transmission on a linear scale, drawn to scale for the 3-dB width of <code>step21</code>. Panel (b) is drawn after Fig. 4 of the JOCN paper, with <span class="nt">1 × 2</span> splitters in place of its de-interleavers.</figcaption></figure>
+<p>With a channel spacing of 100 GHz, each AWG can have a wider passband: about 65 GHz in the AWGs of the JOCN paper, <span class="nt">66.6 GHz</span> in <code>step21</code>. A wider passband loses less when its center deviates. Equation (3) gives the numbers for a 24-GBd signal and a deviation of 16 GHz: <span class="nt">0.78 dB</span> for \(W\)&nbsp;=&nbsp;<span class="nt">66.6 GHz</span>, but <span class="nt">1.33 dB</span> for \(W\)&nbsp;=&nbsp;<span class="nt">50 GHz</span>, the width that <code>step22</code> uses for its AWG on the 50-GHz grid.</p>
+<p>In Fig. 2(c) the passbands of the two AWGs overlap. A passband of one AWG therefore also passes a part of the two neighboring channels, which belong to the other AWG. This light reaches the receiver together with the signal. It is on another channel, so it is out-of-band crosstalk, and the coherent receiver removes it (<a href="14_coherent_rx_dsp_ber.html">page 14</a>). This is why the \(1 \times 2\) splitter needs a coherent receiver. A de-interleaver removes the neighboring channels before the AWG. The JOCN paper describes the division of work: the de-interleaver has only two outputs but a steep filter edge, and the AWG has many output ports but a gradual slope. In the simulation of that paper (its Fig. 5), a single ULCF AWG shows a power penalty from the deviation when it has 12 or more input ports. With the de-interleaver and the pair of AWGs, the penalty is suppressed.</p>
+<p><strong>In the code.</strong> Block [6] of <code>step21_two_stage_one_point</code> is the \(1 \times 2\) splitter and the AWG:</p>
+<pre><code>AWG_loss_temp = AWG_loss;
+if ULCF_flag == 1
+    AWG_loss_temp = AWG_loss_temp + splitter_loss;  % add the 1 x 2 splitter
+end
+if flg_NWDM == 0
+    shift = 0;  % carrier on the center of the AWG passband [Hz]
+else
+    % quasi-Nyquist WDM grid: the carrier is 12.5 GHz off the passband center.
+    % For the worst input port of a ULCF AWG it is dev_freq further away.
+    dev_freq = ULCF_dev_freq(ULCF_deg);
+    shift = 12.5e9 + dev_freq;
+end
+signal = awg(signal, AWG_loss_temp, shift, Fs, FWHM_AWG, AWG_XT, 1);</code></pre>
+<ul>
+<li>The \(1 \times 2\) splitter appears only as a flat loss. Section 1 of the script sets <code>splitter_loss = coupler_loss(2)</code>, which is <span class="nt">3.5 dB</span>. It is added to <code>AWG_loss</code>&nbsp;=&nbsp;<span class="nt">9 dB</span>, which gives <span class="nt">12.5 dB</span>. Nothing else of the splitter is simulated, because the scripts hold only the channel of the target signal and not its neighbors.</li>
+<li>The passband is the Gaussian curve of the AWG alone, with <code>FWHM_AWG</code>&nbsp;=&nbsp;<span class="nt">66.6 GHz</span>.</li>
+<li>With <code>flg_NWDM = 1</code>, the script adds <span class="nt">12.5 GHz</span> to the deviation. This is a setting of the earlier study, in which the carrier is 12.5 GHz off the passband center (<a href="21_two_stage_ulcf_switch.html">page 21</a>). For \(K = 12\) the passband center is then <span class="nt">28.5 GHz</span> from the carrier, and Eq. (3) gives \(L_{\mathrm{shape}}\)&nbsp;=&nbsp;<span class="nt">2.21 dB</span>. Together with the flat <span class="nt">12.5 dB</span>, the target signal loses <span class="nt">14.7 dB</span> in block [6]. The table that <code>step21</code> prints shows it in the column <code>budget&nbsp;(target)</code>: <span class="nt">7.884 dBm</span> after the EDFA and <span class="nt">-6.821 dBm</span> after the AWG.</li>
+</ul>
+</section>
+
+<section id="s5">
+<h2>5. AWG crosstalk</h2>
+<p>An ideal AWG sends a signal only to the output port of Eq. (4). A real AWG also sends a small part of it to the other output ports. Whether this part does harm depends on its wavelength (<a href="16_space_switch_crosstalk.html">page 16</a>).</p>
+<ul>
+<li><strong>AWG with one input port.</strong> All signals come from one coupler and are on different channels. Light that reaches the output port of the target signal by mistake is on another channel. It is out-of-band crosstalk, and the coherent receiver removes it (page 14). The given scripts do not simulate it.</li>
+<li><strong>AWG with \(K\) input ports.</strong> Each of the other \(K - 1\) input ports can carry a signal on the channel of the target signal at the same time (the amber cells of Fig. 1). These signals belong to other output ports, but a small part of each reaches the output port of the target signal. These leaks are on the wavelength of the target signal. They are in-band crosstalk, and no filter can remove them.</li>
+</ul>
+<p>The <strong>AWG crosstalk level</strong> \(\mathrm{XT}_{\mathrm{AWG}}\) (<code>AWG_XT</code>) says how many dB one such leak is below the signal at the same output port. The leaks carry different data, so their powers add. With \(K - 1\) leaks of equal power, the signal-to-crosstalk ratio \(\mathrm{SXR}\) (page 16) is, in dB,</p>
+<div class="eq" id="e6"><div class="m">\[ \mathrm{SXR}_{\mathrm{dB}} = \mathrm{XT}_{\mathrm{AWG}} - 10\log_{10}(K-1) \]</div><span class="eqno nt">(6)</span></div>
+<p><code>step21</code> uses <code>AWG_XT</code>&nbsp;=&nbsp;<span class="nt">32 dB</span>. Equation (6) then gives <span class="nt">32.0 dB</span> for \(K = 2\), <span class="nt">27.2 dB</span> for \(K = 4\), <span class="nt">23.5 dB</span> for \(K = 8\) and <span class="nt">21.6 dB</span> for \(K = 12\). This is the worst case: every other input port carries the channel of the target signal. The experiment of the JOCN paper tested the same worst case: 11 signals on the wavelength of the target signal entered the other 11 input ports of the 12 x 48 AWG. For comparison, 32QAM needs an SNR of about <span class="nt">17 dB</span> at the FEC limit (page 14), so crosstalk at <span class="nt">21.6 dB</span> is not negligible. The value <span class="nt">32 dB</span> is a parameter of the earlier laboratory code, not a number from the JOCN paper.</p>
+<p><strong>In the code.</strong> <code>awg</code> makes no crosstalk. Block [7] of <code>step21_two_stage_one_point</code> adds the leaks as independent QAM signals:</p>
+<pre><code>Hband = nyquistfilter(datasize*up, 0, Fs, baudrate*(1+rolloff));
+if ULCF_flag == 1
+    AWG_crosstalk = zeros(datasize*up, ULCF_deg - 1);
+    sigpw = calc_signal_power(apply_filter(signal, Hband, 1));
+    for k = 1:ULCF_deg-1
+        [AWG_crosstalk(:, k), ~, ~] = ...
+            TL_QAM(datasize, up, Hrcos, sigpw, mod_flag);
+    end
+    AWG_crosstalk = attenuation(AWG_crosstalk, AWG_XT);
+    AWG_crosstalk = sum(AWG_crosstalk, 2);
+    signal = signal + AWG_crosstalk;
+end</code></pre>
+<p><code>sigpw</code> is the power inside the signal band after the AWG, in dBm. The script measures it through <code>Hband</code>, a rectangular mask of this band with the width <code>baudrate*(1+rolloff)</code>. For roll-off 0, <code>Hband</code> is equal to the transmit mask <code>Hrcos</code>. Each of the <code>ULCF_deg - 1</code> leaks gets this power minus <code>AWG_XT</code>. For its default point (\(K = 12\)), <code>step21</code> prints <span class="nt">21.27 dB</span> in the line <code>crosstalk of the AWG</code>. This is a little below the <span class="nt">21.6 dB</span> of Eq. (6), for two reasons: the equalizer, which removes the tilt of the passband, raises everything that is added after the AWG by <span class="nt">0.27 dB</span>, and <code>sigpw</code> is <span class="nt">0.05 dB</span> higher than the power of the target signal alone, because it also contains the leaks of the DC switch and the ASE noise inside the signal band.</p>
+<p>Do not mix up two kinds of in-band crosstalk (Table 5).</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 5. AWG crosstalk and the leaks of a space switch.</caption>
+<thead><tr><th></th><th>AWG crosstalk (this page)</th><th>Leaks of a space switch (page 16)</th></tr></thead>
+<tbody>
+<tr><th>Where</th><td>in an AWG with several input ports, inside a WR switch</td><td>in a space switch: the DC switch of the two-stage switch, the first-stage and third-stage switches of the three-stage switch</td></tr>
+<tr><th>Which&nbsp;signals leak</th><td>signals on the same channel at the other input ports of the same AWG</td><td>signals at the other input ports of the same space switch</td></tr>
+<tr><th>Number of&nbsp;leaks</th><td>up to \(K - 1\)</td><td>\(M - 1\)</td></tr>
+<tr><th>Level of one&nbsp;leak</th><td>\(\mathrm{XT}_{\mathrm{AWG}}\) below the signal; <code>AWG_XT</code>&nbsp;=&nbsp;<span class="nt">32 dB</span></td><td>\(\mathrm{ER}\) below the signal for selector + coupler, \(2\,\mathrm{ER}\) for selector + selector; <code>dcs_ex_ratio</code>&nbsp;=&nbsp;<span class="nt">36 dB</span>, <code>sel_ex_ratio</code>&nbsp;=&nbsp;<span class="nt">35 dB</span></td></tr>
+<tr><th>In&nbsp;the&nbsp;scripts</th><td>block [7] of <code>step21</code>; not in <code>step22</code>, whose AWG has one input port</td><td>block [3] of <code>step21</code>; blocks [3] and [7] of <code>step22</code></td></tr>
+</tbody></table></div>
+<p>The proposed three-stage switch has both kinds at the same time: AWG crosstalk in the middle stage and leaks in the third-stage switch. They have different causes, different numbers and different levels. Keep them as separate terms in your budget.</p>
+</section>
+
+<section id="s6">
+<h2>6. Run the demo</h2>
+<div class="box run"><span class="label">Run it</span>
+<p>In MATLAB, make the folder <code>matlab</code> the current folder and run <code>setup_path</code> once. Then run <code>demo17_awg_wavelength_routing</code>. The script needs a few seconds. Every self-check must print <code>passed</code>.</p></div>
+<div class="tablewrap"><table class="data">
+<caption>Table 6. What <code>demo17_awg_wavelength_routing</code> does.</caption>
+<thead><tr><th>Section of the script</th><th>What it does</th><th>Explained in</th></tr></thead>
+<tbody>
+<tr><td>1. Parameters</td><td>Signal and AWG values of <code>step21</code>: <code>baudrate = 24e9</code>, <code>FWHM_AWG = 66.6e9</code>. <code>grid_offset = 0</code>: the passband center is off the carrier by the deviation only. <code>K_ary = [1 2 4 8 12]</code>. The small AWG has <code>N_small = 8</code> channels and <code>K_small = 4</code> input ports.</td><td></td></tr>
+<tr><td>2. Passband of the AWG</td><td>Makes one signal with <code>TL_QAM</code>. For every \(K\), it calls <code>awg</code> with <code>loss</code> = 0 dB and <code>shift = grid_offset + dev_freq(k)</code>, where <code>dev_freq(k)</code> is the value of <code>ULCF_dev_freq</code> for this \(K\). It measures the loss of power and compares it with Eq. (3). Self-check 1.</td><td><a href="#s2">section 2</a>, <a href="#s4">section 4</a></td></tr>
+<tr><td>3. Cyclic routing table</td><td>Makes the table of Fig. 1 with <code>awg_channel</code>. For the connection from input port 2 to output port 5, it prints the channel and shows where the same channel leaves from every other input port. Self-check 2 tests the row property and the column property of the table.</td><td><a href="#s3">section 3</a></td></tr>
+<tr><td>4. Loss of the aggregation coupler</td><td>Calculates <code>coupler_loss(N./K_ary)</code>, the saving against one \(N \times 1\) coupler and the number of EDFAs. Self-check 3 compares the saving with Eq. (5).</td><td><a href="#s3">section 3</a></td></tr>
+<tr><td>5. Figure</td><td>Draws the passbands for \(K = 1\) and \(K = 12\) from Eq. (2) as lines, and the spectrum of the signal before the AWG and after the AWG with \(K = 12\) as markers. One marker is the mean of <code>nb = 1500</code> FFT bins. The markers exist only inside the simulated band, which is <span class="nt">48 GHz</span> wide (<code>up = 2</code>). The lines are calculated on a wider frequency axis, <code>f_line</code>.</td><td><a href="#s2">section 2</a></td></tr>
+</tbody></table></div>
+<p>The script prints:</p>
+<pre><code>Loss of a 24-GBd signal in the AWG passband (FWHM 66.6 GHz)
+    K   deviation [GHz]   loss, simulation [dB]   loss, theory [dB]
+    1               5.0                   0.191               0.193
+    2               5.0                   0.191               0.193
+    4               8.0                   0.289               0.292
+    8              12.5                   0.523               0.528
+   12              16.0                   0.776               0.783
+Self-check 1 passed: simulated loss = Gaussian formula within 0.05 dB
+
+Routing table: N = 8 channels, K = 4 input ports
+(row = input port, column = output port, entry = channel)
+     1     2     3     4     5     6     7     8
+     2     3     4     5     6     7     8     1
+     3     4     5     6     7     8     1     2
+     4     5     6     7     8     1     2     3
+
+Example: input port 2 -&gt; output port 5 uses channel 6
+  channel 6 from input port 1 leaves at output port 6
+  channel 6 from input port 2 leaves at output port 5
+  channel 6 from input port 3 leaves at output port 4
+  channel 6 from input port 4 leaves at output port 3
+Self-check 2 passed: each channel once per row, at most once per column
+
+Aggregation coupler before the EDFA (N = 96 wavelength channels)
+    K    coupler   loss [dB]   saving [dB]   EDFAs
+    1    96 x 1        24.5           0.0       1
+    2    48 x 1        21.0           3.5       2
+    4    24 x 1        17.5           7.0       4
+    8    12 x 1        14.0          10.5       8
+   12     8 x 1        10.5          14.0      12
+Self-check 3 passed: saving = 3.5 dB x (number of saved coupler stages)</code></pre>
+<figure id="f3"><img src="assets/expected/demo17_awg_wavelength_routing.png" alt="Plot of relative power in dB against frequency from -48 to +48 GHz. Two Gaussian passband curves with their centers at +5 GHz and +16 GHz. Circles: flat signal spectrum between -12 and +12 GHz. Squares: the signal spectrum after the AWG, which follows the curve with its center at +16 GHz.">
+<figcaption><b>Fig. 3.</b> Expected figure of the demo. Lines: the passband for <span class="nt">K&nbsp;=&nbsp;1</span> (center 5 GHz above the carrier) and for <span class="nt">K&nbsp;=&nbsp;12</span> (center 16 GHz above the carrier). Circles: spectrum of the signal before the AWG. Squares: spectrum after the AWG with <span class="nt">K&nbsp;=&nbsp;12</span>.</figcaption></figure>
+<p>How to read Fig. 3: the circles are flat between <span class="nt">-12 GHz</span> and <span class="nt">+12 GHz</span>, the band of the 24-GBd signal. The squares follow the dashed line. At the lower edge of the signal the passband removes about 2 dB, at the upper edge almost nothing. The mean over the band is the <span class="nt">0.78 dB</span> of the first printed table. The markers scatter around the lines by up to about 0.3 dB, because the data are random.</p>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>All three self-checks print <code>passed</code>, and your figure looks like Fig. 3.</li>
+<li>You can calculate by hand one channel of the routing table with Eq. (4), and the coupler loss for \(K = 12\) from its <span class="nt">96/12 = 8</span> inputs.</li>
+<li>You can explain why the loss in the first table rises with \(K\) and the loss in the third table falls.</li>
+</ul></div>
+<div class="box todo"><span class="label">Your task</span>
+<p>Change one parameter at a time in section 1 of the script. Predict the result before you run it.</p>
+<ol>
+<li>Set <code>grid_offset = 12.5e9</code>, the setting of <code>step21</code>. Predict the loss for \(K = 12\) with Eq. (2) at the carrier.</li>
+<li>Set <code>grid_offset</code> back to 0 and set <code>FWHM_AWG = 50e9</code>, the passband of a single AWG on the 50-GHz grid. By how much does the loss for \(K = 12\) rise?</li>
+<li>Set <code>FWHM_AWG</code> back to <code>66.6e9</code> and set <code>K_ary = [1 2 4 6 8 12 16]</code>. Which values of \(K\) cost more EDFAs than a smaller \(K\) without saving any coupler loss?</li>
+</ol></div>
+<details><summary>Results of the three experiments</summary>
+<ol>
+<li>The passband center is <span class="nt">12.5 + 16 = 28.5 GHz</span> from the carrier. Equation (2) gives <span class="nt">3.01 × (57/66.6)² = 2.2 dB</span>. For \(K = 12\) the script prints <span class="nt">2.193 dB</span> (simulation) and <span class="nt">2.205 dB</span> (theory); for \(K = 1\) it prints <span class="nt">0.904 dB</span> (simulation). The value <span class="nt">2.205 dB</span> is the \(L_{\mathrm{shape}}\) of <code>step21</code> in <a href="#s4">section 4</a>. Equation (2) at the carrier is only an estimate of \(L_{\mathrm{shape}}\): here the two agree, and in check question 3 they differ by <span class="nt">0.09 dB</span>.</li>
+<li>The loss for \(K = 12\) rises from <span class="nt">0.776 dB</span> to <span class="nt">1.322 dB</span> (theory: <span class="nt">1.334 dB</span>). A narrow passband makes the same deviation more expensive. This is why the interleaved configuration uses wide passbands.</li>
+<li>\(K = 8\) gives a 12 x 1 coupler, which has <span class="nt">14.0 dB</span> like the 16 x 1 coupler of \(K = 6\). \(K = 16\) gives a 6 x 1 coupler, which has <span class="nt">10.5 dB</span> like the 8 x 1 coupler of \(K = 12\). The loss of a coupler is counted in whole stages, and the number of stages is rounded up (page 12). In coupler loss, \(K = 8\) and \(K = 16\) therefore gain nothing over \(K = 6\) and \(K = 12\).</li>
+</ol>
+</details>
+</section>
+
+<section id="s7">
+<h2>7. Check your understanding</h2>
+<ol>
+<li>An AWG has <span class="nt">N&nbsp;=&nbsp;96</span> channels. A signal enters at input port 12 and must leave at output port 90. Which channel must the transmitter use?
+<details><summary>Answer</summary>
+<p><span class="nt">90 + 12 - 1 = 101</span>, and after channel 96 comes channel 1: <span class="nt">101 - 96 = 5</span>. Channel 5. In MATLAB: <code>awg_channel(12, 90, 96)</code>.</p>
+</details></li>
+<li>In the AWG of Fig. 1, two signals on channel 6 enter at input ports 1 and 3. At which output ports do they leave? Do they disturb each other?
+<details><summary>Answer</summary>
+<p>They leave at output ports 6 and 4 (amber cells in rows 1 and 3). In an ideal AWG they do not meet. In a real AWG a small part of each signal reaches the output port of the other one. This part is on the same wavelength, so it is in-band crosstalk, <code>AWG_XT</code>&nbsp;=&nbsp;<span class="nt">32 dB</span> below the signal in <code>step21</code>.</p>
+</details></li>
+<li>The center of a passband with \(W\)&nbsp;=&nbsp;<span class="nt">66.6 GHz</span> lies 16 GHz above the carrier of a 24-GBd signal. How many dB does the passband remove at the carrier and at the two edges of the signal?
+<details><summary>Answer</summary>
+<p>Equation (2). At the carrier \(\Delta f\) = 16 GHz: <span class="nt">3.01 × (32/66.6)² = 0.69 dB</span>. At the lower edge, <span class="nt">-12 GHz</span>, \(\Delta f\) = 28 GHz: <span class="nt">3.01 × (56/66.6)² = 2.13 dB</span>. At the upper edge, <span class="nt">+12 GHz</span>, \(\Delta f\) = 4 GHz: <span class="nt">3.01 × (8/66.6)² = 0.04 dB</span>. The loss of the whole signal lies between these values: <span class="nt">0.78 dB</span> (Eq. (3), Table 4).</p>
+</details></li>
+<li>A WR switch has <span class="nt">N&nbsp;=&nbsp;96</span>. How large is the loss of the aggregation coupler for \(K = 6\) and for \(K = 8\)? Which of the two would you choose if only the coupler loss and the number of EDFAs counted?
+<details><summary>Answer</summary>
+<p>\(K = 6\): <span class="nt">96/6 = 16</span> inputs, 4 stages, <span class="nt">14.0 dB</span>. \(K = 8\): <span class="nt">96/8 = 12</span> inputs, which is rounded up to 4 stages, <span class="nt">14.0 dB</span>. The loss is the same, and \(K = 6\) needs 6 EDFAs in place of 8. \(K = 6\) is the better choice by these two measures. In MATLAB: <code>coupler_loss(96./[6 8])</code>.</p>
+</details></li>
+<li>How large is the signal-to-crosstalk ratio of the AWG crosstalk for \(K = 12\) and <code>AWG_XT</code>&nbsp;=&nbsp;<span class="nt">32 dB</span>? Compare it with the crosstalk of the 8 x 8 DC switch of <code>step21</code> (<code>dcs_ex_ratio</code>&nbsp;=&nbsp;<span class="nt">36 dB</span>).
+<details><summary>Answer</summary>
+<p>AWG: 11 leaks, <span class="nt">32 - 10 log10(11) = 32 - 10.4 = 21.6 dB</span>. DC switch: 7 leaks, <span class="nt">36 - 10 log10(7) = 36 - 8.5 = 27.5 dB</span>. At this operating point the AWG crosstalk is about 6 dB stronger than the crosstalk of the DC switch. <code>step21</code> prints <span class="nt">21.27 dB</span> and <span class="nt">27.55 dB</span> for the two terms.</p>
+</details></li>
+<li>The interleaved configuration adds a \(1 \times 2\) splitter (<span class="nt">3.5 dB</span>) and uses an AWG with <span class="nt">9 dB</span> loss in place of <span class="nt">6 dB</span>. For \(K = 12\) it saves <span class="nt">14 dB</span> in the coupler. Why is this a good exchange although the added loss is not small?
+<details><summary>Answer</summary>
+<p>The <span class="nt">14 dB</span> are saved before the EDFA, where every dB of loss lowers the SNR by one dB. The added <span class="nt">3.5 + 3 = 6.5 dB</span> lie after the EDFA. There the signal and the ASE noise of the EDFA are attenuated together, so the SNR that the EDFA has set does not change (page 15). The loss after the EDFA matters only for the noise of the pre-amplifier, which is a small term as long as enough power reaches the receiver.</p>
+</details></li>
+</ol>
+<div class="box"><span class="label">What to carry forward</span>
+<p>An output port of an AWG passes one channel through a Gaussian passband, and a signal that is not at the center loses extra power (<code>awg</code>, argument <code>shift</code>). An AWG with \(K\) input ports routes cyclically, channel = out + in − 1 (<code>awg_channel</code>), so \(K\) small couplers replace the large one: for <span class="nt">N&nbsp;=&nbsp;96</span> and <span class="nt">K&nbsp;=&nbsp;12</span> this saves <span class="nt">14 dB</span> before the EDFA, at the price of \(K\) EDFAs, <span class="nt">12.5 dB</span> after the EDFA, a passband-center deviation of up to <span class="nt">16 GHz</span> and up to \(K - 1\) in-band leaks at <span class="nt">-32 dB</span>. Page 21 builds the two-stage switch on this saving. Page 23 asks what the other consequence, a wavelength that depends on the input port, does in a three-stage switch.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="16_space_switch_crosstalk.html">&larr; <span class="nt">16</span> Space switches, crosstalk</a>
+<a class="next" href="21_two_stage_ulcf_switch.html"><span class="nt">21</span> Two-stage ULCF switch &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

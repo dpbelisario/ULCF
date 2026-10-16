@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16 Space switches and crosstalk | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a class="current" href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Background</p>
+<h1><span class="num nt">16</span>Space switches and crosstalk</h1>
+<p class="lead">A space switch connects each of its inputs to any of its outputs. This page shows the two ways to build one, what each way costs in loss and in hardware, and how much light leaks through paths that are switched off. It ends with the distinction on which the research rests: a leak on the wavelength of the signal acts like noise, and a leak on another wavelength is removed by the receiver.</p>
+
+<div class="pair"><span><b>Script:</b> <code>matlab/demos/demo16_space_switch_crosstalk.m</code></span><span><b>Library:</b> <code>selector_loss</code>, <code>coupler_loss</code>, <code>DCS_loss</code>, <code>TL_QAM</code>, <code>attenuation</code>, <code>calc_signal_power</code>, <code>freqoff</code></span></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Why you need this</a></li>
+<li><a href="#s2">Selectors, couplers and two space switches</a></li>
+<li><a href="#s3">Extinction ratio and leaks</a></li>
+<li><a href="#s4">In-band and out-of-band crosstalk</a></li>
+<li><a href="#s5">How the simulation models crosstalk</a></li>
+<li><a href="#s6">Run the demo</a></li>
+<li><a href="#s7">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Why you need this</h2>
+<p>The three-stage switch of this research has space switches of size \(M \times M\) in its first and third stages. Its port count is \(MN\), and the number of wavelengths \(N\) is limited to about 100 (<a href="11_network_ocs_clos.html">page 11</a>). A larger switch therefore needs larger space switches, that is, a larger \(M\) (<code>sw_size</code> or <code>dcs_input_port_num</code> in the scripts). Two things get worse when \(M\) grows: the loss of the space switch and the crosstalk inside it. <strong>Crosstalk</strong> is light of other signals that reaches the receiver together with the signal that the receiver should detect. The introduction names it as one of the two limits of the three-stage switch (<a href="01_introduction.html#p3">page 01, paragraph 3</a>).</p>
+<p>The planned paper also aims at a third stage with fewer switch elements (<a href="01_introduction.html#p5">paragraph 5</a>). Such a space switch has much more crosstalk, and whether this crosstalk does harm depends on its wavelength. To judge the proposal you must be able to do two things: calculate how strong the crosstalk of a space switch is, and decide whether it falls into the band of the receiver.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>An \(M \times M\) space switch adds \(M-1\) leaks to every signal. With couplers at the outputs, and with all leaks on the wavelength of the signal, the signal-to-crosstalk ratio is \(\mathrm{ER} - 10\log_{10}(M-1)\) dB, where \(\mathrm{ER}\) is the extinction ratio of a selector. More transmitter power does not improve this ratio.</p></div>
+<div class="box note"><span class="label">Source</span>
+<p>The two types of space switch, the loss rules, the count of switch elements and the extinction ratio of <span class="nt">35 dB</span> come from the paper that this page calls the JLT paper:</p>
+<ul>
+<li><span class="nt">Mitsuya et al., "Three-Stage Optical Circuit Switch Architectures for Intra-Datacenter Networking," J. Lightw. Technol., vol. 43, no. 2, pp. 400-407, 2025 (doi 10.1109/JLT.2024.3465208)</span></li>
+</ul></div>
+</section>
+
+<section id="s2">
+<h2>2. Selectors, couplers and two space switches</h2>
+<p>A space switch is built from two elements. <a href="11_network_ocs_clos.html">Page 11</a> introduced them; Fig. 1(c) and Fig. 1(d) show what is inside.</p>
+<ul>
+<li>A <strong>selector</strong> (\(1 \times M\)) is a switch that connects its single port to one of \(M\) ports. It is a tree of \(1 \times 2\) switch elements with \(\log_2 M\) stages and \(M-1\) elements. The light passes one element in each stage, and each stage costs <span class="nt">0.5 dB</span>. Every element needs a control signal. The JLT paper calls these elements \(1 \times 2\) selectors.</li>
+<li>A <strong>coupler</strong> (\(M \times 1\)) is passive: it adds the light of all its \(M\) inputs into one output and needs no control. It is a tree of \(2 \times 1\) couplers with \(\log_2 M\) stages. A \(2 \times 1\) coupler loses half of the power (<span class="nt">3 dB</span>), and the loss rule of this project adds <span class="nt">0.5 dB</span> of excess loss: each stage costs <span class="nt">3.5 dB</span>.</li>
+</ul>
+<p>A selector works in both directions: an \(M \times 1\) selector connects one of \(M\) ports to its single port, with the same loss. If \(M\) is not a power of two, the number of stages is rounded up to \(\lceil \log_2 M \rceil\) (<a href="12_units_power_budget.html">page 12</a>).</p>
+
+<h3>Two ways to build an \(M \times M\) space switch</h3>
+<p>Both switches of Fig. 1 have a \(1 \times M\) selector at every input. Port \(j\) of every input selector is wired to output \(j\) of the switch. The two switches differ in the element that collects these \(M\) wires at an output.</p>
+<ul>
+<li><strong>Selector + selector</strong> (Fig. 1(a)): the element at an output is an \(M \times 1\) selector. To connect input \(i\) to output \(j\), input selector \(i\) is set to port \(j\), and output selector \(j\) is set to port \(i\). The three-stage switch uses this type in its first stage. If the third stage uses it too, the JLT paper calls the switch Scheme A1.</li>
+<li><strong>Selector + coupler</strong> (Fig. 1(b)): the element at an output is an \(M \times 1\) coupler. Only the input selector is set; the coupler passes everything that arrives. This is the <strong>delivery-and-coupling (DC) switch</strong> of the two-stage switch. A three-stage switch with this type in its third stage is Scheme A2 of the JLT paper.</li>
+</ul>
+<figure id="f1"><img src="assets/fig/fig_space_switch_types.svg" alt="Two 4 x 4 space switches, one with selectors and one with couplers at the outputs, with the leak paths into one output; below them the inside of a 1 x 4 selector and of a 4 x 1 coupler">
+<figcaption><b>Fig. 1.</b> The two types of space switch, drawn for <span class="nt">M = 4</span>. The thick red line is the signal from In 2 to Out 3, and the thin red lines are the three other connections. The dashed amber lines are the leaks of the three other inputs into Out 3 (<a href="#s3">section 3</a>); ER is the extinction ratio of a selector in dB. (a) Selector + selector. (b) Selector + coupler, the DC switch. (c) A <span class="nt">1 × 4</span> selector is a tree of three <span class="nt">1 × 2</span> switch elements; it is set to port 2 here. (d) A <span class="nt">4 × 1</span> coupler is a tree of three <span class="nt">2 × 1</span> couplers. The two switches are drawn after Fig. 1 and Fig. 4(a) of the JLT paper.</figcaption></figure>
+<p>A signal passes one element at the input and one element at the output. Its loss is therefore</p>
+<div class="eq" id="e1"><div class="m">\[ L_{\mathrm{sel+sel}} = 2 \times 0.5\,\lceil \log_2 M \rceil, \qquad L_{\mathrm{sel+cpl}} = (0.5 + 3.5)\,\lceil \log_2 M \rceil \quad [\mathrm{dB}] \]</div><span class="eqno nt">(1)</span></div>
+<p>The hardware is counted in \(1 \times 2\) switch elements per port, as in Table IV of the JLT paper. A selector + selector switch has \(2M\) selectors with \(M-1\) elements each. That is \(2(M-1)\) elements for each of its \(M\) ports. A selector + coupler switch has \(M\) selectors, that is, \(M-1\) elements per port. The numbers of that table follow from these two: \(4(M-1)\) for Scheme A1 (two selector + selector switches on the path), \(3(M-1)\) for Scheme A2 (one switch of each type on the path), and \(M-1\) for the two-stage switch (one selector + coupler switch).</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. Loss of the signal (Eq. (1)) and \(1 \times 2\) switch elements per port for one \(M \times M\) space switch.</caption>
+<thead><tr><th></th><th class="num">\(M = 16\)</th><th class="num">\(M = 64\)</th><th class="num">\(M = 128\)</th></tr></thead>
+<tbody>
+<tr><th>Stages, \(\log_2 M\)</th><td class="num nt">4</td><td class="num nt">6</td><td class="num nt">7</td></tr>
+<tr><th>Loss, selector + selector</th><td class="num nt">4 dB</td><td class="num nt">6 dB</td><td class="num nt">7 dB</td></tr>
+<tr><th>Loss, selector + coupler</th><td class="num nt">16 dB</td><td class="num nt">24 dB</td><td class="num nt">28 dB</td></tr>
+<tr><th>Elements per port, selector + selector</th><td class="num nt">30</td><td class="num nt">126</td><td class="num nt">254</td></tr>
+<tr><th>Elements per port, selector + coupler</th><td class="num nt">15</td><td class="num nt">63</td><td class="num nt">127</td></tr>
+</tbody></table></div>
+<p>The coupler halves the number of switch elements. Its price is loss: <span class="nt">24 dB</span> in place of <span class="nt">6 dB</span> at \(M = 64\). How much this loss costs depends on where it lies (<a href="15_edfa_ase.html">page 15</a>). In the two-stage switch the DC switch is before the EDFA (the optical amplifier), and its loss limits \(M\) (<a href="11_network_ocs_clos.html">page 11</a>). In the third stage of the three-stage switch the loss is after the EDFA. The JLT paper states that the loss of the third-stage switch has little effect on the signal-to-noise ratio, and for this reason it allows couplers there (Scheme A2). The coupler has a second price, and the rest of this page is about it: a coupler cannot block a leak.</p>
+<p><strong>In the code.</strong> Three library functions return these losses in dB. Each takes the number of ports (<a href="12_units_power_budget.html">page 12</a>):</p>
+<pre><code>2*selector_loss(64)                     % selector + selector:  6 dB
+selector_loss(64) + coupler_loss(64)    % selector + coupler : 24 dB
+DCS_loss(64)                            % the same DC switch : 24 dB</code></pre>
+<p><code>step22_three_stage_one_point</code> uses the first two lines with <code>sw_size</code> for its space switches (variables <code>sw1_loss</code> and <code>sw3_loss</code>). <code>step21_two_stage_one_point</code> calls <code>DCS_loss(dcs_input_port_num)</code>. No function counts the switch elements. You count them by hand, and the file <code>matlab/ref_data/jlt2025_three_stage_ref.csv</code> holds the numbers of the JLT paper in its column <code>selectors_per_port</code>.</p>
+</section>
+
+<section id="s3">
+<h2>3. Extinction ratio and leaks</h2>
+<p>A selector does not switch off completely. A port that is switched off, an off port for short, still passes a small part of the light. The <strong>extinction ratio</strong> \(\mathrm{ER}\) says, in dB, how much weaker this light is than the light at the selected port. The JLT paper uses <span class="nt">35 dB</span> (<code>sel_ex_ratio = 35</code> in the three-stage scripts): an off port passes about <span class="nt">1/3200</span> of the power. The two-stage scripts use <span class="nt">36 dB</span> (<code>dcs_ex_ratio = 36</code>).</p>
+<p>Light that reaches an output through an off port is a <strong>leak</strong>. The signal that you follow is the <strong>target signal</strong>. Follow the leaks into Out 3 in Fig. 1.</p>
+<ul>
+<li><strong>Selector + coupler.</strong> Every other input selector has an off port that is wired to the coupler of Out 3. The coupler adds this light to the target signal. There are \(M-1\) leaks, and each of them has passed <em>one</em> off port: it is \(\mathrm{ER}\) dB weaker than the target signal, if both enter the switch with the same power.</li>
+<li><strong>Selector + selector.</strong> The same light arrives at the output selector of Out 3. This selector is set to the port of the target signal, so all its other ports are off ports. A leak has passed <em>two</em> off ports: it is \(2\,\mathrm{ER}\) dB weaker.</li>
+</ul>
+<p>The loss of the switch does not enter this comparison, because the target signal and the leaks pass the same number of stages.</p>
+
+<h3>Signal-to-crosstalk ratio</h3>
+<p>Assume that all \(M\) inputs carry signals of the same power \(P\). The leaks carry different data, so they are independent of each other, and their powers add. The <strong>signal-to-crosstalk ratio</strong> \(\mathrm{SXR}\) is the power of the target signal divided by the power of all leaks together. For the selector + coupler switch it is</p>
+<div class="eq" id="e2"><div class="m">\[ \mathrm{SXR} = \frac{P}{(M-1)\,P\,10^{-\mathrm{ER}/10}} \qquad\Longrightarrow\qquad \mathrm{SXR}_{\mathrm{dB}} = \mathrm{ER} - 10\log_{10}(M-1) \]</div><span class="eqno nt">(2)</span></div>
+<p>and for the selector + selector switch it is</p>
+<div class="eq" id="e3"><div class="m">\[ \mathrm{SXR}_{\mathrm{dB}} = 2\,\mathrm{ER} - 10\log_{10}(M-1) \]</div><span class="eqno nt">(3)</span></div>
+<p>The power \(P\) cancels. A higher transmitter power raises the target signal and the leaks by the same amount. This is the difference from amplifier noise: more power does not help against crosstalk. Each time \(M\) doubles, the SXR falls by about <span class="nt">3 dB</span>.</p>
+<div class="box warn"><span class="label">Common mistake</span>
+<p>The SXR is not equal to \(\mathrm{ER}\). One leak is <span class="nt">35 dB</span> below the target signal, but a \(64 \times 64\) switch has 63 of them. Their powers add: <span class="nt">10 log10(63) = 18 dB</span> must be subtracted.</p></div>
+<p>The SNR that the modulation format needs sets the acceptable amount of crosstalk. 16QAM needs an SNR of <span class="nt">13.90 dB</span> at the FEC limit. FEC is forward error correction, and the FEC limit is a BER of \(10^{-2}\): up to this BER, the error correction removes the errors, and the connection works (<a href="14_coherent_rx_dsp_ber.html">page 14</a>). If the leaks have the wavelength of the target signal, they act like noise (<a href="#s4">section 4</a>). The power of the noise and the power of the leaks then add. Dividing this sum by the power of the target signal gives</p>
+<div class="eq" id="e4"><div class="m">\[ \frac{1}{\mathrm{SNR}_{\mathrm{total}}} = \frac{1}{\mathrm{SNR}_{\mathrm{noise}}} + \frac{1}{\mathrm{SXR}} \]</div><span class="eqno nt">(4)</span></div>
+<p>The three ratios in Eq. (4) are linear numbers, not dB values. \(\mathrm{SNR}_{\mathrm{noise}}\) is the SNR that the noise of the amplifiers alone would give (<a href="15_edfa_ase.html">page 15</a>). Table 2 lists the SXR for \(\mathrm{ER}\) = <span class="nt">35 dB</span>. Its last row is Eq. (4) solved for \(\mathrm{SNR}_{\mathrm{noise}}\) with \(\mathrm{SNR}_{\mathrm{total}}\) = <span class="nt">13.90 dB</span>: the SNR that the amplifier noise alone must at least give if the connection is to work.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. Signal-to-crosstalk ratio for \(\mathrm{ER}\) = 35 dB when all leaks have the wavelength of the target signal, and the SNR that the amplifier noise must then reach for 16QAM at the FEC limit.</caption>
+<thead><tr><th></th><th class="num">\(M = 16\)</th><th class="num">\(M = 32\)</th><th class="num">\(M = 64\)</th><th class="num">\(M = 128\)</th></tr></thead>
+<tbody>
+<tr><th>Number of leaks, \(M-1\)</th><td class="num nt">15</td><td class="num nt">31</td><td class="num nt">63</td><td class="num nt">127</td></tr>
+<tr><th>\(10\log_{10}(M-1)\)</th><td class="num nt">11.76 dB</td><td class="num nt">14.91 dB</td><td class="num nt">17.99 dB</td><td class="num nt">21.04 dB</td></tr>
+<tr><th>SXR, selector + coupler (Eq. (2))</th><td class="num nt">23.24 dB</td><td class="num nt">20.09 dB</td><td class="num nt">17.01 dB</td><td class="num nt">13.96 dB</td></tr>
+<tr><th>SXR, selector + selector (Eq. (3))</th><td class="num nt">58.24 dB</td><td class="num nt">55.09 dB</td><td class="num nt">52.01 dB</td><td class="num nt">48.96 dB</td></tr>
+<tr><th>Required \(\mathrm{SNR}_{\mathrm{noise}}\), selector + coupler (Eq. (4))</th><td class="num nt">14.44 dB</td><td class="num nt">15.10 dB</td><td class="num nt">16.82 dB</td><td class="num nt">32.39 dB</td></tr>
+</tbody></table></div>
+<ul>
+<li>With selectors at the outputs the SXR is <span class="nt">35 dB</span> higher. Crosstalk of <span class="nt">49 dB</span> or more below the target signal changes a total SNR of <span class="nt">13.90 dB</span> by less than <span class="nt">0.01 dB</span>: it can be ignored at all four sizes.</li>
+<li>With couplers at the outputs, the crosstalk of a \(64 \times 64\) switch alone limits the SNR to <span class="nt">17.0 dB</span>. The amplifier noise must then be <span class="nt">2.9 dB</span> lower than without crosstalk (<span class="nt">16.82 dB</span> in place of <span class="nt">13.90 dB</span>).</li>
+<li>At \(M = 128\) the SXR is almost as low as the limit itself, and the amplifier noise alone would have to give <span class="nt">32.4 dB</span>. The JLT paper lists Scheme A2 as infeasible at this size (12288 ports in its Table V): it would need more than the 5 dBm of transmitter power that the paper allows. The paper does not name the cause. In the given simulation, no transmitter power up to 10 dBm meets the FEC limit at this size.</li>
+</ul>
+<p>The value <span class="nt">13.90 dB</span> comes from the formula for Gaussian noise. The receiver of the simulation needs <span class="nt">14.0 dB</span>, so its limit is reached slightly earlier. Both statements about the simulation come from the header of <code>main_three_stage_conventional.m</code>.</p>
+<p><strong>In the code.</strong> The extinction ratio is the parameter <code>sel_ex_ratio</code> or <code>dcs_ex_ratio</code>. The attenuation of one leak is a variable of its own: <code>sw1_xt_att = 2*sel_ex_ratio</code> for the first stage of <code>step22_three_stage_one_point</code>, and <code>sw3_xt_att</code> for its third stage (<a href="#s5">section 5</a>). Both step scripts print the SXR of every space switch in their table of SNR contributions. With its default parameters (Scheme A2, \(M = 64\)) <code>step22_three_stage_one_point</code> prints:</p>
+<pre><code>  crosstalk of the stage-1 switch   52.01
+  crosstalk of the stage-3 switch   16.94</code></pre>
+<p>The first number is Eq. (3). The second number is <span class="nt">0.07 dB</span> below Eq. (2), because the script counts two small effects in addition: every leak brings along the noise of its own path, and the equalizer of the receiver raises the leaks slightly (sections 5 and 6 of the script). <a href="22_three_stage_conventional.html">Page 22</a> goes through this table.</p>
+</section>
+
+<section id="s4">
+<h2>4. In-band and out-of-band crosstalk</h2>
+<p>Whether a leak disturbs the target signal depends on its wavelength.</p>
+<ul>
+<li><strong>In-band crosstalk.</strong> The leak has the wavelength of the target signal. Its spectrum lies on top of the spectrum of the target signal, so no filter can separate the two. The receiver decides on the sum. Many independent leaks together act like noise of the same power: Eq. (4) assumes this, and the demo checks it.</li>
+<li><strong>Out-of-band crosstalk.</strong> The leak is on another wavelength channel, that is, on another of the \(N\) laser frequencies of the switch. On the 50-GHz grid its carrier is at least <span class="nt">50 GHz</span> away. A coherent receiver selects one wavelength with its local oscillator, the laser inside the receiver, and passes a band about as wide as the symbol rate (<a href="14_coherent_rx_dsp_ber.html">page 14</a>). For the <span class="nt">32-GBd</span> signal of the three-stage scripts this band reaches from <span class="nt">-16 GHz</span> to <span class="nt">+16 GHz</span>. A leak on the neighboring channel lies between <span class="nt">34 GHz</span> and <span class="nt">66 GHz</span>: the receiver removes it.</li>
+</ul>
+<p>The JLT paper calls these two cases intra-band crosstalk and inter-band crosstalk.</p>
+<div class="box note"><span class="label">Assumption of the model</span>
+<p>The receive filter of the simulation is an ideal rectangle with the width of the symbol rate (<code>nyquistfilter</code>). It removes a leak on another channel completely. This is an idealization: no real filter is a perfect rectangle. Treat the complete removal as an assumption, and state it when you report a result that depends on it.</p></div>
+
+<h3>Which case occurs</h3>
+<p>This depends only on the wavelengths of the signals that meet in the space switch. The wavelength rule of the whole switch, the rule that says which wavelength each connection uses, sets these wavelengths.</p>
+<ul>
+<li><strong>First-stage switch, and the DC switch of the two-stage switch.</strong> The \(M\) inputs come from \(M\) transmitters. Each transmitter is tuned to the wavelength that its destination requires. The wavelengths can be different, and they can be equal. The given scripts take the worst case: every leak has the wavelength of the target signal.</li>
+<li><strong>Third-stage switch of the conventional three-stage switch.</strong> Third-stage switch \(j\) has \(M\) inputs. They come from the \(M\) AWGs of the middle stage, one from output \(j\) of each AWG. An AWG (arrayed-waveguide grating, <a href="17_awg_wavelength_routing.html">page 17</a>) separates the wavelength channels: its output \(j\) passes only wavelength channel \(j\). All \(M\) signals have the same wavelength. Every leak is in band. This is not a worst case: it is always so (<a href="22_three_stage_conventional.html">page 22</a>).</li>
+</ul>
+<p>The second point is the reason why crosstalk limits Scheme A2, although the extra loss of its couplers does little harm. The proposal of this research changes which wavelengths meet in a third-stage switch (<a href="23_three_stage_proposal.html">page 23</a>).</p>
+</section>
+
+<section id="s5">
+<h2>5. How the simulation models crosstalk</h2>
+<p>The scripts simulate one signal completely: the target signal. Every other signal appears only as a leak. A leak is a separate QAM signal of the same format with its own random data. It is made by a new call of <code>TL_QAM</code>, weakened with <code>attenuation</code> and added to the field of the target signal.</p>
+<p>The DC switch of <code>step21_two_stage_one_point</code> (block [3]) is the shortest example. There <code>signal</code> is a matrix with one input signal in each column:</p>
+<pre><code>dcs_loss = DCS_loss(dcs_input_port_num);
+signal = attenuation(signal, dcs_loss);
+for k = 1:dcs_input_port_num
+    if k ~= target_port
+        signal(:, k) = attenuation(signal(:, k), dcs_ex_ratio);
+    end
+end
+signal = sum(signal, 2);  % output port of the DC switch: target + leaks</code></pre>
+<p>All inputs get the loss of the switch. Every input except that of the target signal gets <code>dcs_ex_ratio</code> in addition. The sum over the columns is the field at the output port.</p>
+<p>The third-stage switch of <code>step22_three_stage_one_point</code> (block [7]) covers both types of space switch:</p>
+<pre><code>if stage3_coupler_flag == 1
+    % Scheme A2: selector + coupler. A coupler cannot block anything.
+    sw3_loss = selector_loss(sw_size) + coupler_loss(sw_size);
+    sw3_xt_att = sel_ex_ratio;  % a leak is blocked by ONE selector [dB]
+else
+    % Scheme A1: selector + selector, like stage 1.
+    sw3_loss = 2*selector_loss(sw_size);
+    sw3_xt_att = 2*sel_ex_ratio;  % a leak is blocked by two selectors [dB]
+end
+Hband = nyquistfilter(datasize*up, 0, Fs, baudrate*(1+rolloff));
+sigpw = calc_signal_power(apply_filter(signal, Hband, 1));
+xt_power = sigpw + xt_boost;  % power of one waveform [dBm]
+crosstalk = zeros(datasize*up, 1);
+for k = 1:num_xt_wave
+    [xt, ~, ~] = TL_QAM(datasize, up, Hrcos, xt_power, mod_flag);
+    crosstalk = crosstalk + xt;
+end
+signal = signal + attenuation(crosstalk, sw3_xt_att);  % target + leaks
+signal = attenuation(signal, sw3_loss);</code></pre>
+<ul>
+<li><code>sw3_xt_att</code> is the attenuation of one leak: \(\mathrm{ER}\) or \(2\,\mathrm{ER}\), as in <a href="#s3">section 3</a>.</li>
+<li><code>sigpw</code> is the power at the input of the switch, measured inside the signal band: <code>Hband</code> is a rectangular mask with the width of the signal band, the same mask as the receive filter. Every other input gets the same power, because its signal has passed the same kind of path through another wavelength-routing (WR) switch of the middle stage.</li>
+<li>The loop makes the leaks and adds their fields. With the default <code>xt_wave_max = Inf</code> it runs <code>sw_size - 1</code> times, and <code>xt_boost</code> is <span class="nt">0 dB</span>. The note on <code>xt_wave_max</code> in section 1 of the script explains the faster setting.</li>
+<li>The last two lines add the leaks first and apply the loss of the switch to the sum, because the loss is the same for the target signal and for the leaks.</li>
+</ul>
+<p>Both scripts add every leak at the frequency of the target signal: all crosstalk is in band. To place a leak on another wavelength channel, shift its spectrum with <code>freqoff(x, foff, fsam)</code> before you add it. The inputs are the field <code>x</code>, the frequency offset <code>foff</code> in Hz and the sampling rate <code>fsam</code> in Hz. The header of <code>freqoff.m</code> gives two rules. First, <code>foff</code> must be a multiple of the bin spacing of the FFT, the frequency step of the spectrum (<a href="13_waveform_fft_filter.html">page 13</a>). Second, the shifted signal must stay inside the simulated band of width \(F_s\):</p>
+<div class="eq" id="e5"><div class="m">\[ \frac{F_s}{2} \ge f_{\mathrm{off}} + \frac{(1+\alpha)\,B}{2} \]</div><span class="eqno nt">(5)</span></div>
+<p>This is the rule of Eq. (3) on page 14. Here \(B\) is the symbol rate (<code>baudrate</code>) and \(\alpha\) is the roll-off factor (<code>rolloff</code>): the signal has the bandwidth \((1+\alpha)B\) (page 13). The sampling rate \(F_s\) is <code>up*baudrate</code>, where <code>up</code> is the oversampling rate, the number of samples per symbol. For \(B\) = <span class="nt">32 GBd</span>, \(\alpha\) = 0 and \(f_{\mathrm{off}}\) = <span class="nt">50 GHz</span> the right side is <span class="nt">66 GHz</span>: \(F_s\) must be at least <span class="nt">132 GHz</span>. The three-stage scripts use <code>up = 2</code>, which gives <span class="nt">64 GHz</span>. This is enough for them, because all their signals are on the wavelength of the target signal. It is not enough for a leak on the neighboring channel, and <code>up = 4</code> gives only <span class="nt">128 GHz</span>. The demo therefore uses <code>up = 5</code> (<span class="nt">160 GHz</span>). A part of the spectrum that leaves the band on one side comes back on the other side.</p>
+</section>
+
+<section id="s6">
+<h2>6. Run the demo</h2>
+<div class="box run"><span class="label">Run it</span>
+<p>In MATLAB, run <code>setup_path</code> once, then <code>demo16_space_switch_crosstalk</code>. The script needs a few seconds. All three self-checks must print <code>passed</code>.</p></div>
+<p>The demo models one output of a selector + coupler switch with \(\mathrm{ER}\) = <span class="nt">35 dB</span>. The target signal is a 16QAM signal with <span class="nt">32 GBd</span>. The demo adds white noise that alone gives an SNR of <span class="nt">16 dB</span>. This noise stands for the amplifier noise, and it makes the BER large enough to be counted. Then it adds the \(M-1\) leaks in two ways. In case 1 the leaks have the wavelength of the target signal. In case 2 the same leaks are shifted by <span class="nt">50 GHz</span> to the neighboring channel. The loss of the switch is left out, because it is the same for the target signal and for the leaks.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. What <code>demo16_space_switch_crosstalk.m</code> does, section by section.</caption>
+<thead><tr><th>Section</th><th>What it does</th><th>Library functions</th></tr></thead>
+<tbody>
+<tr><td>1. Parameters</td><td>16QAM, <code>baudrate = 32e9</code>, <code>up = 5</code>, <code>sel_ex_ratio = 35</code>, the sizes <code>list_sw_size = [16 32 64 128]</code>, <code>SNR_noise = 16</code>, <code>foff = 50e9</code>. The variable <code>sw_xt_att</code> is the attenuation of one leak.</td><td></td></tr>
+<tr><td>2. Sampling frequency and filters</td><td>Checks Eq. (5) for a roll-off factor of 0 with an <code>assert</code>. Makes the transmit mask <code>Hrcos</code> and the receive filter <code>H</code>.</td><td><code>rcosfilter</code>, <code>nyquistfilter</code></td></tr>
+<tr><td>3. Target signal, noise and the BER without leaks</td><td>Makes the target signal and the noise. Receives the two without leaks: <code>BER_ref</code>.</td><td><code>TL_QAM</code>, <code>apply_filter</code>, <code>adequalizet</code>, <code>measure_BER_QAM</code></td></tr>
+<tr><td>4. Leaks, case 1 and case 2</td><td>For every size: adds <code>sw_size - 1</code> new signals to <code>crosstalk</code>, weakens the sum by <code>sw_xt_att</code> (<code>leak</code>) and measures the SXR (<code>SXR_sim</code>). Then the receiver runs twice: with the leak as it is (case 1), and with the leak shifted by <code>foff</code> (case 2).</td><td><code>TL_QAM</code>, <code>attenuation</code>, <code>calc_signal_power</code>, <code>freqoff</code></td></tr>
+<tr><td>5. Prediction</td><td>Eq. (2) (<code>SXR</code>), Eq. (4) (<code>SNR_total</code>) and the BER formula of page 14 for 16QAM in Gaussian noise (<code>BER_gauss</code>).</td><td></td></tr>
+<tr><td>6. Table</td><td>Prints the numbers that are shown below.</td><td></td></tr>
+<tr><td>7. Self-checks</td><td>1: the measured SXR agrees with Eq. (2) within <span class="nt">0.2 dB</span>. 2: the BER of case 1 agrees with the prediction within 0.1 decades (a factor of 1.26). 3: the BER of case 2 is <code>BER_ref</code>, with the same number of bit errors.</td><td></td></tr>
+<tr><td>8. Figure</td><td>BER versus \(M\): prediction as lines, simulation as markers.</td><td></td></tr>
+</tbody></table></div>
+<p>The script prints:</p>
+<pre><code>Simulated band Fs = 160 GHz; a leak shifted by 50 GHz needs 132 GHz
+BER without leaks: 1.934e-03 (165 errors in 85336 bits), prediction: 1.791e-03
+
+    M  leaks  SXR [dB]  SXR [dB]  SNR [dB]        BER        BER        BER
+             simulated   formula     total  predicted     case 1     case 2
+   16     15     23.23     23.24     15.25   3.62e-03   3.97e-03   1.93e-03
+   32     31     20.12     20.09     14.57   6.26e-03   6.62e-03   1.93e-03
+   64     63     17.01     17.01     13.46   1.32e-02   1.43e-02   1.93e-03
+  128    127     13.93     13.96     11.85   3.00e-02   3.19e-02   1.93e-03
+
+Self-check 1 passed: SXR = sw_xt_att - 10*log10(M-1) within 0.2 dB
+Self-check 2 passed: BER of case 1 = prediction within 0.1 decades (simulation/prediction = 1.06 to 1.10)
+Self-check 3 passed: leaks 50 GHz away do not change the BER</code></pre>
+<p>Read the table column by column.</p>
+<ul>
+<li><strong>SXR.</strong> The measured ratio agrees with Eq. (2) within about 0.03 dB: the powers of independent leaks add.</li>
+<li><strong>Case 1.</strong> The BER rises with \(M\) and follows the prediction. The \(64 \times 64\) switch is above the FEC limit, as Eq. (4) says: noise of <span class="nt">16 dB</span> and an SXR of <span class="nt">17.01 dB</span> give <span class="nt">13.46 dB</span> in total, less than the required <span class="nt">13.90 dB</span>.</li>
+<li><strong>Case 2.</strong> The BER is the BER without leaks at every size: 165 bit errors each time. The receive filter has removed the shifted leaks completely.</li>
+</ul>
+<figure id="f2"><img src="assets/expected/demo16_space_switch_crosstalk.png" alt="BER versus the size M of the space switch on logarithmic axes: the circles of case 1 rise along the prediction and cross the FEC limit between M = 32 and M = 64; the squares of case 2 stay on the level without leaks">
+<figcaption><b>Fig. 2.</b> Expected figure of <code>demo16_space_switch_crosstalk</code>. Solid line: prediction for in-band leaks (Eq. (4) and the BER formula for Gaussian noise). Circles: simulation, case 1. Dash-dotted line: prediction without leaks. Squares: simulation, case 2. Dashed line: FEC limit.</figcaption></figure>
+<div class="box note"><span class="label">Note</span>
+<p>The markers lie 6 to 10 percent above the lines, also without leaks (<span class="nt">1.934e-03</span> against <span class="nt">1.791e-03</span>). Two causes are known. The adaptive equalizer of the receiver (<a href="14_coherent_rx_dsp_ber.html">page 14</a>) raises the BER by a few percent compared with the formula (notes in <code>adequalizet.m</code>: about 6 percent for 16QAM near a BER of \(10^{-2}\)). And a counted BER has a random error of about \(1/\sqrt{n}\) for \(n\) bit errors: 8 percent for 165 errors.</p></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>All three self-checks print <code>passed</code>, and your figure looks like Fig. 2.</li>
+<li>You can calculate the columns "SXR [dB] formula" and "SNR [dB] total" of the printed table by hand from Eq. (2) and Eq. (4).</li>
+<li>You can explain why the squares stay on one level while the circles rise.</li>
+</ul></div>
+<div class="box todo"><span class="label">Your task</span>
+<p>Change one thing at a time, predict the result, then run the script. Set the value back before the next experiment.</p>
+<ol>
+<li>Selector + selector: replace <code>sw_xt_att = sel_ex_ratio;</code> by <code>sw_xt_att = 2*sel_ex_ratio;</code>. Predict the SXR for \(M = 128\) and the BER of case 1.</li>
+<li>Set <code>foff = 25e9</code>. The channel spacing is now smaller than the symbol rate. Which part of the spectrum of a leak falls into the receive filter? The script prints its table and then stops in self-check 3. Explain why this stop is correct. Then set <code>foff = 32e9</code>: why does self-check 3 pass again?</li>
+<li>Set <code>up = 4</code>. The script stops in section 2. Why? Which <code>up</code> does <code>foff = 100e9</code> need?</li>
+</ol></div>
+<details><summary>What you should see</summary>
+<p>1. The SXR for \(M = 128\) is <span class="nt">70 - 21.04 = 48.96 dB</span>. The BER of case 1 stays between <span class="nt">1.92e-03</span> and <span class="nt">1.98e-03</span> at all sizes: it is the BER without leaks, apart from a few bit decisions.</p>
+<p>2. A shifted leak lies between <span class="nt">9 GHz</span> and <span class="nt">41 GHz</span>. The receive filter ends at <span class="nt">16 GHz</span>, so <span class="nt">7 GHz</span> of <span class="nt">32 GHz</span>, that is 22 percent of the leak power, stays in band. The BER of case 2 rises to <span class="nt">5.60e-03</span> for \(M = 128\). Self-check 3 stops with the message <code>leaks outside the receive filter changed the BER</code>, and this is correct: the leaks are not outside the receive filter. With <code>foff = 32e9</code>, the symbol rate, a shifted leak begins at <span class="nt">16 GHz</span>, exactly where the receive filter ends. The two spectra touch but do not overlap, and the BER of case 2 is <code>BER_ref</code> again.</p>
+<p>3. Eq. (5) asks for \(F_s\) of at least <span class="nt">132 GHz</span>, and <code>up = 4</code> gives <span class="nt">128 GHz</span>: the <code>assert</code> stops the script with <code>Fs is too small for foff: use a larger up</code>. For <code>foff = 100e9</code> Eq. (5) asks for \(F_s\) of at least <span class="nt">2 × (100 + 16) = 232 GHz</span>, that is, <code>up</code> of at least 7.25: use <code>up = 8</code>.</p>
+</details>
+<p>Section 4 of the script models a leak with three tools: a new <code>TL_QAM</code> signal, <code>attenuation</code>, and <code>freqoff</code> together with Eq. (5). The same tools are available for your own simulation in <code>matlab/work/work2_three_stage_proposed.m</code>.</p>
+</section>
+
+<section id="s7">
+<h2>7. Check your understanding</h2>
+<ol>
+<li>A space switch has \(M = 32\). What is the loss of the signal, and how many \(1 \times 2\) switch elements per port does the switch need, for each of the two types?
+<details><summary>Answer</summary>
+<p>\(M = 32\) means 5 stages. Selector + selector: <span class="nt">2 × 0.5 × 5 = 5 dB</span> and <span class="nt">2 × 31 = 62</span> elements per port. Selector + coupler: <span class="nt">4 × 5 = 20 dB</span> and 31 elements per port. In MATLAB: <code>2*selector_loss(32)</code> and <code>DCS_loss(32)</code>.</p>
+</details></li>
+<li>The DC switch of <code>step21_two_stage_one_point</code> has \(M = 8\) and <code>dcs_ex_ratio = 36</code>. Calculate its SXR. Where does the script print this number?
+<details><summary>Answer</summary>
+<p>Eq. (2): <span class="nt">36 - 10 log10(7) = 36 - 8.45 = 27.55 dB</span>. The script prints it in the table of SNR contributions, in the line <code>crosstalk of the DC switch   27.55</code>.</p>
+</details></li>
+<li>A selector + coupler switch has \(M = 64\) and \(\mathrm{ER}\) = <span class="nt">35 dB</span>. The amplifier noise alone gives an SNR of <span class="nt">16 dB</span>. What is the total SNR if all leaks are in band? Is the BER of a 16QAM signal below the FEC limit?
+<details><summary>Answer</summary>
+<p>The SXR is <span class="nt">35 - 17.99 = 17.01 dB</span>. Eq. (4) in linear numbers: <span class="nt">0.02512 + 0.01992 = 0.04504</span>, that is <span class="nt">13.46 dB</span>. This is less than the required <span class="nt">13.90 dB</span>, so the BER is above \(10^{-2}\). The demo confirms it: the prediction is <span class="nt">1.32e-02</span>, and the simulation gives <span class="nt">1.43e-02</span>.</p>
+</details></li>
+<li>The switch of question 3 is enlarged to \(M = 128\). Which extinction ratio would its selectors need to keep the SXR of question 3?
+<details><summary>Answer</summary>
+<p>The number of leaks rises from 63 to 127, that is by <span class="nt">10 log10(127/63) = 3.04 dB</span>. The selectors would need <span class="nt">38.04 dB</span>. Every doubling of \(M\) costs about <span class="nt">3 dB</span> of extinction ratio.</p>
+</details></li>
+<li>Why does a leak pass two off ports in a selector + selector switch, but only one in a selector + coupler switch?
+<details><summary>Answer</summary>
+<p>In both switches the leak leaves its own input selector through an off port. In the selector + selector switch it then meets the output selector, which is set to the port of the target signal: the leak enters through a second off port. A coupler has no off ports. It adds everything that arrives.</p>
+</details></li>
+<li>In the conventional three-stage switch, why is every leak in a third-stage switch in band? And why can a higher transmitter power not reduce the effect of these leaks?
+<details><summary>Answer</summary>
+<p>Third-stage switch \(j\) receives output \(j\) of every AWG, and this output passes only wavelength channel \(j\). All its inputs therefore have the wavelength of the target signal. A higher transmitter power raises the target signal and the leaks by the same factor: the power \(P\) cancels in Eq. (2).</p>
+</details></li>
+</ol>
+<div class="box"><span class="label">What to carry forward</span>
+<p>An \(M \times M\) space switch adds \(M-1\) leaks to every signal: each is \(\mathrm{ER}\) below the signal with couplers at the outputs and \(2\,\mathrm{ER}\) below with selectors, so the SXR is \(\mathrm{ER} - 10\log_{10}(M-1)\) or \(2\,\mathrm{ER} - 10\log_{10}(M-1)\) dB. A leak counts only if it is in band. On the wavelength of the signal it acts like noise that no transmitter power can overcome; on another wavelength the receiver removes it. Which wavelengths meet in a space switch is decided by the wavelength routing of the middle stage, and that is the subject of <a href="17_awg_wavelength_routing.html">page 17</a>.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="15_edfa_ase.html">&larr; <span class="nt">15</span> EDFA and ASE</a>
+<a class="next" href="17_awg_wavelength_routing.html"><span class="nt">17</span> AWG, wavelength routing &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

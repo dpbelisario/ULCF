@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 MATLAB guide | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a class="current" href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Orientation</p>
+<h1><span class="num nt">04</span>MATLAB guide</h1>
+<p class="lead">The code of this package is plain MATLAB, like the code of your practice chapters. Some conventions are different, and the functions are now in files of their own. This page names the differences, shows how to read a library function, lists every given file, and tells you how to run the scripts and what to do when an error appears.</p>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Set-up and the folder map</a></li>
+<li><a href="#s2">Conventions that differ from the practice chapters</a></li>
+<li><a href="#s3">How to read a library function</a></li>
+<li><a href="#s4">MATLAB idioms you will meet</a></li>
+<li><a href="#s5">Every given file at a glance</a></li>
+<li><a href="#s6">Running the scripts</a></li>
+<li><a href="#s7">Troubleshooting</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Set-up and the folder map</h2>
+<p>You did the set-up on the page <a href="../START_HERE.html">Start here</a>: make the folder <code>matlab</code> the current folder, run <code>setup_path</code>, then run <code>run_all_tests</code>. This section explains what <code>setup_path</code> does, because several rows of the troubleshooting table in <a href="#s7">section 7</a> go back to it.</p>
+<p>The <strong>search path</strong> is the list of folders in which MATLAB looks for functions and scripts. When you type a name, MATLAB looks for it in this order:</p>
+<ol>
+<li>a variable of that name in the workspace (the workspace is the set of variables that exist at the moment);</li>
+<li>a file of that name in the current folder;</li>
+<li>the folders of the search path, from the top to the bottom.</li>
+</ol>
+<p><code>setup_path</code> puts five folders of the package at the top of the search path, in this order: <code>lib</code>, <code>demos</code>, <code>main</code>, <code>work</code>, <code>tests</code>. Three consequences follow.</p>
+<ul>
+<li><strong>Run it in every session.</strong> MATLAB does not save the path. After a restart the five folders are gone, and MATLAB does not find the library until you run <code>setup_path</code> again. Your variables stay: the script removes only its own variables, whose names start with <code>setup_</code>.</li>
+<li><strong>Stay in the folder <code>matlab</code>.</strong> The file <code>setup_path.m</code> is in <code>matlab</code>, and <code>matlab</code> itself is not on the path. Make <code>matlab</code> the current folder before you type <code>setup_path</code>, and keep it as the current folder while you work.</li>
+<li><strong>One name, one file.</strong> If two files have the same name, MATLAB uses the one that it finds first and ignores the other without a message. The earlier laboratory code has functions with the names of this library, for example <code>attenuation</code> and <code>awg</code>. <code>setup_path</code> therefore checks that MATLAB takes <code>attenuation</code> from this package. It stops with an error if that is not so, and it prints a note if a second copy is lower on the path.</li>
+</ul>
+<p><code>setup_path</code> also makes every new figure of the session light. MATLAB R2025a and later can draw figures with a dark background, and the black lines of the scripts are invisible there.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. The folder <code>matlab</code>. "On the path" means that <code>setup_path</code> adds the folder to the search path.</caption>
+<thead><tr><th>Folder</th><th>What is inside</th><th>On the path</th><th>Do you edit it?</th></tr></thead>
+<tbody>
+<tr><td><code>matlab/</code></td><td><code>setup_path.m</code> and the seven folders below</td><td>No. It is your current folder.</td><td>No.</td></tr>
+<tr><td><code>lib/</code></td><td>The library: 23 functions, one function per file (<a href="#s5">Table 6</a>)</td><td>Yes, at the top</td><td>No. Read the functions and call them.</td></tr>
+<tr><td><code>demos/</code></td><td>Six demo scripts, <code>demo12_...</code> to <code>demo17_...</code>, one for each of pages 12 to 17</td><td>Yes</td><td>Only to try a value. For any other change, copy the script first (<a href="../START_HERE.html#s4">Start here, section 4</a>).</td></tr>
+<tr><td><code>main/</code></td><td>Four scripts for the two baseline switches, the existing designs with which you will compare your own switch (pages 21 and 22). A <code>step...</code> script simulates one operating point, that is one set of parameter values such as one transmitter power and one switch size. A <code>main_...</code> script searches over many operating points.</td><td>Yes</td><td>Only to try a value. For any other change, copy the script first.</td></tr>
+<tr><td><code>work/</code></td><td>Three task files, <code>work1_...</code> to <code>work3_...</code>, and every script that you write</td><td>Yes</td><td>Yes. This folder is yours.</td></tr>
+<tr><td><code>tests/</code></td><td><code>run_all_tests</code> and three test scripts for the library</td><td>Yes, at the bottom of the five</td><td>No. Run them.</td></tr>
+<tr><td><code>ref_data/</code></td><td>Four CSV files with reference values. The scripts in <code>main/</code> read three of them; <code>budget_two_stage_ref.csv</code> is for comparing by eye.</td><td>No. The scripts find it from their own location.</td><td>No.</td></tr>
+<tr><td><code>results/</code></td><td>Output files of the two <code>main_...</code> scripts (<a href="#s6">section 6</a>). A run creates the folder if it is missing.</td><td>No</td><td>No. Never change a file here by hand.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="s2">
+<h2>2. Conventions that differ from the practice chapters</h2>
+<p>The scripts keep the style that you know: numbered sections, plain variables, <code>for</code> loops, and self-checks with <code>assert</code>. Six conventions are different. Table 2 lists them.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. What changes between the practice chapters and this package.</caption>
+<thead><tr><th>Topic</th><th>Practice chapters</th><th>This package</th></tr></thead>
+<tbody>
+<tr><td>Vectors</td><td>Row vectors, for example <code>bits = randi([0 1], 1, Nbit)</code>.</td><td><strong>Column</strong> vectors. A matrix holds one signal per column. Nine library functions stop with an error if you give them a signal as a row vector. Three accept it without a message; Table 9 names them.</td></tr>
+<tr><td>Units</td><td>Normalized: the symbol energy is 1, and the noise is set from an SNR.</td><td>Physical units. A signal is an optical field in <span class="nt">sqrt(W)</span>, so <code>mean(abs(x).^2)</code> is its power in W. Powers are given in dBm, losses and gains in dB, frequencies in Hz (<a href="12_units_power_budget.html">page 12</a>).</td></tr>
+<tr><td>Oversampling</td><td>Samples per bit: the practice script for on-off keying set its own variable <code>sps = 8</code>. QAM was simulated with one sample per symbol.</td><td>Samples per <strong>symbol</strong>. This number is the oversampling rate, and its variable is <code>up</code>. The value is <code>up = 2</code> in the scripts in <code>main/</code>. The demo of page 13 uses <code>up = 4</code>, and the demos of pages 14 and 16 use <code>up = 5</code>; each of these scripts says why. The number of bits per symbol is a separate variable, <code>mod_flag</code>: 2 = QPSK, 4 = 16QAM, 5 = 32QAM, 6 = 64QAM (<a href="13_waveform_fft_filter.html">page 13</a>).</td></tr>
+<tr><td>QAM symbols</td><td><code>qam_mod(bits, M)</code> returned symbols with an average energy of 1.</td><td><code>my_qammod(sym_num, M)</code> takes symbol numbers from 0 to M - 1 and returns points on the grid of odd integers (..., -3, -1, +1, +3, ...). Their mean power is 2, 10, 20, 42 for 4, 16, 32, 64 points. The optical power is set afterwards with <code>set_signal_power</code>. The transmitter function <code>TL_QAM</code> does all of this in one call.</td></tr>
+<tr><td>Functions</td><td>Local functions at the end of the script, for example <code>qam_mod</code> and <code>plot_eye</code>.</td><td>One function per file in <code>lib/</code>. The file name is the function name. The scripts contain no functions. MATLAB finds the functions through the search path.</td></tr>
+<tr><td>The letters M and N</td><td><code>M</code> = number of constellation points, <code>k</code> = bits per symbol, <code>Nsym</code> and <code>Nbit</code> = numbers of symbols and bits.</td><td>On the pages: \(N\) = number of wavelength channels, \(M\) = size of a space switch, \(k\) = bits per symbol. In the code the meaning depends on the place: see Table 3.</td></tr>
+</tbody></table></div>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. What the letters N and M stand for in the code. A dash means that the letter is not used there.</caption>
+<thead><tr><th>Place</th><th>N stands for</th><th>M stands for</th></tr></thead>
+<tbody>
+<tr><td>Pages, and the scripts in <code>main/</code></td><td>Number of wavelength channels (variable <code>N = 96</code>)</td><td>Size of a space switch (variable <code>dcs_input_port_num</code> in the two-stage scripts, <code>sw_size</code> in the three-stage scripts)</td></tr>
+<tr><td><code>coupler_loss(N)</code></td><td>Number of input ports of the coupler</td><td>-</td></tr>
+<tr><td><code>selector_loss(M)</code>, <code>DCS_loss(M)</code></td><td>-</td><td>Number of ports of the selector or of the switch</td></tr>
+<tr><td><code>freq_axis(N, Fs)</code>, <code>rcosfilter(N, ...)</code>, <code>gaussfilter(N, ...)</code></td><td>Number of samples of the signal</td><td>-</td></tr>
+<tr><td><code>amplified_by_EDFA3(..., N, B_ref)</code></td><td>Number of wavelength channels that this amplifier carries</td><td>-</td></tr>
+<tr><td><code>awg_channel(in_port, out_port, N)</code></td><td>Number of wavelength channels of the AWG</td><td>-</td></tr>
+<tr><td><code>my_qammod(sym_num, M)</code>, <code>my_qamdemod(sym, M)</code></td><td>-</td><td>Number of constellation points</td></tr>
+<tr><td><code>adequalizet(x, m, M, ...)</code></td><td>-</td><td>Order of the equalizer filter. The small <code>m</code> is the number of constellation points.</td></tr>
+<tr><td>Sizes in the headers, for example <code>1 x M</code> in <code>attenuation</code> and <code>n x M</code> in <code>apply_filter</code></td><td>-</td><td>Number of columns, that is the number of signals</td></tr>
+</tbody></table></div>
+<p>The scripts in <code>main/</code> avoid the clash with two longer names: <code>Mary</code> is the number of constellation points (<code>2^mod_flag</code>), and <code>Morder</code> is the order of the equalizer, the adaptive filter of the receiver (<a href="14_coherent_rx_dsp_ber.html">page 14</a>). Inside a function, a letter means what the list of inputs of that function says. Read that list every time (<a href="#s3">section 3</a>).</p>
+<div class="box warn"><span class="label">Common mistake</span>
+<p>Do not write <code>x'</code> to turn a row vector into a column vector. For complex numbers the operator <code>'</code> also takes the complex conjugate, which mirrors the spectrum of a signal. Write <code>x.'</code> (transpose only) or <code>x(:)</code> (always a column). The given code uses <code>.'</code> everywhere.</p></div>
+</section>
+
+<section id="s3">
+<h2>3. How to read a library function</h2>
+<p>Every file in <code>lib/</code> has the same layout: the <code>function</code> line, a block of comments called the header, the code, and <code>end</code>. Here is the complete file <code>lib/attenuation.m</code>.</p>
+<pre><code>function [y, att] = attenuation(x, loss)
+%ATTENUATION  Apply a power loss given in dB to an optical field.
+%
+%   [y, att] = attenuation(x, loss)
+%
+%   Inputs
+%     x     : optical field, one signal per column [sqrt(W)]
+%     loss  : power loss [dB] (a negative value is a gain)
+%             scalar, or a 1 x M row vector with one loss per column of x
+%   Outputs
+%     y     : attenuated field [sqrt(W)]
+%     att   : amplitude factor that was applied (= 10^(-loss/20))
+%
+%   Legacy: attenuation.m (same name, same arguments).
+%   Note: a POWER loss of L dB multiplies the FIELD by 10^(-L/20).
+%   Example: a loss of 3 dB halves the power; the field is divided by sqrt(2).
+
+att = 10.^(-loss/20);  % dB (power) -&gt; amplitude factor
+y = x .* att;
+end</code></pre>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. The parts of a header, in the order in which they appear.</caption>
+<thead><tr><th>Part</th><th>In <code>attenuation.m</code></th><th>What it tells you</th></tr></thead>
+<tbody>
+<tr><td>H1 line</td><td><code>%ATTENUATION  Apply a power loss ...</code></td><td>The name of the function in capital letters and one sentence that says what the function does.</td></tr>
+<tr><td>Syntax</td><td><code>[y, att] = attenuation(x, loss)</code></td><td>How to call the function. The outputs are in square brackets on the left, the inputs in parentheses on the right. The order is fixed.</td></tr>
+<tr><td>Inputs</td><td><code>x</code>, <code>loss</code></td><td>For every input: its meaning, its shape (one signal per column, a scalar, a row vector) and its unit in square brackets, here <span class="nt">[sqrt(W)]</span> and <span class="nt">[dB]</span>.</td></tr>
+<tr><td>Outputs</td><td><code>y</code>, <code>att</code></td><td>The same for every output.</td></tr>
+<tr><td>Legacy</td><td><code>Legacy: attenuation.m (...)</code></td><td>How the function differs from the function of the same name in the earlier laboratory code. Your supervisor needs this line. You can skip it.</td></tr>
+<tr><td>Note, Example</td><td>the last two comment lines</td><td>Properties that are easy to get wrong, and numbers that you can check by hand.</td></tr>
+</tbody></table></div>
+<p>Type <code>help attenuation</code> in the Command Window: MATLAB prints this header. Read it in this order: the H1 line, then the inputs and outputs with their shapes and units, then the notes. Read the code last. Three more commands are useful. <code>which attenuation</code> shows the file that MATLAB uses. <code>edit attenuation</code> opens this file in the editor. <code>help step21_two_stage_one_point</code> prints the title block of a script in the same way.</p>
+<p>Now call the function. The comments show what MATLAB answers.</p>
+<pre><code>x = [1; 1i; -1; -1i] * sqrt(1e-3);   % four samples, each with a power of 1 mW
+[y, att] = attenuation(x, 3);        % a loss of 3 dB
+calc_signal_power(x)                 % -9.6433e-16, that is 0 dBm
+calc_signal_power(y)                 % -3.0000 dBm
+att                                  % 0.7079 = 10^(-3/20)</code></pre>
+<p>The first answer is not exactly 0, because a computer rounds every number to about 16 digits. For this reason the self-checks do not compare a computed power with <code>==</code>. They allow a small difference, for example <code>abs(P_x - PTx) &lt; 1e-9</code> in <code>demo12_units_power_budget</code>. A simulated power that contains random noise gets a larger tolerance, for example <code>diff_power &lt; 0.1</code> in <code>step21_two_stage_one_point</code>. A function can return several outputs, and you ask only for those that you need: <code>y = attenuation(x, 3)</code> returns the first output only. A <code>~</code> in the list of outputs skips one, as in <code>[signal(:, k), ~, ~] = TL_QAM(...)</code> in <code>step21_two_stage_one_point</code>.</p>
+<div class="box todo"><span class="label">Your task</span>
+<p>Type <code>help TL_QAM</code> and find three things in the header: (1) the unit of <code>Pin</code>; (2) the size of <code>signal</code> for <code>datasize = 1000</code> and <code>up = 2</code>; (3) the two outputs that the receiver needs later.</p>
+<details><summary>Answer</summary><p>(1) dBm. (2) <span class="nt">2000 x 1</span>, because the header gives the size as <code>(datasize*up) x 1</code>. (3) <code>data_mod</code> trains the equalizer <code>adequalizet</code>, and <code>data</code> goes to <code>measure_BER_QAM</code>.</p></details></div>
+</section>
+
+<section id="s4">
+<h2>4. MATLAB idioms you will meet</h2>
+<p>Six patterns appear again and again in the given code. The examples below are copied from it. Only the three-line example at the end of this section was written for this page.</p>
+
+<h3>Filtering in the frequency domain</h3>
+<p>From <code>lib/apply_filter.m</code>:</p>
+<pre><code>% multiply the spectrum of every column by the mask
+spectrum = fftshift(fft(expanded, [], 1), 1);  % 0 Hz in the middle, like H
+spectrum = H .* spectrum;  % H (N x 1) acts on every column
+signal = ifft(ifftshift(spectrum, 1), [], 1);  % back to the time domain</code></pre>
+<p><code>fft</code> computes the spectrum of a block of samples: one value, called a bin, for each frequency. <code>fftshift</code> reorders the bins so that 0 Hz is in the middle. A filter is a vector <code>H</code> with one factor per bin, called a mask: the code multiplies the spectrum by it, undoes the reordering with <code>ifftshift</code>, and returns to the time domain with <code>ifft</code>. The arguments <code>[], 1</code> and <code>1</code> mean "along dimension 1", that is down each column, so every column is filtered as one signal. <a href="13_waveform_fft_filter.html">Page 13</a> explains the method.</p>
+
+<h3>Logical masks</h3>
+<p>From <code>lib/my_qamdemod.m</code>, inside the loop over the constellation points <code>k</code>:</p>
+<pre><code>dist = abs(sym - constellation(k));  % distance of every sample to point k
+closer = dist &lt; best_dist;  % samples for which point k is the closest so far
+sym_num(closer) = k - 1;  % symbol numbers start at 0, indices at 1
+best_dist(closer) = dist(closer);</code></pre>
+<p>A comparison of two arrays returns an array of true and false values, a logical mask. Used as an index, the mask selects the elements where it is true: <code>sym_num(closer) = k - 1</code> changes only these elements, without a loop over the samples. The filter functions build their masks in the same way, for example <code>H = double(fc &gt;= -width/2 - tol &amp; fc &lt; width/2 - tol)</code> in <code>nyquistfilter</code>.</p>
+
+<h3>dB and linear numbers</h3>
+<p>From <code>lib/calc_signal_power.m</code>, <code>lib/attenuation.m</code> and <code>lib/amplified_by_EDFA3.m</code>:</p>
+<pre><code>power_W = mean(abs(signal_w).^2, 1);  % mean power of each column [W]
+signal_power_dB = 10*log10(power_W*1e3);  % W -&gt; mW -&gt; dBm
+
+att = 10.^(-loss/20);  % dB (power) -&gt; amplitude factor
+
+gain = 10^(gain_dB/10);  % power gain G, dB -&gt; linear</code></pre>
+<p><code>10*log10(x)</code> converts a power ratio to dB, and <code>10^(x/10)</code> converts dB back to a power ratio. For a field the divisor is 20, because the power is the square of the field. In the second line, the factor <code>1e3</code> converts W to mW, because dBm means dB relative to 1 mW (<a href="12_units_power_budget.html">page 12</a>). Use <code>log10</code>: in MATLAB, <code>log</code> is the natural logarithm.</p>
+
+<h3>One signal per column</h3>
+<p>From block [3] of <code>main/step21_two_stage_one_point.m</code>:</p>
+<pre><code>for k = 1:dcs_input_port_num
+    if k ~= target_port
+        signal(:, k) = attenuation(signal(:, k), dcs_ex_ratio);
+    end
+end
+signal = sum(signal, 2);  % output port of the DC switch: target + leaks</code></pre>
+<p>At this point of the script, <code>signal</code> is a matrix with <code>datasize*up</code> rows, one per sample, and <code>dcs_input_port_num</code> columns, one per signal: <span class="nt">60000 x 8</span> with the default values. <code>signal(:, k)</code> is column <code>k</code>, that is all samples of signal <code>k</code>. <code>sum(signal, 2)</code> adds along dimension 2, across the columns, and returns one column: the sum of all signals, sample by sample.</p>
+
+<h3>Printing with fprintf</h3>
+<p>From section 4 of <code>main/step21_two_stage_one_point.m</code>, with the line that it prints:</p>
+<pre><code>fprintf('BER             : %.3e (%d errors in %d bits), FEC limit %.0e\n', BER, ...
+    round(BER*num_bits), num_bits, BER_limit);
+
+BER             : 7.630e-03 (763 errors in 100000 bits), FEC limit 1e-02</code></pre>
+<p><code>fprintf</code> prints the text and replaces every item that starts with <code>%</code> by the next argument. The three dots <code>...</code> continue a statement on the next line. Table 5 explains the kinds of items that the scripts use.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 5. Format items of <code>fprintf</code> in the given scripts. The examples are numbers that <code>step21_two_stage_one_point</code> prints.</caption>
+<thead><tr><th>Item</th><th>Meaning</th><th>Example of the output</th></tr></thead>
+<tbody>
+<tr><td><code>%d</code></td><td>Whole number</td><td><code>763</code></td></tr>
+<tr><td><code>%.1f</code></td><td>Number with 1 digit after the decimal point</td><td><code>-4.0</code></td></tr>
+<tr><td><code>%.3e</code></td><td>Number with an exponent, 3 digits after the decimal point</td><td><code>7.630e-03</code></td></tr>
+<tr><td><code>%+.2f</code></td><td>Number with 2 digits after the decimal point; the sign is always printed, + or -</td><td><code>-0.07</code></td></tr>
+<tr><td><code>%11.3f</code></td><td>At least 11 characters wide, with spaces added on the left; this makes the columns of a table</td><td><code>-32.491</code> after 4 spaces</td></tr>
+<tr><td><code>%-14s</code></td><td>Text, at least 14 characters wide, with spaces added on the right</td><td><code>Coupler</code> and 7 spaces</td></tr>
+<tr><td><code>\n</code></td><td>End of the line</td><td></td></tr>
+</tbody></table></div>
+
+<h3>Saving and loading results</h3>
+<p>From section 8 of <code>main/main_two_stage_ULCF.m</code>:</p>
+<pre><code>time_stamp = char(datetime('now', 'Format', 'yyyyMMdd_HHmmss'));  % time of this run
+file_base = fullfile(results_folder, ['two_stage_ULCF_' time_stamp]);
+
+save([file_base '.mat'], 'quick_flag', 'datasize', 'pin_ary', ...
+    'list_dcs_input_port_num', 'mod_flag', 'up', 'baudrate', 'pol_flag', ...
+    'fiber_flag', 'Fan_in_loss', 'Fan_out_loss', 'flg_NWDM', 'N', 'NF', ...
+    'edfa_sat1', 'edfa_sat2', 'NF2', 'rolloff', 'signal_interval', ...
+    'dcs_ex_ratio', 'ULCF_flag', 'ULCF_deg_ary', 'splitter_loss', 'AWG_loss', ...
+    'FWHM_AWG', 'AWG_XT', 'Morder', 'seed', 'BER_limit', 'required_PTx', ...
+    'BER_ary', 'data_PC', 'legacy_PTx', 'diff_PTx', 'num_point', ...
+    'elapsed_time', 'time_stamp', 'matlab_version');</code></pre>
+<p><code>save</code> writes the named variables into a <code>.mat</code> file. The script names every parameter, the seed and every result, so the file alone shows how the result was made. <code>fullfile</code> joins folder and file names. The time stamp makes every file name new, so a run never overwrites an older result.</p>
+<p>The given scripts do not read a <code>.mat</code> file back; you will do that in your own scripts. Name the variables that you want. The next three lines are an example with <code>matlab</code> as the current folder. Use the name of your own result file.</p>
+<pre><code>load('results/two_stage_ULCF_20261005_181204.mat', 'required_PTx', 'ULCF_deg_ary');
+A = readmatrix('results/two_stage_ULCF_20261005_181204_required_PTx.csv', 'NumHeaderLines', 1);
+writematrix(required_PTx, 'work/my_table.csv');</code></pre>
+<p><code>load</code> without a list of names brings back all saved variables and overwrites variables of the same name in your workspace, for example <code>datasize</code>. <code>readmatrix</code> reads a CSV file into a matrix, and <code>'NumHeaderLines', 1</code> skips the header line; the scripts in <code>main/</code> read their reference files in this way. They write their CSV files with <code>fopen</code>, <code>fprintf</code> and <code>fclose</code>, because each file begins with a header line. For a matrix of numbers without a header, <code>writematrix</code> does the same in one line.</p>
+</section>
+
+<section id="s5">
+<h2>5. Every given file at a glance</h2>
+<p>Tables 6 and 7 list every <code>.m</code> file of the package: 23 functions and 18 scripts. The last column names the page that explains the file.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 6. The 23 functions in <code>matlab/lib/</code>, in the order of the pages that explain them.</caption>
+<thead><tr><th>File</th><th>What it does</th><th>On page</th></tr></thead>
+<tbody>
+<tr><td><code>attenuation.m</code></td><td>Applies a power loss given in dB to an optical field.</td><td><a href="12_units_power_budget.html">12</a></td></tr>
+<tr><td><code>calc_signal_power.m</code></td><td>Returns the mean power of an optical field in dBm.</td><td><a href="12_units_power_budget.html">12</a></td></tr>
+<tr><td><code>set_signal_power.m</code></td><td>Scales an optical field to a given mean power in dBm.</td><td><a href="12_units_power_budget.html">12</a></td></tr>
+<tr><td><code>selector_loss.m</code></td><td>Insertion loss of a 1 x M (or M x 1) optical selector in dB.</td><td><a href="12_units_power_budget.html">12</a>, <a href="16_space_switch_crosstalk.html">16</a></td></tr>
+<tr><td><code>coupler_loss.m</code></td><td>Insertion loss of an N x 1 optical coupler in dB.</td><td><a href="12_units_power_budget.html">12</a>, <a href="16_space_switch_crosstalk.html">16</a></td></tr>
+<tr><td><code>DCS_loss.m</code></td><td>Insertion loss of an M x M delivery-and-coupling (DC) switch in dB.</td><td><a href="12_units_power_budget.html">12</a>, <a href="16_space_switch_crosstalk.html">16</a></td></tr>
+<tr><td><code>plot_level_diagram.m</code></td><td>Plots the signal power after each stage of a link (level diagram).</td><td><a href="12_units_power_budget.html">12</a></td></tr>
+<tr><td><code>freq_axis.m</code></td><td>Returns the frequency of every FFT bin, in the order of <code>fftshift(fft(x))</code>.</td><td><a href="13_waveform_fft_filter.html">13</a></td></tr>
+<tr><td><code>rcosfilter.m</code></td><td>Raised-cosine (Nyquist) mask for pulse shaping at the transmitter.</td><td><a href="13_waveform_fft_filter.html">13</a></td></tr>
+<tr><td><code>apply_filter.m</code></td><td>Inserts zeros between the samples, then filters in the frequency domain.</td><td><a href="13_waveform_fft_filter.html">13</a></td></tr>
+<tr><td><code>my_qammod.m</code></td><td>Maps symbol numbers 0 to M - 1 to the points of a QAM constellation.</td><td><a href="13_waveform_fft_filter.html">13</a></td></tr>
+<tr><td><code>TL_QAM.m</code></td><td>Transmitter: random bits, QAM symbols, pulse shaping, optical power.</td><td><a href="13_waveform_fft_filter.html">13</a></td></tr>
+<tr><td><code>plot_spectrum.m</code></td><td>Plots the power spectrum of a signal in a new figure.</td><td><a href="13_waveform_fft_filter.html">13</a></td></tr>
+<tr><td><code>nyquistfilter.m</code></td><td>Ideal rectangular (brick-wall) band-pass mask; the receive filter.</td><td><a href="13_waveform_fft_filter.html">13</a>, <a href="14_coherent_rx_dsp_ber.html">14</a></td></tr>
+<tr><td><code>adequalizet.m</code></td><td>Adaptive equalizer that is trained with known symbols.</td><td><a href="14_coherent_rx_dsp_ber.html">14</a></td></tr>
+<tr><td><code>my_qamdemod.m</code></td><td>Decides which QAM constellation point is closest to each received sample.</td><td><a href="14_coherent_rx_dsp_ber.html">14</a></td></tr>
+<tr><td><code>measure_BER_QAM.m</code></td><td>Bit error ratio of received QAM symbols against the transmitted bits.</td><td><a href="14_coherent_rx_dsp_ber.html">14</a></td></tr>
+<tr><td><code>freqoff.m</code></td><td>Shifts the spectrum of a signal by a frequency offset.</td><td><a href="14_coherent_rx_dsp_ber.html">14</a>, <a href="16_space_switch_crosstalk.html">16</a></td></tr>
+<tr><td><code>amplified_by_EDFA3.m</code></td><td>Optical amplifier (EDFA): gain, ASE noise and output power limit.</td><td><a href="15_edfa_ase.html">15</a></td></tr>
+<tr><td><code>gaussfilter.m</code></td><td>Mask of a Gaussian or super-Gaussian optical band-pass filter.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td><code>awg.m</code></td><td>Passes a signal through one channel of an arrayed-waveguide grating (AWG).</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td><code>awg_channel.m</code></td><td>Wavelength channel that an AWG routes from an input port to an output port.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td><code>ULCF_dev_freq.m</code></td><td>Center-frequency deviation of the worst input port of a ULCF AWG.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+</tbody></table></div>
+<div class="tablewrap"><table class="data">
+<caption>Table 7. The 18 scripts. The path is given from the folder <code>matlab</code>.</caption>
+<thead><tr><th>File</th><th>What it does</th><th>On page</th></tr></thead>
+<tbody>
+<tr><td><code>setup_path.m</code></td><td>Puts the folders of the package on the search path.</td><td><a href="../START_HERE.html">Start here</a>, <a href="#s1">section 1</a></td></tr>
+<tr><td><code>tests/run_all_tests.m</code></td><td>Runs the three test scripts one after another. The last line must be <code>All tests passed.</code></td><td><a href="../START_HERE.html">Start here</a></td></tr>
+<tr><td><code>tests/test_lib_power_loss.m</code></td><td>Tests the power and loss functions of the library.</td><td>-</td></tr>
+<tr><td><code>tests/test_lib_filters_qam.m</code></td><td>Tests the filter, QAM and receiver functions of the library.</td><td>-</td></tr>
+<tr><td><code>tests/test_lib_edfa.m</code></td><td>Tests the optical amplifier <code>amplified_by_EDFA3</code>.</td><td>-</td></tr>
+<tr><td><code>demos/demo12_units_power_budget.m</code></td><td>Watt, dBm, dB and the power budget of a switch.</td><td><a href="12_units_power_budget.html">12</a></td></tr>
+<tr><td><code>demos/demo13_waveform_fft_filter.m</code></td><td>From QAM symbols to a waveform that has a spectrum.</td><td><a href="13_waveform_fft_filter.html">13</a></td></tr>
+<tr><td><code>demos/demo14_coherent_rx_dsp_ber.m</code></td><td>Receiver processing, BER and the FEC limit.</td><td><a href="14_coherent_rx_dsp_ber.html">14</a></td></tr>
+<tr><td><code>demos/demo15_edfa_ase.m</code></td><td>EDFA and ASE noise: a loss before the amplifier is expensive.</td><td><a href="15_edfa_ase.html">15</a></td></tr>
+<tr><td><code>demos/demo16_space_switch_crosstalk.m</code></td><td>Leaks of a space switch, in band and out of band.</td><td><a href="16_space_switch_crosstalk.html">16</a></td></tr>
+<tr><td><code>demos/demo17_awg_wavelength_routing.m</code></td><td>AWG passband, cyclic routing and coupler loss.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td><code>main/step21_two_stage_one_point.m</code></td><td>Two-stage ULCF switch, one operating point: BER, power after every block, SNR contributions.</td><td><a href="21_two_stage_ulcf_switch.html">21</a></td></tr>
+<tr><td><code>main/main_two_stage_ULCF.m</code></td><td>Port count of the two-stage ULCF switch versus transmitter power.</td><td><a href="21_two_stage_ulcf_switch.html">21</a></td></tr>
+<tr><td><code>main/step22_three_stage_one_point.m</code></td><td>Conventional three-stage switch, one operating point: BER, power after every block, SNR contributions.</td><td><a href="22_three_stage_conventional.html">22</a></td></tr>
+<tr><td><code>main/main_three_stage_conventional.m</code></td><td>Port count of the conventional three-stage switch versus transmitter power, for Schemes A1 and A2.</td><td><a href="22_three_stage_conventional.html">22</a></td></tr>
+<tr><td><code>work/work1_wavelength_rule.m</code></td><td>Your task 1. Proposed switch: which wavelength does a connection use?</td><td><a href="23_three_stage_proposal.html">23</a></td></tr>
+<tr><td><code>work/work2_three_stage_proposed.m</code></td><td>Your task 2. Proposed three-stage switch: transmission simulation.</td><td><a href="23_three_stage_proposal.html">23</a></td></tr>
+<tr><td><code>work/work3_comparison.m</code></td><td>Your task 3. Three switches compared on one common parameter set.</td><td><a href="23_three_stage_proposal.html">23</a></td></tr>
+</tbody></table></div>
+<p>The three test scripts have no page. Together they call every function of the library with small inputs, so they also show how the functions are called.</p>
+</section>
+
+<section id="s6">
+<h2>6. Running the scripts</h2>
+<h3>A whole file or one section</h3>
+<p>A line that starts with <code>%%</code> begins a section. MATLAB gives you two ways to run a script.</p>
+<ul>
+<li><strong>The whole file:</strong> press <kbd>F5</kbd> in the editor, or type the name of the script in the Command Window.</li>
+<li><strong>One section:</strong> put the cursor in the section and press <kbd>Ctrl</kbd>+<kbd>Enter</kbd>. You worked in this way in the practice chapters.</li>
+</ul>
+<p>Four rules apply to the scripts of this package.</p>
+<ul>
+<li><strong>Run a given script as a whole file first.</strong> Every demo, every script in <code>main/</code> and every test script begins with <code>clear; close all; rng(1);</code>. This line deletes all variables, closes all figures and sets the seed of the random numbers, so a whole run does not depend on what you did before. Save what you still need before you start a script.</li>
+<li><strong>Look at the variables afterwards.</strong> After a run all variables stay in the workspace. Type a name, for example <code>stage_power</code> after <code>step21_two_stage_one_point</code>, to see its value. You can also run one section again, for example the figure section of a demo.</li>
+<li><strong>After you change a parameter, run the whole file again.</strong> A section that runs alone uses the variables that are in the workspace at that moment, including results of the old parameter values.</li>
+<li><strong>Run the four scripts in <code>main/</code> as whole files only.</strong> In the two <code>step...</code> scripts, the later sections compare the simulation of section 3 with a budget, that is with values that formulas predict. The comparison is valid only if all sections ran one after another with the same parameters. The two <code>main_...</code> scripts find the folders <code>results</code> and <code>ref_data</code> from the location of their own file, and MATLAB reports this location correctly only when the whole file runs. When only a section runs, section 1 can stop with a message that ends with <code>The folder of this file is not known when a single section is run.</code> MATLAB can also report a folder of temporary files instead; R2025a does this. The script then does not stop, does not find its reference file, and writes its results outside the package.</li>
+</ul>
+<p>To stop a running script, click in the Command Window and press <kbd>Ctrl</kbd>+<kbd>C</kbd>.</p>
+
+<h3>Quick run and full-size run</h3>
+<p>The first parameter of both <code>main_...</code> scripts is <code>quick_flag</code>. With <code>quick_flag = 1</code>, the value in the given files, a run uses 30000 symbols for each operating point and tries the transmitter power in steps of 1 dB. With <code>quick_flag = 0</code> it uses 150000 symbols and steps of 0.5 dB. Use the quick run to see that everything works and to learn how to read the output. Use the full-size run for a result that you keep. The <code>.mat</code> file stores <code>quick_flag</code>, so a result file always shows which kind of run made it.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 8. Run times on your supervisor's PC (desktop PC with a 16-core processor, MATLAB R2025a), rounded. For the two <code>main_...</code> scripts, the number of operating points and the time come from the line that the script prints after its search, for example <code>170 operating points in 17.0 s (0.10 s per point)</code>. The other times were measured with <code>tic</code> and <code>toc</code>. In two other measurements the times of the two runs with <code>quick_flag = 0</code> differed from the values of this table by up to 8 percent. The times depend on the PC and on the other programs that run on it at the same time. Read them as rough guides.</caption>
+<thead><tr><th>Script</th><th>Setting</th><th class="num">Operating points</th><th class="num">Time</th></tr></thead>
+<tbody>
+<tr><td><code>run_all_tests</code></td><td>-</td><td class="num">-</td><td class="num nt">4 s</td></tr>
+<tr><td><code>step21_two_stage_one_point</code></td><td>as given</td><td class="num nt">1</td><td class="num nt">&lt; 5 s</td></tr>
+<tr><td><code>step22_three_stage_one_point</code></td><td>as given</td><td class="num nt">1</td><td class="num nt">&lt; 5 s</td></tr>
+<tr><td><code>main_two_stage_ULCF</code></td><td><code>quick_flag = 1</code></td><td class="num nt">170</td><td class="num nt">17 s</td></tr>
+<tr><td><code>main_two_stage_ULCF</code></td><td><code>quick_flag = 0</code></td><td class="num nt">315</td><td class="num nt">3 min</td></tr>
+<tr><td><code>main_three_stage_conventional</code></td><td><code>quick_flag = 1</code></td><td class="num nt">36</td><td class="num nt">12 s</td></tr>
+<tr><td><code>main_three_stage_conventional</code></td><td><code>quick_flag = 0</code></td><td class="num nt">64</td><td class="num nt">2.5 min</td></tr>
+</tbody></table></div>
+
+<h3>Where the results go</h3>
+<p>The demos and the two <code>step...</code> scripts save nothing: they print their numbers in the Command Window and open figures. Each run of a <code>main_...</code> script writes four files into <code>matlab/results/</code> and prints their names at the end. The names carry the date and the time of the run:</p>
+<pre><code>two_stage_ULCF_20261005_181204.mat
+two_stage_ULCF_20261005_181204_portcount.csv
+two_stage_ULCF_20261005_181204_required_PTx.csv
+two_stage_ULCF_20261005_181204.png</code></pre>
+<p>The <code>.mat</code> file holds all parameters, the seed and all results. The first CSV file holds the port count for every transmitter power, the second one the required transmitter power for every switch size, and the <code>.png</code> file is the figure. The files of <code>main_three_stage_conventional</code> begin with <code>three_stage_conventional_</code>. Pages <a href="21_two_stage_ulcf_switch.html">21</a> and <a href="22_three_stage_conventional.html">22</a> explain the content.</p>
+</section>
+
+<section id="s7">
+<h2>7. Troubleshooting</h2>
+<p>An error message is red text in the Command Window. It states the reason first; if its first line reads <code>Error using ...</code>, the reason is on the line below. The lines that begin with <code>Error in</code> name the file and the line number of every call; the last of them is the script that you started. A message of this package begins with the name of the function or script that wrote it, for example <code>freqoff: ...</code>, and says what to do. Table 9 lists the errors that are most likely in your first weeks.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 9. Symptoms, causes and fixes. The messages of MATLAB itself are quoted from R2025a in English.</caption>
+<thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td><code>Unrecognized function or variable 'run_all_tests'.</code><br><code>Undefined function 'attenuation' for input arguments of type 'double'.</code><br><code>... the library is not on the MATLAB path. Run setup_path first.</code></td><td>The search path is not set in this MATLAB session. This happens after every restart of MATLAB.</td><td>Make <code>matlab</code> the current folder and run <code>setup_path</code>. If MATLAB does not find <code>setup_path</code> itself, the current folder is not <code>matlab</code>.</td></tr>
+<tr><td><code>setup_path</code> prints <code>Note: a second copy of attenuation.m is lower on the path (not used):</code>, or it stops with <code>setup_path: MATLAB does not take attenuation from this tree ...</code>, or a call such as <code>y = attenuation(x, 3)</code> stops with <code>Index in position 1 is invalid. Array indices must be positive integers or logical values.</code></td><td>The name of a library function exists in a second place: in the earlier laboratory code, in a second copy of this package, or as a variable of yours. A file in the current folder wins over the path, and a variable wins over every file.</td><td>Type <code>which -all attenuation</code>. If the first line is <code>attenuation is a variable.</code>, type <code>clear attenuation</code>, and never give a variable the name of a function. Otherwise the first line must be the file in <code>matlab\lib</code> of your package; the lines marked <code>% Shadowed</code> are not used. If the first line is another file, or if a second copy is listed, restart MATLAB, make the folder <code>matlab</code> of one package the current folder, and run <code>setup_path</code> there.</td></tr>
+<tr><td><code>calc_signal_power: signal_w is a row vector. Signals must be column vectors.</code><br>Eight other library functions stop in the same way, each with a message that begins with its own name.</td><td>You passed a signal as a row vector, as in the practice chapters.</td><td>Create the data as a column, for example <code>randi([0 1], n, 1)</code>, or convert it with <code>x = x(:);</code>. Do not rely on the error: <code>attenuation</code>, <code>my_qammod</code> and <code>my_qamdemod</code> accept a row vector and return a row vector.</td></tr>
+<tr><td><code>apply_filter: H must be a column vector with up*size(dataIn,1) = 4000 elements, but its size is 2000 x 1.</code></td><td>The mask was made for another number of samples. This happens when you change <code>datasize</code> or <code>up</code> and then run only a part of a script.</td><td>Run the whole file, so that the mask is made again with the new values.</td></tr>
+<tr><td><code>Arrays have incompatible sizes for this operation.</code><br><code>Dimensions of arrays being concatenated are not consistent.</code></td><td>Two arrays of different sizes are added, multiplied or joined.</td><td>Print <code>size(a)</code> and <code>size(b)</code> just before the line of the error. Both must be columns of the same length.</td></tr>
+<tr><td><code>Requested 60000x60000 (53.6GB) array exceeds maximum array size preference ...</code><br>A result that should be a vector is a large matrix.</td><td>A row vector and a column vector were combined. MATLAB then expands both to a matrix without a message: <code>ones(1, 5) + ones(5, 1)</code> is a <span class="nt">5 x 5</span> matrix. With <span class="nt">60000</span> samples of a complex signal this matrix needs <span class="nt">54 GB</span> of memory.</td><td>Make both variables column vectors (<code>x(:)</code>).</td></tr>
+<tr><td>A run is slow, or MATLAB reports that it is out of memory.</td><td>The run time and the memory grow with <code>datasize*up</code> and with the number of signals. A full-size run of <code>main_two_stage_ULCF</code> holds a <span class="nt">300000 x 32</span> complex matrix, about <span class="nt">0.15 GB</span>.</td><td>Use <code>quick_flag = 1</code>, or a smaller <code>datasize</code>, while you test. Keep <code>up = 2</code>: a larger value makes the run longer, and it does not change the BER or the SNR by more than the random error of one run (see the note on up in <code>step21_two_stage_one_point</code>). In the three-stage scripts, <code>xt_wave_max = 16</code> makes a full-size run about 2.5 times faster with the same required powers (see the note in <code>step22_three_stage_one_point</code>).</td></tr>
+<tr><td>The BER or a power differs between two runs.</td><td>The data bits and the noise are random numbers. Two runs give the same numbers only if the seed, <code>datasize</code> and <code>up</code> are the same and the script runs from its first line. With another seed the BER changes by its random error, about 4 percent for 700 counted bit errors.</td><td>Run the whole file. The scripts set the seed at the start, and the <code>main_...</code> scripts set it again before every operating point. Do not draw a conclusion from a difference that is smaller than the random error.</td></tr>
+<tr><td><code>freqoff: foff must be a multiple of the bin spacing fsam/L = 24000000 Hz. Use round(foff*L/fsam)*fsam/L.</code></td><td>The filters use the FFT, which treats the block of samples as periodic. The bins of the spectrum are <code>fsam/L</code> apart, and a frequency shift must be a whole number of bins.</td><td>Use the nearest valid value, as the message says. Example: for 4000 samples at a sampling rate of 96 GHz, <span class="nt">25 GHz</span> becomes <span class="nt">25.008 GHz</span>.</td></tr>
+<tr><td><code>freqoff: abs(foff) must be smaller than fsam/2 (edge of the simulated band).</code></td><td>The simulated band is only as wide as the sampling rate <code>Fs = up*baudrate</code>. The shifted signal does not fit into it.</td><td>Increase <code>up</code> until the offset plus half of the signal bandwidth is at most <code>Fs/2</code> (see the notes in <code>help freqoff</code>).</td></tr>
+<tr><td><code>cd C:\my work\matlab</code> stops with <code>Too many input arguments.</code></td><td>The folder path contains a space. Without quotes, <code>cd</code> reads the path as two arguments.</td><td>Write <code>cd('C:\my work\matlab')</code>. Better: keep the package in a path without spaces and with ASCII characters only, as the page Start here says. In our test the package also ran from a folder with a space and from a folder with Japanese characters in its name (Japanese Windows, R2025a). Other systems were not tested.</td></tr>
+<tr><td>A figure has a dark background, and the black lines are invisible.</td><td>MATLAB R2025a and later can draw dark figures. <code>setup_path</code> switches new figures to light, but only for the session in which it ran.</td><td>Run <code>setup_path</code>, then run the script again.</td></tr>
+</tbody></table></div>
+<div class="box note"><span class="label">Note</span>
+<p>The messages of this package are always in English. The messages of MATLAB itself depend on the version and on the language of your MATLAB. With a Japanese MATLAB the first message of Table 9 reads: <span class="nt" lang="ja">関数または変数 'run_all_tests' が認識されません。</span> When a message is not in the table, copy the complete red text and send it to your supervisor.</p></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>You can say in which three places MATLAB looks for a name, and in which order.</li>
+<li>For any library function, you can tell from <code>help</code> the meaning, the shape and the unit of every input and output.</li>
+<li>You can explain why <code>signal(:, k)</code> is one signal, and what happens when a row vector meets a column vector.</li>
+<li>You can convert between dB and linear numbers in MATLAB, for a power and for a field.</li>
+<li>You ran <code>step21_two_stage_one_point</code> and <code>main_two_stage_ULCF</code> with <code>quick_flag = 1</code>, found the four result files, and loaded <code>required_PTx</code> from the <code>.mat</code> file.</li>
+</ul>
+<p>Then go on to <a href="11_network_ocs_clos.html">page 11</a>. Come back to Tables 6, 7 and 9 whenever you need them.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="03_workflow.html">&larr; <span class="nt">03</span> Workflow</a>
+<a class="next" href="11_network_ocs_clos.html"><span class="nt">11</span> Networks, OCS, Clos &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11 Datacenter networks, optical circuit switches and Clos networks | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a class="current" href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Background</p>
+<h1><span class="num nt">11</span>Datacenter networks, optical circuit switches and Clos networks</h1>
+<p class="lead">The switch of this research has thousands of ports. This page explains what such a switch does in a datacenter, why two stages of smaller switches cannot reach this size, and how a three-stage Clos network can. It also explains the word <em>rearrangement</em>, because the need for rearrangement limits the devices that each stage may use.</p>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Why you need this</a></li>
+<li><a href="#s2">Datacenter networks and the optical circuit switch</a></li>
+<li><a href="#s3">Two building blocks and their limits</a></li>
+<li><a href="#s4">The Clos network</a></li>
+<li><a href="#s5">What rearrangement means</a></li>
+<li><a href="#s6">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Why you need this</h2>
+<p>The planned paper proposes a large optical circuit switch with three stages. To judge any design of such a switch, you first need three answers: what the switch is for, how its size is counted, and why it has three stages. This page gives them.</p>
+<p>The size is the port count \(MN\). It is the product of two numbers that <a href="#s3">section 3</a> explains: the number \(N\) of wavelengths that the switch uses (<code>N</code> in the scripts) and the size \(M\) of its space switches (<code>sw_size</code> or <code>dcs_input_port_num</code> in the scripts). The three stages also set a rule for your own design. An existing connection sometimes has to move to another path, and this move must not change its wavelength (<a href="#s5">section 5</a>).</p>
+<div class="box"><span class="label">Key idea</span>
+<p>Port count = \(M \times N\). The available wavelengths fix \(N\) at about 100, so a larger switch needs a larger \(M\). A three-stage Clos network makes \(M\) large without a large loss before the optical amplifier.</p></div>
+<div class="box note"><span class="label">Sources</span>
+<p>The facts on this page come from two papers of the laboratory and from one reference that the first paper cites. The page calls them the JLT paper, the JOCN paper and Clos (1953).</p>
+<ul>
+<li><span class="nt">Mitsuya et al., "Three-Stage Optical Circuit Switch Architectures for Intra-Datacenter Networking," J. Lightw. Technol., vol. 43, no. 2, pp. 400-407, 2025 (doi 10.1109/JLT.2024.3465208)</span></li>
+<li><span class="nt">Nagai et al., "Design and Verification of Large-Scale Optical Circuit Switch Using ULCF AWGs for Datacenter Application," J. Opt. Commun. Netw., 2018</span></li>
+<li><span class="nt">C. Clos, "A study of non-blocking switching networks," Bell System Tech. J., vol. 32, no. 2, pp. 406-424, Mar. 1953</span></li>
+</ul></div>
+</section>
+
+<section id="s2">
+<h2>2. Datacenter networks and the optical circuit switch</h2>
+<p>A datacenter holds a very large number of servers. The servers are mounted in <strong>racks</strong>. Each rack has a <strong>top-of-rack (ToR) switch</strong>, which connects the servers of the rack to the rest of the datacenter. Typical datacenters connect the ToR switches through several stages of electrical switches, for example aggregation switches and core switches (JOCN paper).</p>
+<p>The links between these switches are optical fibers. Each electrical switch therefore converts the arriving light into an electrical signal, switches it, and converts it back into light. This is an <strong>optical-electrical-optical (O-E-O) conversion</strong>. A signal that crosses three electrical switches is converted three times (Fig. 1(a)).</p>
+<p>Both papers name the power that these conversions consume as a main problem of this architecture, and the traffic keeps growing. According to the JLT paper, the traffic inside datacenters is more than 70% of all datacenter-related traffic and grows by more than 20% per year.</p>
+<p>An <strong>optical circuit switch (OCS)</strong> connects each input fiber to one output fiber and passes the light without converting it. The connection stays as it is until the switch is set differently. This fixed path is the "circuit". The JLT paper quotes two numbers for the benefit:</p>
+<ul>
+<li>In Google's Jupiter datacenter, optical switches were introduced in only one layer of the network, and the power consumption of the datacenter network fell by 41%.</li>
+<li>In a network in which optical switches process 90% of the data flows, the power consumption is 70% lower than in a system of electrical switches with the same throughput.</li>
+</ul>
+<p>The second number belongs to a hybrid network. In such a network, electrical switches still process the small data flows, and optical circuit switches carry the large ones (JOCN paper).</p>
+<p>If one OCS has enough ports for all racks, any two racks are connected in a <strong>single hop</strong>: the signal passes only one switch (Fig. 1(b)). According to the JLT paper, a switch with a high port count and a high throughput (both terms are defined below) removes the multi-stage architecture and so simplifies the fiber interconnection and the traffic control. This is why the research aims at a large switch.</p>
+<figure id="f1"><img src="assets/fig/fig_dc_network_ocs.svg" alt="Left: four racks connected through two aggregation switches and a core switch. Right: the same racks connected through one optical circuit switch.">
+<figcaption><b>Fig. 1.</b> A signal from rack 1 to rack 4. (a) With several stages of electrical switches, it is converted from light to an electrical signal and back in every switch. (b) With one large optical circuit switch, it stays optical between the two ToR switches. The ToR switches are electrical in both cases. The drawing is a schematic example with four racks, not a real network.</figcaption></figure>
+
+<h3>Port count and throughput</h3>
+<p>Two numbers describe the size of an OCS.</p>
+<ul>
+<li><strong>Port count</strong>: the number of input ports, which equals the number of output ports. An \(MN \times MN\) switch connects \(MN\) transmitters to \(MN\) receivers. In the datacenter of Fig. 1(b), these transmitters and receivers belong to the ToR switches.</li>
+<li><strong>Throughput</strong>: the port count multiplied by the bit rate of one port. Example from the JLT paper: <span class="nt">12288 × 200 Gbit/s = 2457.6 Tbit/s</span>.</li>
+</ul>
+<p>The JLT paper names a third key parameter, the switching speed. It appears in <a href="#s5">section 5</a>.</p>
+<p><strong>In the code.</strong> The two step scripts, <code>step21_two_stage_one_point</code> and <code>step22_three_stage_one_point</code>, print the port count as the product of the space-switch size and <code>N</code>. With its default parameters, the second script prints this line:</p>
+<pre><code>Switch size     : 6144 x 6144 ports (M*N = 64*96)</code></pre>
+<p>No given script calculates the throughput. It is one of the quantities that you will compare in <code>matlab/work/work3_comparison.m</code>.</p>
+</section>
+
+<section id="s3">
+<h2>3. Two building blocks and their limits</h2>
+<p>The switches of this research are built from two kinds of smaller switches. The JLT paper calls them <strong>sub-switches</strong>. Table 1 compares them. The text below the table explains its terms, and two later pages treat the sub-switches in detail.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. The two sub-switches.</caption>
+<thead><tr><th></th><th>Space switch</th><th>Wavelength-routing (WR) switch</th></tr></thead>
+<tbody>
+<tr><th>Size</th><td>\(M \times M\)</td><td>\(N \times N\)</td></tr>
+<tr><th>What selects the output port</th><td>the setting of the switch</td><td>the wavelength of the signal</td></tr>
+<tr><th>Made of</th><td>selectors and couplers</td><td>aggregation coupler, optical amplifier (EDFA), arrayed-waveguide grating (AWG)</td></tr>
+<tr><th>What limits the size</th><td>loss</td><td>the number of wavelengths</td></tr>
+<tr><th>Details</th><td><a href="16_space_switch_crosstalk.html">page 16</a></td><td><a href="17_awg_wavelength_routing.html">page 17</a></td></tr>
+</tbody></table></div>
+
+<h3>Space switch</h3>
+<p>A <strong>space switch</strong> of size \(M \times M\) connects each of its \(M\) input ports to any of its \(M\) output ports. It treats every wavelength in the same way. It is built from two elements. Their losses are given in decibels (dB): 3 dB is a factor of 2 in power, and 10 dB is a factor of 10 (<a href="12_units_power_budget.html">page 12</a>).</p>
+<ul>
+<li>A <strong>selector</strong> (\(1 \times M\)) is a switch that connects its one input to one of its \(M\) outputs. Its loss is small: 0.5 dB each time \(M\) doubles.</li>
+<li>A <strong>coupler</strong> (\(M \times 1\)) adds the light of its \(M\) inputs into one output. It needs no control, but its loss is large: 3.5 dB each time \(M\) doubles.</li>
+</ul>
+<p>The space switch of the two-stage switch has a selector at every input and a coupler at every output. It is called a <strong>delivery-and-coupling (DC) switch</strong>.</p>
+
+<h3>Wavelength-routing switch</h3>
+<p>Every transmitter of the switch has a tunable laser. It can send on any of \(N\) laser frequencies on a fixed grid. Each of these frequencies is one <strong>wavelength channel</strong>.</p>
+<p>A <strong>wavelength-routing (WR) switch</strong> of size \(N \times N\) consists of three parts. An \(N \times 1\) coupler, the <strong>aggregation coupler</strong>, collects the \(N\) input signals into one fiber. An erbium-doped fiber amplifier (EDFA), which is an optical amplifier (<a href="15_edfa_ase.html">page 15</a>), restores the power. A \(1 \times N\) AWG separates the wavelength channels: each of its output ports passes one channel. A transmitter therefore selects the output port of the WR switch by selecting its wavelength.</p>
+
+<h3>Two stages: the port counts multiply</h3>
+<p>The two-stage switch places \(N\) DC switches (\(M \times M\)) in front of \(M\) WR switches (\(N \times N\)). Output \(k\) of every DC switch is connected to WR switch \(k\). A transmitter reaches the receiver at WR switch \(k\), output \(j\), in two steps: its DC switch selects output \(k\), and its laser is tuned to wavelength channel \(j\). <a href="21_two_stage_ulcf_switch.html">Page 21</a> treats this switch with the AWG of the JOCN paper.</p>
+<p>There are \(M\) WR switches with \(N\) outputs each. The switch therefore has \(MN\) ports, although each sub-switch still has the size \(M\) or \(N\).</p>
+<p>The coupler at an output of a DC switch can carry several signals at the same time, as long as their wavelengths differ. Signals that go to the same WR switch always differ in wavelength, because they go to different receivers. A new connection between a free transmitter and a free receiver can therefore always be set up, whatever connections already exist. A switch with this property is called <strong>strictly non-blocking</strong>, and both papers state it for the two-stage switch.</p>
+
+<h3>Why two stages stop scaling</h3>
+<p>To get more ports, \(N\) or \(M\) must grow. Both have a limit.</p>
+<ul>
+<li>\(N\) is limited by the bandwidth of the lasers and the amplifiers: typically about 100 wavelengths on the 50-GHz grid in the C band (JLT paper). The C band is the wavelength range that the EDFA amplifies, and on the 50-GHz grid neighboring channels are 50 GHz apart (<a href="17_awg_wavelength_routing.html">page 17</a>). This project uses \(N = 96\).</li>
+<li>\(M\) is limited by loss. Each time \(M\) doubles, the DC switch loses 4 dB more (0.5 dB in the selector and 3.5 dB in the coupler), and this loss lies before the EDFA.</li>
+</ul>
+<p>The JLT paper gives the loss that a signal of the two-stage switch has collected when it reaches the EDFA:</p>
+<div class="eq" id="e1"><div class="m">\[ L_{\mathrm{two}} = \underbrace{4\,\lceil \log_2 M \rceil}_{\text{DC switch}} + \underbrace{3.5\,\lceil \log_2 N \rceil}_{\text{aggregation coupler}} \quad [\mathrm{dB}] \]</div><span class="eqno nt">(1)</span></div>
+<p>The brackets \(\lceil\ \rceil\) mean rounding up to the next integer. For \(N = 96\) the second term is <span class="nt">3.5 × 7 = 24.5 dB</span>, because \(\log_2 96 = 6.58\) is rounded up to 7. With \(M = 8\) the total is <span class="nt">12 + 24.5 = 36.5 dB</span>, and with \(M = 64\) it is <span class="nt">24 + 24.5 = 48.5 dB</span>. A loss of <span class="nt">48.5 dB</span> leaves only about <span class="nt">1/70000</span> of the power. The signal power is lowest at the input of the EDFA, and <a href="15_edfa_ase.html">page 15</a> shows that the power at this point decides the signal quality. This loss therefore cannot grow without limit.</p>
+<p>The JLT paper reports how this limit appears for a 200-Gbit/s signal and \(N = 96\). With a transmitter power of 0 dBm (that is 1 mW), the two-stage switch reaches 384 ports. The paper allows a transmitter power of at most 5 dBm. Up to this power, no two-stage switch with more than 1000 ports is possible, and the paper names the loss before the EDFA as the reason.</p>
+<p><strong>In the code.</strong> The two terms of Eq. (1) are the library functions <code>DCS_loss</code> and <code>coupler_loss</code> (<a href="12_units_power_budget.html">page 12</a>). Each takes the number of ports and returns the loss in dB. After <code>setup_path</code> you can type this in the Command Window:</p>
+<pre><code>DCS_loss(64) + coupler_loss(96)    % 24 + 24.5 = 48.5 dB</code></pre>
+<p>In <code>step21_two_stage_one_point</code> the two terms are the variables <code>dcs_loss</code> and <code>agg_coupler_loss</code>. With its default parameters that script uses the AWG of the JOCN paper, so its aggregation coupler has fewer than \(N\) inputs. With <code>ULCF_flag = 0</code> the coupler has \(N\) inputs, as in Eq. (1); the note in section 1 of the script tells you to set <code>ULCF_deg = 1</code> together with it.</p>
+</section>
+
+<section id="s4">
+<h2>4. The Clos network</h2>
+<p>The lossy part of the DC switch is its coupler. The three-stage switch of the JLT paper therefore uses a space switch with selectors on both sides: \(1 \times M\) selectors at its inputs and \(M \times 1\) selectors at its outputs. Each time \(M\) doubles, such a switch loses only <span class="nt">2 × 0.5 = 1 dB</span> more.</p>
+<p>This has a price. A coupler output can carry several signals at once, but a selector output carries only one. With selectors at its outputs, a space switch can send only one signal to each WR switch. If the two-stage switch used such space switches, two transmitters at the same space switch could not reach two receivers at the same WR switch at the same time. Each receiver must therefore be able to take its signal from any WR switch. A third stage of space switches behind the WR switches makes this possible. The result is a network that C. Clos described in 1953.</p>
+
+<h3>Three stages and two conditions</h3>
+<p>A three-stage <strong>Clos network</strong> has \(r\) first-stage switches with \(n\) inputs each, \(m\) middle-stage switches, and \(r\) third-stage switches with \(n\) outputs each. Every first-stage switch has exactly one link to every middle-stage switch. Every middle-stage switch has exactly one link to every third-stage switch. Each link carries one signal.</p>
+<p>A connection from an input to an output therefore has exactly \(m\) possible paths: one through each middle-stage switch. To set up a connection means to choose its middle-stage switch.</p>
+<p>A <strong>request</strong> is a new connection between a free input and a free output. A request is <strong>blocked</strong> if each of its \(m\) paths contains a link that is already in use. Two properties of a network are distinguished.</p>
+<ul>
+<li><strong>Strictly non-blocking</strong>: no request is ever blocked, whatever connections already exist.</li>
+<li><strong>Rearrangeably non-blocking</strong>: a request can be blocked, but it can always be set up after some existing connections have been moved to other middle-stage switches.</li>
+</ul>
+<p>The number of middle-stage switches decides which property the network has. The JLT paper uses the following two conditions and cites Clos (1953) for the network:</p>
+<div class="eq" id="e2"><div class="m">\[ m \ge 2n-1 \ \ \text{(strictly non-blocking)}, \qquad m \ge n \ \ \text{(rearrangeably non-blocking)} \]</div><span class="eqno nt">(2)</span></div>
+<p>You can understand the first condition by counting. The first-stage switch of the request has \(n-1\) other inputs. In the worst case they use \(n-1\) different middle-stage switches. The third-stage switch of the request has \(n-1\) other outputs, and they can use \(n-1\) further middle-stage switches. So up to \(2n-2\) middle-stage switches can be closed to the request. With \(2n-1\) of them, one always remains.</p>
+<p>The second condition is the smallest possible number: the \(n\) inputs of one first-stage switch need \(n\) different middle-stage switches. With \(m = n\) every set of connections can still be set up, but only if existing connections may be moved.</p>
+
+<h3>The Clos network of this project</h3>
+<p>The JLT paper uses space switches in the first and third stages and WR switches in the middle stage. It calls this arrangement Scheme A. This is the conventional three-stage switch of this project (<a href="22_three_stage_conventional.html">page 22</a>). Table 2 maps the letters of the Clos network to the letters of this project.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. The Clos network and the three-stage switch of this project.</caption>
+<thead><tr><th>Clos network</th><th>This project</th><th>In the scripts</th></tr></thead>
+<tbody>
+<tr><td>\(r\) first-stage switches, \(n\) inputs each</td><td>\(N\) space switches, each \(M \times M\)</td><td><code>N</code>, <code>sw_size</code></td></tr>
+<tr><td>\(m\) middle-stage switches</td><td>\(M\) WR switches, each \(N \times N\)</td><td><code>sw_size</code>, <code>N</code></td></tr>
+<tr><td>\(r\) third-stage switches, \(n\) outputs each</td><td>\(N\) space switches, each \(M \times M\)</td><td><code>N</code>, <code>sw_size</code></td></tr>
+<tr><td>\(nr\) inputs and \(nr\) outputs</td><td>port count \(MN\)</td><td><code>sw_size*N</code></td></tr>
+</tbody></table></div>
+<p>The wiring follows the Clos rule. First-stage switch \(i\) sends its output \(k\) to WR switch \(k\), where it arrives at input \(i\). Every WR switch sends its output \(j\) to third-stage switch \(j\). Figure 2 shows this for a small example.</p>
+<figure id="f2"><img src="assets/fig/fig_clos_three_stage.svg" alt="Three-stage network with two 3 x 3 space switches, three 2 x 2 WR switches and two 3 x 3 space switches. Three paths from input 1 to output 5 are highlighted.">
+<figcaption><b>Fig. 2.</b> The three-stage switch for <span class="nt">M = 3</span> and <span class="nt">N = 2</span> (after Fig. 3 of the JLT paper). It has <span class="nt">MN = 6</span> ports. A connection from In 1 to Out 5 can pass any one of the three WR switches. The real switch has <span class="nt">N = 96</span> and <span class="nt">M = 16 ... 128</span>.</figcaption></figure>
+<p>In this network \(n = m = M\). By Eq. (2) it is rearrangeably non-blocking, with the smallest possible number of middle-stage switches. The JLT paper chooses this number to minimize the hardware cost. A strictly non-blocking network would need \(2M-1\) WR switches. For \(M = 64\) these are 127 WR switches, each with its own EDFA, instead of 64. Every space switch would also need \(2M-1\) ports on the side that faces the WR switches.</p>
+<div class="box note"><span class="label">Note</span>
+<p>The JLT paper writes \(R\) for the number of middle-stage switches. It states that the network is rearrangeably non-blocking if \(M \le R \le 2M-2\), and it sets \(R = M\). For the strictly non-blocking case the sentence in the paper reads \(M \ge 2N-1\). Written for \(R\) middle-stage switches and \(M\) inputs per first-stage switch, the first condition of Eq. (2) is \(R \ge 2M-1\).</p></div>
+
+<h3>What three stages gain and what they cost</h3>
+<p>With selectors on both sides of the first-stage switch, the loss before the EDFA becomes</p>
+<div class="eq" id="e3"><div class="m">\[ L_{\mathrm{three}} = \underbrace{2 \times 0.5\,\lceil \log_2 M \rceil}_{\text{first-stage switch}} + \underbrace{3.5\,\lceil \log_2 N \rceil}_{\text{aggregation coupler}} \quad [\mathrm{dB}] \]</div><span class="eqno nt">(3)</span></div>
+<p>For \(M = 64\) and \(N = 96\) this is <span class="nt">6 + 24.5 = 30.5 dB</span>. Equation (1) gave 48.5 dB for the same size: the three-stage switch has 18 dB less loss before the EDFA, a factor of about 63 in power.</p>
+<p>The JLT paper builds the third-stage switch in two versions. In <strong>Scheme A1</strong> it has selectors on both sides, like the first-stage switch. In <strong>Scheme A2</strong> its outputs have \(M \times 1\) couplers in place of the selectors. This needs fewer elements, but it adds loss (<a href="22_three_stage_conventional.html">page 22</a>). In the simulation of the JLT paper (200-Gbit/s signal, transmitter power 0 dBm), Scheme A1 reaches 12288 ports. The two-stage switch reaches 384.</p>
+<p>The three stages have two costs.</p>
+<ul>
+<li>More hardware. A third stage of space switches is added behind the EDFA, where loss does less harm (<a href="15_edfa_ase.html">page 15</a>). A selector is built from \(1 \times 2\) elements (<a href="16_space_switch_crosstalk.html">page 16</a>). Per port, the JLT paper counts \(4(M-1)\) of them for Scheme A1, \(3(M-1)\) for Scheme A2 and \(M-1\) for the two-stage switch.</li>
+<li>A weaker property. The network is rearrangeably non-blocking, not strictly non-blocking as the two-stage switch is. <a href="#s5">Section 5</a> shows what this means in practice.</li>
+</ul>
+<p><strong>In the code.</strong> These four lines of <code>step22_three_stage_one_point</code> (two from its section 1, two from its section 3) contain the size of the network and the two terms of Eq. (3). The function <code>selector_loss</code> takes the number of ports of a selector and returns its loss in dB.</p>
+<pre><code>sw_size = 64;  % size M of the M x M space switches (64*96 = 6144 ports)
+N = 96;  % number of wavelength channels, on the 50-GHz grid (paper)
+sw1_loss = 2*selector_loss(sw_size);  % the target passes two selectors [dB]
+agg_coupler_loss = coupler_loss(N);</code></pre>
+<p>The script <code>main_three_stage_conventional</code> runs the same chain for <code>list_sw_size = [16 32 64 128]</code>, that is, for 1536, 3072, 6144 and 12288 ports.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>Equation (1) has two terms. The three-stage Clos network reduces the first term: selectors replace the couplers before the EDFA. The AWG of the JOCN paper has several input ports and reduces the second term: several small aggregation couplers replace the large one (<a href="17_awg_wavelength_routing.html">page 17</a>). Your research combines the two.</p></div>
+</section>
+
+<section id="s5">
+<h2>5. What rearrangement means</h2>
+<p>Figure 3(a) shows the network of Fig. 2 with three existing connections. A request arrives: In 1 to Out 1. Both ports are free. The request has three possible paths, one through each WR switch, and each path is blocked.</p>
+<ul>
+<li>WR switch 1: the link from first-stage switch 1 to WR switch 1 already carries the connection In 2 &rarr; Out 4.</li>
+<li>WR switch 2: the link from first-stage switch 1 to WR switch 2 already carries In 3 &rarr; Out 5.</li>
+<li>WR switch 3: the link from WR switch 3 to third-stage switch 1 already carries In 4 &rarr; Out 2.</li>
+</ul>
+<p>The network is rearrangeably non-blocking, so the request can still be set up. In Fig. 3(b) the connection In 4 &rarr; Out 2 has moved from WR switch 3 to WR switch 1. The two links that it needs there were free. WR switch 3 is now empty, and the new connection uses it. To move an existing connection to another middle-stage switch in order to admit a new one is called <strong>rearrangement</strong>.</p>
+<figure id="f3"><img src="assets/fig/fig_rearrangement.svg" alt="Two drawings of the same three-stage network. In the first, a request from input 1 to output 1 is blocked by three existing connections. In the second, one connection has moved to another WR switch and the new connection is set up.">
+<figcaption><b>Fig. 3.</b> Blocking and rearrangement in the network of Fig. 2 (own example in the style of Fig. 5 of the JLT paper). (a) The request In 1 &rarr; Out 1 is blocked although both ports are free. (b) After one existing connection has moved to another WR switch, the request is set up.</figcaption></figure>
+
+<h3>Which devices switch during a rearrangement</h3>
+<p>The moved connection keeps its input port and its output port. Only its path changes. Which devices must act for this depends on what the three stages are made of. Each stage can be a set of space switches or a set of WR switches, and the JLT paper examines all eight combinations (Schemes A to H). Table 3 shows two of them.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. What must switch in each stage when a connection is rearranged (two rows of Table II of the JLT paper).</caption>
+<thead><tr><th>Scheme</th><th>Sub-switches (first / middle / third stage)</th><th>First stage</th><th>Middle stage</th><th>Third stage</th></tr></thead>
+<tbody>
+<tr><td class="nt">A</td><td>space / WR / space</td><td>selector</td><td>nothing</td><td>selector</td></tr>
+<tr><td class="nt">B</td><td>WR / space / space</td><td>tunable laser</td><td>selector</td><td>selector</td></tr>
+</tbody></table></div>
+<p>A WR switch has nothing to switch: a signal leaves it at another output port only if the transmitter changes its wavelength. This is why Table 3 lists the tunable laser for the first stage of Scheme B. The difference between a selector and a tunable laser is speed. The JLT paper gives these numbers:</p>
+<ul>
+<li>a selector switches in less than <span class="nt">10 µs</span>;</li>
+<li>a tunable laser needs more than <span class="nt">100 µs</span> to change its wavelength;</li>
+<li>switching times on the order of <span class="nt">100 µs</span> are desirable for optical switches in datacenters;</li>
+<li>when a request is blocked, up to \(N-1\) existing connections must be moved.</li>
+</ul>
+<p>The paper therefore continues with the schemes in which a rearrangement needs selectors only. These are Scheme A, Scheme C (space / space / WR) and Scheme G (three stages of space switches). It then compares the transmitter power and the hardware that these schemes need (Table V of the paper). For each of the four port counts that it examines, the scheme that it finds reasonable is a version of Scheme A: Scheme A2 for 1536 and 3072 ports, Scheme A1 for 6144 and 12288 ports. This is why Scheme A is the baseline of this project.</p>
+
+<h3>Why Scheme A never changes a wavelength</h3>
+<p>In Scheme A the output port of the AWG fixes the wavelength, and output \(j\) of every WR switch is wired to third-stage switch \(j\). The wavelength of a connection is therefore fixed by its third-stage switch alone. It is the same through every WR switch.</p>
+<p>When the connection In 4 &rarr; Out 2 moves in Fig. 3, selectors in first-stage switch 2 and in third-stage switch 1 change their settings. The WR switches have nothing to switch, and the transmitter keeps its wavelength.</p>
+<div class="box"><span class="label">Rule for your design</span>
+<p>The proposed switch changes the middle stage. With an AWG that has several input ports, the wavelength also depends on the input port (<a href="17_awg_wavelength_routing.html">page 17</a>). Your design must keep the property of Scheme A: the wavelength of a connection must not depend on the middle-stage switch that it passes. Paragraph 6 of the introduction (<a href="01_introduction.html">page 01</a>) states how the proposal does this. You will check it in your own work (<a href="23_three_stage_proposal.html">page 23</a>).</p></div>
+<p><strong>In the code.</strong> The given scripts do not set up or move connections. They calculate the signal quality of one connection on a fixed path, while all other inputs of its space switches carry signals. Rearrangement enters your work as a condition on the design, not as code. The header of <code>matlab/work/work1_wavelength_rule.m</code> lists it among the consistency conditions: the wavelength of a connection does not depend on the wavelength-routing switch that carries it.</p>
+</section>
+
+<section id="s6">
+<h2>6. Check your understanding</h2>
+<ol>
+<li>A three-stage switch has <code>sw_size = 64</code> and <code>N = 96</code>. What is its port count? What is its throughput if every port carries 200 Gbit/s?
+<details><summary>Answer</summary>
+<p><span class="nt">64 × 96 = 6144</span> ports. <span class="nt">6144 × 200 Gbit/s = 1228.8 Tbit/s</span>. The JLT paper built and tested a part of a Scheme A2 switch of this size and states the same throughput.</p>
+</details></li>
+<li>How many space switches and how many WR switches does the switch of question 1 contain? How many EDFAs does it have per port, if every WR switch has one EDFA?
+<details><summary>Answer</summary>
+<p>96 first-stage space switches, 64 WR switches and 96 third-stage space switches. <span class="nt">64 / 6144 = 1/96 ≈ 0.0104</span> EDFAs per port. In general the number is \(1/N\), because \(N\) signals share one EDFA. The JLT paper rounds it to 0.01.</p>
+</details></li>
+<li>Is the switch of question 1 strictly non-blocking? If it is not, how many WR switches would a strictly non-blocking switch need if every first-stage switch keeps its 64 inputs?
+<details><summary>Answer</summary>
+<p>It is not. It has \(n = m = 64\), so it is rearrangeably non-blocking. A strictly non-blocking network needs <span class="nt">m ≥ 2 × 64 - 1 = 127</span> WR switches.</p>
+</details></li>
+<li>The two-stage switch and the three-stage switch both have \(M = 32\) and \(N = 96\). How much loss does a signal collect before the EDFA in each of them?
+<details><summary>Answer</summary>
+<p>Two-stage switch, Eq. (1): <span class="nt">4 × 5 + 3.5 × 7 = 20 + 24.5 = 44.5 dB</span>. Three-stage switch, Eq. (3): <span class="nt">2 × 0.5 × 5 + 3.5 × 7 = 5 + 24.5 = 29.5 dB</span>. The difference is 15 dB, that is 3 dB for each of the five doublings of \(M\). In MATLAB: <code>DCS_loss(32) + coupler_loss(96)</code> and <code>2*selector_loss(32) + coupler_loss(96)</code>.</p>
+</details></li>
+<li>In Fig. 3(a) the request was unblocked by moving In 4 &rarr; Out 2. Find another existing connection whose move also unblocks the request.
+<details><summary>Answer</summary>
+<p>Move In 2 &rarr; Out 4 from WR switch 1 to WR switch 3: the link from first-stage switch 1 to WR switch 3 and the link from WR switch 3 to third-stage switch 2 are both free. The request then uses WR switch 1. In the same way, In 3 &rarr; Out 5 can move from WR switch 2 to WR switch 3, and the request then uses WR switch 2.</p>
+</details></li>
+<li>The switch is built as Scheme A. Which devices change their state when the connection In 4 &rarr; Out 2 moves as in Fig. 3? Which devices do not?
+<details><summary>Answer</summary>
+<p>Selectors in first-stage switch 2 change (In 4 now leaves at output 1, not at output 3), and selectors in third-stage switch 1 change (Out 2 now takes its signal from input 1, not from input 3). The WR switches do not change. The laser of In 4 keeps its wavelength, because the wavelength is fixed by third-stage switch 1, and the connection still ends there.</p>
+</details></li>
+</ol>
+<div class="box"><span class="label">What to carry forward</span>
+<p>The switch of this project is a Clos network of \(N\) first-stage space switches (\(M \times M\)), \(M\) WR switches (\(N \times N\)) and \(N\) third-stage space switches (\(M \times M\)); it has \(MN\) ports and is rearrangeably non-blocking. Because \(N\) is fixed near 100, the port count grows only with \(M\), and \(M\) is limited by loss and by crosstalk (light that leaks from other signals), which pages 12 to 17 teach you to calculate. Whatever you change in the middle stage, a rearrangement must still need selectors only and must never change a wavelength.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="04_matlab_guide.html">&larr; <span class="nt">04</span> MATLAB guide</a>
+<a class="next" href="12_units_power_budget.html"><span class="nt">12</span> Units, power budget &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

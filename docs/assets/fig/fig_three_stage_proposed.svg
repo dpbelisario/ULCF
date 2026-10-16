@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1010" height="600" viewBox="0 0 1010 600">
+<defs>
+  <marker id="ar_opt" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#C0392B"/></marker>
+</defs>
+<rect x="0" y="0" width="1010" height="600" fill="white"/>
+<text x="505" y="30" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle" fill="#222" font-weight="bold">Proposed three-stage switch: one middle-stage module and its neighbors</text>
+<!-- column headers -->
+<text x="20" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">First stage</text>
+<text x="20" y="81" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">N space switches (M x M)</text>
+<text x="20" y="98" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">each: one fiber to every module</text>
+<text x="480" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#B7791F" font-weight="bold">Middle stage: M identical modules (N x N wavelength-routing switches)</text>
+<text x="480" y="81" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">one module: K rows, one per input group; each row = coupler + EDFA + 1 x 2 splitter</text>
+<text x="990" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end" fill="#222" font-weight="bold">Third stage</text>
+<text x="990" y="81" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">N space switches (M x M)</text>
+<text x="990" y="98" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">each: one fiber from every module</text>
+<!-- module frames: two modules behind, one in front -->
+<rect x="232" y="100" width="536" height="424" rx="12" fill="white" stroke="#B7791F" stroke-width="1.4" stroke-opacity="0.55" stroke-dasharray="8,5"/>
+<rect x="222" y="110" width="536" height="424" rx="12" fill="white" stroke="#B7791F" stroke-width="1.4" stroke-opacity="0.55" stroke-dasharray="8,5"/>
+<rect x="212" y="120" width="536" height="424" rx="12" fill="white" stroke="#B7791F" stroke-width="1.8" stroke-dasharray="8,5"/>
+<text x="776" y="116" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#B7791F">M modules</text>
+<!-- first stage: input group 1 and input group K -->
+<text x="75" y="140" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#B7791F" font-weight="bold">input group 1</text>
+<rect x="20" y="149" width="110" height="38" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="75" y="173" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222">M x M</text>
+<circle cx="75" cy="194" r="1.8" fill="#34495E"/><circle cx="75" cy="201" r="1.8" fill="#34495E"/><circle cx="75" cy="208" r="1.8" fill="#34495E"/>
+<rect x="20" y="215" width="110" height="38" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="75" y="239" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222">M x M</text>
+<text x="75" y="272" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">N/K switches</text>
+<line x1="130" y1="168" x2="230" y2="192" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<line x1="130" y1="234" x2="230" y2="210" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<text x="172" y="159" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">N/K fibers</text>
+<text x="75" y="400" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#B7791F" font-weight="bold">input group K</text>
+<rect x="20" y="409" width="110" height="38" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="75" y="433" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222">M x M</text>
+<circle cx="75" cy="454" r="1.8" fill="#34495E"/><circle cx="75" cy="461" r="1.8" fill="#34495E"/><circle cx="75" cy="468" r="1.8" fill="#34495E"/>
+<rect x="20" y="475" width="110" height="38" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="75" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222">M x M</text>
+<text x="75" y="532" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">N/K switches</text>
+<line x1="130" y1="428" x2="230" y2="452" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<line x1="130" y1="494" x2="230" y2="470" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<text x="172" y="419" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">N/K fibers</text>
+<circle cx="75" cy="312" r="2.2" fill="#B7791F"/><circle cx="75" cy="324" r="2.2" fill="#B7791F"/><circle cx="75" cy="336" r="2.2" fill="#B7791F"/>
+<text x="20" y="362" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">input groups 2 to K - 1</text>
+<!-- rows 1 and K of the module: coupler, EDFA, 1 x 2 splitter -->
+<rect x="232" y="176" width="100" height="50" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="282" y="197" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">(N/K) x 1</text>
+<text x="282" y="216" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222">coupler</text>
+<line x1="332" y1="201" x2="362" y2="201" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<polygon points="364,176 364,226 412,201" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="388" y="244" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222" font-weight="bold">EDFA</text>
+<line x1="412" y1="201" x2="440" y2="201" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<rect x="442" y="176" width="100" height="50" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="492" y="197" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">1 x 2</text>
+<text x="492" y="216" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222">splitter</text>
+<text x="282" y="244" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">coupler_loss(N/K)</text>
+<text x="388" y="262" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">N/K wavelengths</text>
+<text x="492" y="244" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">splitter_loss</text>
+<rect x="232" y="436" width="100" height="50" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="282" y="457" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">(N/K) x 1</text>
+<text x="282" y="476" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222">coupler</text>
+<line x1="332" y1="461" x2="362" y2="461" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<polygon points="364,436 364,486 412,461" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="388" y="504" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222" font-weight="bold">EDFA</text>
+<line x1="412" y1="461" x2="440" y2="461" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<rect x="442" y="436" width="100" height="50" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="492" y="457" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">1 x 2</text>
+<text x="492" y="476" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222">splitter</text>
+<circle cx="282" cy="312" r="2.2" fill="#B7791F"/><circle cx="282" cy="324" r="2.2" fill="#B7791F"/><circle cx="282" cy="336" r="2.2" fill="#B7791F"/>
+<circle cx="388" cy="312" r="2.2" fill="#B7791F"/><circle cx="388" cy="324" r="2.2" fill="#B7791F"/><circle cx="388" cy="336" r="2.2" fill="#B7791F"/>
+<circle cx="492" cy="312" r="2.2" fill="#B7791F"/><circle cx="492" cy="324" r="2.2" fill="#B7791F"/><circle cx="492" cy="336" r="2.2" fill="#B7791F"/>
+<text x="388" y="364" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">rows 2 to K - 1</text>
+<!-- the two outputs of each 1 x 2 splitter go to the two AWGs -->
+<line x1="542" y1="191" x2="622" y2="208" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<polyline points="542,211 580,211 580,405 622,405" fill="none" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<polyline points="542,451 600,451 600,258 622,258" fill="none" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<line x1="542" y1="471" x2="622" y2="454" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<!-- pair of ULCF AWGs -->
+<polygon points="624,188 708,162 708,304 624,278" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="668" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">ULCF</text>
+<text x="668" y="241" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">AWG</text>
+<text x="668" y="261" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222">K x (N/2)</text>
+<line x1="708" y1="188" x2="878" y2="188" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<line x1="708" y1="278" x2="878" y2="278" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<circle cx="728" cy="223" r="1.8" fill="#C0392B"/><circle cx="728" cy="233" r="1.8" fill="#C0392B"/><circle cx="728" cy="243" r="1.8" fill="#C0392B"/>
+<text x="812" y="238" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">N/2 outputs</text>
+<polygon points="624,384 708,358 708,500 624,474" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="668" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">ULCF</text>
+<text x="668" y="437" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">AWG</text>
+<text x="668" y="457" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222">K x (N/2)</text>
+<line x1="708" y1="384" x2="878" y2="384" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<line x1="708" y1="474" x2="878" y2="474" stroke="#C0392B" stroke-width="2.2" marker-end="url(#ar_opt)"/>
+<circle cx="728" cy="419" r="1.8" fill="#C0392B"/><circle cx="728" cy="429" r="1.8" fill="#C0392B"/><circle cx="728" cy="439" r="1.8" fill="#C0392B"/>
+<text x="812" y="434" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">N/2 outputs</text>
+<text x="674" y="326" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">pair with interleaved</text>
+<text x="674" y="342" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">passbands</text>
+<text x="668" y="521" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">AWG_loss</text>
+<!-- third stage -->
+<rect x="880" y="169" width="110" height="38" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="935" y="193" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222">M x M</text>
+<rect x="880" y="259" width="110" height="38" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="935" y="283" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222">M x M</text>
+<rect x="880" y="365" width="110" height="38" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="935" y="389" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222">M x M</text>
+<rect x="880" y="455" width="110" height="38" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="935" y="479" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222">M x M</text>
+<circle cx="935" cy="223" r="1.8" fill="#34495E"/><circle cx="935" cy="233" r="1.8" fill="#34495E"/><circle cx="935" cy="243" r="1.8" fill="#34495E"/>
+<circle cx="935" cy="321" r="1.8" fill="#34495E"/><circle cx="935" cy="331" r="1.8" fill="#34495E"/><circle cx="935" cy="341" r="1.8" fill="#34495E"/>
+<circle cx="935" cy="419" r="1.8" fill="#34495E"/><circle cx="935" cy="429" r="1.8" fill="#34495E"/><circle cx="935" cy="439" r="1.8" fill="#34495E"/>
+<text x="990" y="517" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">output j of every module</text>
+<text x="990" y="533" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">goes to third-stage switch j</text>
+<!-- legend -->
+<rect x="20" y="566" width="34" height="18" rx="4" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="62" y="580" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#222">new in the proposed switch</text>
+<rect x="270" y="566" width="34" height="18" rx="4" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="312" y="580" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#222">space switch, as in the conventional switch</text>
+<line x1="610" y1="575" x2="654" y2="575" stroke="#C0392B" stroke-width="2.6"/>
+<text x="662" y="580" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#222">optical fiber</text>
+</svg>

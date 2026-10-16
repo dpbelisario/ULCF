@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14 Coherent receiver, DSP and BER | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a class="current" href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Background</p>
+<h1><span class="num nt">14</span>Coherent receiver, DSP and BER</h1>
+<p class="lead">A coherent receiver turns the light of one wavelength channel back into complex samples. The simulation then filters these samples, equalizes them, decides the symbols and counts the bit errors. This page explains these steps and tells you when a bit error ratio (BER) is low enough. It also shows why a coherent receiver removes a signal on another wavelength: the proposed switch relies on this property.</p>
+
+<div class="pair"><span><b>Script:</b> <code>matlab/demos/demo14_coherent_rx_dsp_ber.m</code></span><span><b>Library:</b> <code>nyquistfilter</code>, <code>apply_filter</code>, <code>adequalizet</code>, <code>my_qamdemod</code>, <code>measure_BER_QAM</code>, <code>freqoff</code></span></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Why you need this</a></li>
+<li><a href="#s2">From the transmitter to the receiver: the complex field</a></li>
+<li><a href="#s3">The local oscillator selects the wavelength</a></li>
+<li><a href="#s4">Receiver processing in the simulation</a></li>
+<li><a href="#s5">BER, the FEC limit and the required SNR</a></li>
+<li><a href="#s6">Run the demo</a></li>
+<li><a href="#s7">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Why you need this</h2>
+<p>Every result of this project is decided at the receiver. The scripts of pages <a href="21_two_stage_ulcf_switch.html">21</a> and <a href="22_three_stage_conventional.html">22</a> send a signal through a switch and ask one question: is the bit error ratio (BER) at the receiver low enough? The feasible port count is the port count of the largest switch for which the answer is yes. To read these results, you must know how the receiver gets from a noisy field to a BER, and how far you can trust a simulated BER.</p>
+<p>The receiver is also the place where the idea of your research works. The signal that a script follows through the switch, and whose BER it measures, is the <strong>target signal</strong>. In a switch, a little light of other signals leaks into the path of the target signal (<a href="16_space_switch_crosstalk.html">page 16</a>). A coherent receiver detects only a narrow band of frequencies around the frequency of its own laser. A leak on the wavelength of the target signal lies inside this band and disturbs it like noise. A leak on another wavelength lies outside this band and is removed. In the proposed switch, the signals that meet in one third-stage switch can have different wavelengths (<a href="23_three_stage_proposal.html">page 23</a>).</p>
+<div class="box"><span class="label">Key idea</span>
+<p>A coherent receiver selects one wavelength channel with the frequency of its own laser, the local oscillator. Only what lies on this wavelength reaches the decision. In the simulation, the receiver has three steps, each done by library functions: the receive filter, the equalizer and the bit-error count.</p></div>
+<div class="box note"><span class="label">Sources</span>
+<p>The numbers and the statements about the switches on this page come from the code and from the two papers of the laboratory, called the JLT paper and the JOCN paper below. The general description of the coherent receiver and of error correction is textbook knowledge. The third item is the reference that the JLT paper cites for its digital coherent receiver. Read it when you want to know what a real receiver does.</p>
+<ul>
+<li><span class="nt">Mitsuya et al., "Three-Stage Optical Circuit Switch Architectures for Intra-Datacenter Networking," J. Lightw. Technol., vol. 43, no. 2, pp. 400-407, 2025 (doi 10.1109/JLT.2024.3465208)</span></li>
+<li><span class="nt">Nagai et al., "Design and Verification of Large-Scale Optical Circuit Switch Using ULCF AWGs for Datacenter Application," J. Opt. Commun. Netw., 2018</span></li>
+<li><span class="nt">M. S. Faruk and S. J. Savory, "Digital signal processing for coherent transceivers employing multilevel formats," J. Lightw. Technol., vol. 35, no. 5, pp. 1125-1141, Mar. 2017</span></li>
+</ul></div>
+</section>
+
+<section id="s2">
+<h2>2. From the transmitter to the receiver: the complex field</h2>
+
+<h3>The IQ modulator</h3>
+<p>In the practice chapters, a QAM symbol was a complex number. In a real transmitter, light carries this number. A laser emits light with a constant amplitude and one optical frequency, the <strong>carrier</strong>. An <strong>IQ modulator</strong> (Fig. 1) splits this light into two arms. A modulator in the first arm multiplies the field by the real part \(I(t)\) of the signal. A modulator in the second arm multiplies the field by the imaginary part \(Q(t)\). The second arm then gets a phase shift of 90°, which is a multiplication by \(j\), and the two arms are combined. The field at the output is the carrier multiplied by \(I(t) + jQ(t)\). This factor is the complex envelope that you know from the practice chapters.</p>
+<figure id="f1"><img src="assets/fig/fig3_ch3_iq_modulator.svg" alt="Block diagram of an IQ modulator. The light of a laser diode is split into two arms. Each arm passes a Mach-Zehnder modulator, driven by I(t) or by Q(t). The Q arm also passes a 90-degree phase shifter. The two arms are combined to the output field.">
+<figcaption><b>Fig. 1.</b> IQ modulator (dashed frame). LD is the laser diode; CW (continuous wave) means that its light has a constant amplitude. An MZM (Mach-Zehnder modulator) changes the amplitude of the light in its arm with a voltage, the drive signal. The upper arm carries the real part I(t) and the lower arm the imaginary part Q(t) of the complex envelope. V_bias,I, V_bias,Q and V_P are bias voltages, which set the working point of a real modulator. The formula under the figure says that a real modulator follows the drive signals only approximately. This page treats the modulator as ideal: its output is the carrier multiplied by I(t) + jQ(t).</figcaption></figure>
+<p>In the code, the function <code>TL_QAM</code> stands for the laser and the IQ modulator (<a href="13_waveform_fft_filter.html">page 13</a>). Its output <code>signal</code> is the complex envelope with <code>up</code> samples per symbol; <code>up</code> is the oversampling rate. The carrier itself is never simulated: the frequency 0 Hz of the simulation stands for the carrier frequency.</p>
+
+<h3>The coherent receiver</h3>
+<p>A photodiode converts light into an electrical current that is proportional to the power \(|E|^2\) of the field \(E\). The phase of the field is lost. This is direct detection, which the practice chapters used for OOK. It cannot detect QAM. A <strong>coherent receiver</strong> (Fig. 2) measures the complex field. It contains its own laser, the <strong>local oscillator</strong> (LO). An optical element with two inputs and four outputs, the <strong>90° hybrid</strong>, adds the LO field \(E_{\mathrm{LO}}\) to the signal field \(E_s\) with four different phases. Two <strong>balanced detectors</strong> convert the four outputs into two electrical signals \(I(t)\) and \(Q(t)\). A balanced detector is a pair of photodiodes whose currents are subtracted. The two electrical signals form one complex signal:</p>
+<div class="eq" id="e1"><div class="m">\[ I(t) + jQ(t) \;\propto\; E_s(t)\,E_{\mathrm{LO}}^{*}(t) \]</div><span class="eqno nt">(1)</span></div>
+<figure id="f2"><img src="assets/fig/fig4_ch4_coherent_rx.svg" alt="Block diagram of a coherent receiver. The signal and the light of a local-oscillator laser enter a 90-degree optical hybrid, which consists of two 3-dB splitters, a 90-degree phase shifter and two 2x2 couplers. Two balanced photodiodes give the electrical outputs I(t) and Q(t).">
+<figcaption><b>Fig. 2.</b> Coherent receiver for one polarization. The 90° optical hybrid (dashed frame) adds the LO field to the signal field in four combinations. Inside it, a 3-dB splitter (3dB) divides its input into two equal parts, and a 2×2 coupler outputs the sum and the difference of its two inputs. Each balanced photodiode (PD) subtracts the currents of two of the four outputs. The results are the real part and the imaginary part of the complex signal of equation (1).</figcaption></figure>
+<p>The LO field has a constant amplitude and the frequency \(f_{\mathrm{LO}}\), so \(E_{\mathrm{LO}}(t) \propto e^{\,j2\pi f_{\mathrm{LO}} t}\). Write the signal as a complex envelope \(A(t)\) on a carrier of the frequency \(f_c\), that is \(E_s(t) = A(t)\,e^{\,j2\pi f_c t}\). The complex conjugate in equation (1) changes the sign of the LO frequency in the exponent, so the two frequencies are subtracted:</p>
+<div class="eq" id="e2"><div class="m">\[ E_s(t)\,E_{\mathrm{LO}}^{*}(t) \;\propto\; A(t)\,e^{\,j2\pi (f_c - f_{\mathrm{LO}})\,t} \]</div><span class="eqno nt">(2)</span></div>
+<p>The receiver outputs the complex field of the signal, with every frequency counted from the LO frequency. If the LO has the frequency of the carrier, \(f_{\mathrm{LO}} = f_c\), the output is \(A(t)\): the complex envelope that the IQ modulator put on the light.</p>
+<div class="box note"><span class="label">Assumption of the model</span>
+<p>The scripts contain no code for Fig. 2. The simulated field is already the complex envelope around the carrier of the target signal. This is the output of an ideal coherent receiver: its LO has exactly the frequency of that carrier, and its detectors add no noise. A real receiver must correct the frequency and the phase of its LO in its digital signal processing (DSP), the calculations on the sampled signals \(I\) and \(Q\). The experiment of the JOCN paper names three DSP steps: polarization recovery, adaptive equalization and phase recovery. The simulation keeps only the equalizer (<a href="#s4">section 4</a>). The header of <code>step22_three_stage_one_point</code> lists laser phase noise under "Not simulated".</p></div>
+
+<h3>Polarization multiplexing</h3>
+<p>Light in a fiber has two <strong>polarizations</strong>: two directions of the field that are perpendicular to each other. Each of them can carry its own signal. <strong>Polarization multiplexing</strong> uses both. The transmitter has two IQ modulators and sends an independent QAM signal of equal power on each polarization. This is the "DP" (dual polarization) in the names DP-16QAM and DP-QPSK of the two papers. The receiver separates the two polarizations and has the structure of Fig. 2 for each of them.</p>
+<p>The simulation calculates one polarization only. It assumes that the receiver separates the two polarizations perfectly: the second polarization behaves like the first and does not disturb it. The transmitter power \(P_{\mathrm{Tx}}\) (<code>PTx</code>) is the power of both polarizations together, so the simulated polarization carries half of it. Block [1] of the two step scripts, <code>step21_two_stage_one_point</code> and <code>step22_three_stage_one_point</code>, contains this line:</p>
+<pre><code>pin = PTx - 3*pol_flag;  % power of the simulated polarization [dBm]</code></pre>
+<p><code>pol_flag = 1</code> means polarization multiplexing, and both scripts use this value. A half is <span class="nt">3.01 dB</span>; the code subtracts <span class="nt">3 dB</span>. With the default <code>PTx = -4</code> of <code>step21_two_stage_one_point</code>, <code>pin</code> is <span class="nt">-7 dBm</span>. The same <span class="nt">3 dB</span> appears again at every amplifier, because the two polarizations share its output power (<a href="15_edfa_ase.html">page 15</a>).</p>
+</section>
+
+<section id="s3">
+<h2>3. The local oscillator selects the wavelength</h2>
+<p>The switch of this project uses \(N = 96\) <strong>wavelength channels</strong>. A wavelength channel is one of the optical frequencies on which a transmitter can send. Frequency and wavelength describe the same light, so this page uses the two words side by side. The carriers of the channels lie on a grid with a spacing of <span class="nt">50 GHz</span> (both papers). The light that reaches a receiver can contain more than one channel: the target signal on channel \(j\) and, for example, a leak of another signal on channel \(j+1\). Equation (2) holds for each signal separately. Let the LO have the frequency of the carrier of the target signal. Then the target signal appears around 0 Hz, and the other signal appears around <span class="nt">+50 GHz</span> (Fig. 3).</p>
+<figure id="f3"><img src="assets/fig/fig_lo_frequency_selection.svg" alt="Two spectra, one above the other. Top: optical spectrum with three rectangular signals 50 GHz apart; the local oscillator is a line in the middle of the center signal, the target. Bottom: electrical spectrum after the coherent receiver; the target lies between -16 GHz and +16 GHz inside the receive filter, the two other signals lie between 34 GHz and 66 GHz on each side and are removed. The simulated band reaches from -80 GHz to +80 GHz.">
+<figcaption><b>Fig. 3.</b> The LO selects the channel. (a) Optical spectrum at the receiver input: the target signal on channel j, other signals on the neighboring channels, and the LO on the carrier of the target signal. (b) Electrical spectrum after the coherent receiver: every frequency is counted from the LO frequency. The receive filter keeps the target signal and removes the other signals. The numbers are those of the demo of this page: <span class="nt">32 GBd</span> and a channel spacing of <span class="nt">50 GHz</span>.</figcaption></figure>
+<p>A signal with the symbol rate \(B\) (the baud rate, <code>baudrate</code> in the code) and a roll-off of 0 occupies the band from \(-B/2\) to \(+B/2\) around its carrier (<a href="13_waveform_fft_filter.html">page 13</a>). At <span class="nt">32 GBd</span>, the target signal occupies <span class="nt">-16 GHz</span> to <span class="nt">+16 GHz</span> after the receiver, and the signal on the next channel occupies <span class="nt">34 GHz</span> to <span class="nt">66 GHz</span>. The electrical part of a coherent receiver, from the photodiodes to the digital filter, passes only a band of about the symbol rate around 0 Hz. The other signal lies outside this band, so the receiver removes it. No optical filter is needed for this. To receive another channel, the receiver tunes its LO laser to that channel.</p>
+<div class="box"><span class="label">The mechanism that your research exploits</span>
+<p>In the conventional three-stage switch, every leak inside a third-stage switch has the wavelength of the target signal (<a href="22_three_stage_conventional.html">page 22</a>). In Fig. 3(b) such a leak lies at 0 Hz, on top of the target signal, and no filter can remove it. In the proposed switch, signals with different wavelengths can meet in one third-stage switch (<a href="23_three_stage_proposal.html">page 23</a>). A leak on another wavelength lies <span class="nt">50 GHz</span> or more away from the target signal, and the coherent receiver removes it.</p></div>
+<div class="box note"><span class="label">In the two papers</span>
+<p>The JOCN paper notes that the de-interleaver in front of its AWGs (for both devices see <a href="17_awg_wavelength_routing.html">page 17</a>) can be replaced by a 1 × 2 splitter if a coherent receiver is used and the higher loss is acceptable. The paper does not give the reason; the natural reading is that it relies on the property of this section. This package uses the 1 × 2 splitter in that place. The JLT paper states that in Scheme A, the conventional three-stage switch of this project, a coherent receiver handles one frequency only, because the frequency at an output port of the switch does not vary. Its LO can then stay on one frequency. In the proposed switch the wavelength at a receiver can depend on where the signal comes from; page 23 comes back to this.</p></div>
+<div class="box warn"><span class="label">Assumption of the model</span>
+<p>The simulation uses an ideal rectangular receive filter. It removes everything outside the band of the target signal completely, however strong it is. No real receiver does this: how well it rejects a signal on another channel depends on its hardware and on the frequency difference. The scripts of pages <a href="21_two_stage_ulcf_switch.html">21</a> and <a href="22_three_stage_conventional.html">22</a> use this filter too. Keep it in mind when you read the assumptions of the model on those pages. For the proposed switch it is one of the decisions that you must justify (<a href="23_three_stage_proposal.html">page 23</a>).</p></div>
+
+<h3>In the code: the receive filter</h3>
+<p>The simulation has no variable for the LO. The frequency 0 Hz of every simulated field is the carrier of the target signal, and this is also the LO frequency. The receive filter is a rectangular mask around 0 Hz (a mask is a column with one factor per frequency, <a href="13_waveform_fft_filter.html">page 13</a>):</p>
+<pre><code>H = nyquistfilter(length(signal), 0, Fs, baudrate*(1+rolloff));</code></pre>
+<p>The second argument is the center of the passband in Hz: 0 means the LO frequency. The fourth argument is the full width of the passband in Hz. With <code>rolloff = 0</code> it is the symbol rate, and the mask passes the frequencies \(-B/2 \le f \lt +B/2\). The comments in the code call this filter a brick wall.</p>
+
+<h3>In the code: a signal on another wavelength</h3>
+<p>The function <code>freqoff(x, foff, fsam)</code> moves a signal to another channel. It multiplies the field <code>x</code> by \(e^{\,j2\pi f_{\mathrm{off}} t}\), as in equation (2), so the spectrum moves up by <code>foff</code> (in Hz; <code>fsam</code> is the sampling rate). The header of the function gives two rules.</p>
+<ul>
+<li>The shifted signal must fit into the simulated band, the interval from \(-F_s/2\) to \(+F_s/2\) that the samples can describe (page 13). A part that leaves this band on one side comes back on the other side. The signal has the bandwidth \((1+\alpha)B\), where \(\alpha\) is the roll-off factor (<code>rolloff</code> in the code, page 13). The outer edge of the shifted signal therefore lies at \(|f_{\mathrm{off}}| + (1+\alpha)B/2\). The caller must check that this edge lies inside the simulated band:</li>
+</ul>
+<div class="eq" id="e3"><div class="m">\[ \frac{F_s}{2} \;\ge\; |f_{\mathrm{off}}| + \frac{(1+\alpha)\,B}{2} \]</div><span class="eqno nt">(3)</span></div>
+<ul>
+<li><code>foff</code> must be a multiple of the bin spacing \(F_s/n_{\mathrm{samp}}\) of the FFT, where \(n_{\mathrm{samp}}\) is the number of samples. Otherwise <code>freqoff</code> stops with an error. It also stops if <code>abs(foff)</code> is not smaller than <code>fsam/2</code>.</li>
+</ul>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. A signal on the next channel, <span class="nt">50 GHz</span> away: the band that it occupies after the receiver, and the sampling rate that equation (3) demands for a roll-off of 0. <span class="nt">24 GBd</span> is the symbol rate of <code>step21_two_stage_one_point</code>. <span class="nt">32 GBd</span> is the symbol rate of <code>step22_three_stage_one_point</code> and of the demo of this page.</caption>
+<thead><tr><th>Symbol rate</th><th>Band of the target signal</th><th>Band of the other signal</th><th class="num">\(F_s\) needed</th><th class="num">Smallest <code>up</code> (\(F_s\))</th></tr></thead>
+<tbody>
+<tr><td class="nt">24 GBd</td><td><span class="nt">-12 GHz</span> to <span class="nt">+12 GHz</span></td><td><span class="nt">38 GHz</span> to <span class="nt">62 GHz</span></td><td class="num nt">124 GHz</td><td class="num nt">6 (144 GHz)</td></tr>
+<tr><td class="nt">32 GBd</td><td><span class="nt">-16 GHz</span> to <span class="nt">+16 GHz</span></td><td><span class="nt">34 GHz</span> to <span class="nt">66 GHz</span></td><td class="num nt">132 GHz</td><td class="num nt">5 (160 GHz)</td></tr>
+</tbody></table></div>
+<p>The two step scripts use <code>up = 2</code>, which gives <span class="nt">48 GHz</span> and <span class="nt">64 GHz</span>. This is enough for them, because they add leaks only on the wavelength of the target signal and never shift a signal (see the note on <code>up</code> in section 1 of each step script). It is not enough for a signal on the next channel. The demo of this page puts a signal on the next channel, so it uses <code>up = 5</code> (<span class="nt">160 GHz</span>).</p>
+</section>
+
+<section id="s4">
+<h2>4. Receiver processing in the simulation</h2>
+<p>Fig. 4 shows what the scripts do with the field that arrives at the receiver.</p>
+<figure id="f4"><img src="assets/fig/fig_rx_dsp_chain.svg" alt="Chain of five blocks: coherent detection (ideal, no code), receive filter (nyquistfilter, apply_filter), adaptive equalizer (adequalizet), decision (my_qamdemod) and bit-error count (measure_BER_QAM), which outputs the BER. In front of the equalizer the signal has up samples per symbol (up is the oversampling rate); behind the equalizer it has one sample per symbol. Below the chain, a bar shows the transmitted symbols: symbols 1 to 10000 train the equalizer, symbols 10001 to 30000 are counted in the BER.">
+<figcaption><b>Fig. 4.</b> The receiver of the simulation. The name under a block is the library function that does its work. The lines above the blocks give the number of samples per symbol in that part of the chain; <code>up</code> is the oversampling rate. The bar shows which of the transmitted symbols the receiver uses for what; the numbers are for <code>datasize = 3e4</code>.</figcaption></figure>
+<p>Block [10] of <code>step21_two_stage_one_point</code> is the whole receiver, and <code>step22_three_stage_one_point</code> uses the same calls:</p>
+<pre><code>% [10] Coherent receiver and BER (legacy lines 218-229)
+% receive filter: brick wall with the width of the signal
+H = nyquistfilter(length(signal), 0, Fs, baudrate*(1+rolloff));
+signal = apply_filter(signal, H, 1);
+% equalizer: trained with the first third of the symbols, then frozen
+% (adequalizet does not use its fourth argument; 1/256 is the legacy value)
+training_num = floor(datasize/3);
+signal = adequalizet(signal, Mary, Morder, 1/256, ...
+    data_mod(1:training_num), up);
+% BER of the symbols after the training (mod_flag bits per symbol)
+BER = measure_BER_QAM(signal(training_num+1:end), ...
+    data(mod_flag*training_num+1:end), mod_flag);</code></pre>
+
+<h3>Receive filter</h3>
+<p>The first two code lines are the filter of <a href="#s3">section 3</a>. <code>apply_filter(signal, H, 1)</code> multiplies the spectrum of the signal by the mask <code>H</code>; the third argument 1 means that no zeros are inserted (page 13). The filter removes every signal outside the band of the target signal. It also removes the noise outside this band. For noise that is equally strong at all frequencies of the simulated band (white noise), the filter keeps the fraction \(B/F_s = 1/\mathrm{up}\) of the noise power. After the filter, the signal still has <code>up</code> samples per symbol.</p>
+
+<h3>Adaptive equalizer</h3>
+<p>On its way through the switch, the signal passes elements that do not treat all its frequencies alike. In <code>step21_two_stage_one_point</code>, for example, the signal passes an arrayed-waveguide grating (AWG), an optical filter that separates the wavelength channels (<a href="17_awg_wavelength_routing.html">page 17</a>). Its passband is not centered on the signal, so one side of the spectrum loses more power than the other. Such a distortion spreads every symbol over the instants of its neighbors. This is inter-symbol interference (ISI, page 13). An <strong>equalizer</strong> is a filter in the receiver that undoes the distortion. An <strong>adaptive</strong> equalizer finds its coefficients by itself from the received signal.</p>
+<p><code>adequalizet</code> is a filter with <code>Morder + 1</code> = 17 coefficients, which are called <strong>taps</strong> (the vector \(\mathbf{c}\)). For symbol \(n\) it takes the 17 received samples around the symbol instant (the vector \(\mathbf{u}(n)\)) and outputs one number, the sum of the 17 products of a tap and a sample:</p>
+<div class="eq" id="e4"><div class="m">\[ y(n) = \mathbf{c}^{T}\,\mathbf{u}(n) \]</div><span class="eqno nt">(4)</span></div>
+<p>With <code>up = 2</code>, the 17 samples cover four symbol periods on each side of the symbol instant. The output has one sample per symbol. At the start, the center tap is 1 and all other taps are 0, so the filter passes the signal unchanged. Then the equalizer learns. The receiver knows the first <code>training_num</code> symbols in advance: these are the <strong>training symbols</strong> \(d(n)\), in the scripts <code>data_mod(1:training_num)</code>. After every output, the equalizer compares \(y(n)\) with the known symbol and moves the taps a small step in the direction that makes the error \(e(n) = d(n) - y(n)\) smaller:</p>
+<div class="eq" id="e5"><div class="m">\[ \mathbf{c} \;\leftarrow\; \mathbf{c} + \mu\,\frac{e(n)\,\mathbf{u}^{*}(n)}{\mathbf{u}^{H}(n)\,\mathbf{u}(n)} \]</div><span class="eqno nt">(5)</span></div>
+<p>Here \(\mathbf{u}^{*}(n)\) is the complex conjugate of the 17 samples, and \(\mathbf{u}^{H}(n)\,\mathbf{u}(n)\) is the sum of their squared magnitudes, the power in the window. This rule is the normalized least-mean-square (NLMS) method: the division by the power of the 17 samples makes the step independent of the signal level. The step size \(\mu\) starts at 1/2 and is halved six times during the training, down to 1/128. Large steps bring the taps close to their final values quickly, and small steps at the end keep the noise from shaking them. After the last training symbol the taps are frozen. This is correct when the path of the signal does not change in time, as in the simulation. In <code>lib/adequalizet.m</code>, equations (4) and (5) are these lines (shown without their indentation):</p>
+<pre><code>y(n) = c.'*uu;  % filter output = equalized symbol n
+e = d(n) - y(n);  % error against the known symbol
+nom = sum(uu.*conj(uu)) + 0.001;  % power in the window (0.001 avoids 0/0)
+c = c + pstep/nom*e*conj(uu);  % move the taps against the error</code></pre>
+<p>The equalizer also sets the scale. The training symbols lie on the grid of odd integers of <code>my_qammod</code> (page 13), so the output \(y(n)\) lies on this grid too, whatever the power of the received field is.</p>
+<div class="box note"><span class="label">Why the first third is not counted</span>
+<p>The outputs for the symbols 1 to <code>training_num</code> were made while the taps were still moving, and the receiver knew these symbols in advance. They say nothing about how well the receiver detects unknown data. The scripts therefore count the bit errors only in the symbols after the training. With <code>datasize = 3e4</code>, <code>training_num = floor(datasize/3)</code> is 10000: 10000 symbols train the equalizer, and 20000 symbols are counted.</p></div>
+
+<h3>Decision and bit-error count</h3>
+<p><code>measure_BER_QAM</code> does the last two blocks of Fig. 4. It first calls <code>my_qamdemod</code>, which chooses for every output \(y(n)\) the constellation point with the smallest distance. This is the minimum-distance decision of the practice chapters, also called a hard decision. The result is a symbol number from 0 to \(2^k - 1\), where \(k\) is the number of bits per symbol (<code>mod_flag</code>). <code>measure_BER_QAM</code> then writes every symbol number as \(k\) bits, with the most significant bit first, and compares these bits with the transmitted bits. The BER is the number of wrong bits divided by the number of compared bits:</p>
+<pre><code>sym_num = my_qamdemod(Rx_signal, 2^bitsPerSymbol);  % hard decision, n x 1
+BER = mean(receivedData ~= original_data(:));  % fraction of bits that differ</code></pre>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. The arguments of the receiver calls in block [10] (from the headers of the functions).</caption>
+<thead><tr><th>Call</th><th>Argument in the script</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td rowspan="3"><code>nyquistfilter</code></td><td><code>length(signal)</code></td><td>Number of samples of the signal</td></tr>
+<tr><td><code>0</code>, <code>Fs</code></td><td>Center of the passband in Hz (0 = LO frequency) and sampling rate in Hz</td></tr>
+<tr><td><code>baudrate*(1+rolloff)</code></td><td>Full width of the passband in Hz</td></tr>
+<tr><td rowspan="4"><code>adequalizet</code></td><td><code>signal</code></td><td>Received signal after the receive filter, a column with <code>up</code> samples per symbol; the samples 1, 1 + <code>up</code>, 1 + 2 <code>up</code>, ... are the symbol instants</td></tr>
+<tr><td><code>Mary</code>, <code>Morder</code></td><td>Number of constellation points \(2^k\), and the filter order (an even number; the filter has <code>Morder + 1</code> taps)</td></tr>
+<tr><td><code>1/256</code></td><td>Not used. The argument is kept so that the argument order of the earlier laboratory code stays the same.</td></tr>
+<tr><td><code>data_mod(1:training_num)</code>, <code>up</code></td><td>Training symbols, and the oversampling rate: the number of samples per symbol of the input</td></tr>
+<tr><td rowspan="3"><code>measure_BER_QAM</code></td><td><code>signal(training_num+1:end)</code></td><td>Equalized symbols after the training, one sample per symbol</td></tr>
+<tr><td><code>data(mod_flag*training_num+1:end)</code></td><td>Transmitted bits of the same symbols</td></tr>
+<tr><td><code>mod_flag</code></td><td>Bits per symbol \(k\): 2, 4, 5 or 6</td></tr>
+</tbody></table></div>
+<div class="box warn"><span class="label">Common mistake</span>
+<p><code>data_mod</code> holds symbols, and <code>data</code> holds bits. Every symbol has <code>mod_flag</code> bits, so the bits of the symbols after the training start at index <code>mod_flag*training_num+1</code>, not at <code>training_num+1</code>. <code>measure_BER_QAM</code> stops with an error if the number of bits is not the number of symbols times <code>mod_flag</code>.</p></div>
+</section>
+
+<section id="s5">
+<h2>5. BER, the FEC limit and the required SNR</h2>
+
+<h3>The FEC limit</h3>
+<p>No link is free of bit errors. The transmitter therefore adds check bits to the data, and a decoder in the receiver uses them to correct the errors. This is <strong>forward error correction</strong> (FEC). The decoder succeeds as long as the BER at its input stays below a limit, the <strong>FEC limit</strong>. Both papers use the limit \(10^{-2}\), and this project does the same (<code>BER_limit = 1e-2</code>). The FEC itself is not simulated. A connection works if the BER before the error correction is at most \(10^{-2}\): the main scripts, <code>main_two_stage_ULCF</code> and <code>main_three_stage_conventional</code>, search for the lowest transmitter power with <code>BER &lt;= BER_limit</code>.</p>
+
+<h3>The SNR that a format needs</h3>
+<p>The <strong>signal-to-noise ratio</strong> (SNR) on these pages is the power of the signal divided by the power of the noise inside the bandwidth \(B\) of the signal, the band that the receive filter keeps. For a square constellation with Gray mapping and \(k\) bits per symbol in Gaussian noise, the BER is</p>
+<div class="eq" id="e6"><div class="m">\[ \mathrm{BER} \;\approx\; \frac{2}{k}\left(1 - 2^{-k/2}\right)\operatorname{erfc}\!\left(\sqrt{\frac{3\,\mathrm{SNR}}{2\,(2^{k}-1)}}\right), \qquad k = 2,\ 4,\ 6 \]</div><span class="eqno nt">(6)</span></div>
+<p>The SNR in equation (6) is a ratio, not a value in dB, and <code>erfc</code> is the complementary error function of MATLAB. The formula counts only errors between neighboring points, which is accurate at the BER values of this project. Solving equation (6) for the SNR at \(\mathrm{BER} = 10^{-2}\) gives the <strong>required SNR</strong> of a format (Table 3).</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. Required SNR at the FEC limit \(10^{-2}\). The values are printed by the demo of this page.</caption>
+<thead><tr><th>Format</th><th class="num">\(k\) (<code>mod_flag</code>)</th><th class="num">Required SNR</th><th>Source</th><th>Default format in</th></tr></thead>
+<tbody>
+<tr><td class="nt">QPSK</td><td class="num nt">2</td><td class="num nt">7.33 dB</td><td>Equation (6)</td><td>-</td></tr>
+<tr><td class="nt">16QAM</td><td class="num nt">4</td><td class="num nt">13.90 dB</td><td>Equation (6). The simulated receiver needs <span class="nt">13.96 dB</span>.</td><td><code>step22_three_stage_one_point</code></td></tr>
+<tr><td class="nt">32QAM</td><td class="num nt">5</td><td class="num nt">17.06 dB</td><td>Simulated receiver. Equation (6) does not apply.</td><td><code>step21_two_stage_one_point</code></td></tr>
+<tr><td class="nt">64QAM</td><td class="num nt">6</td><td class="num nt">19.74 dB</td><td>Equation (6)</td><td>-</td></tr>
+</tbody></table></div>
+<p>Three remarks on Table 3.</p>
+<ul>
+<li>32QAM is a cross constellation, not a square (page 13), and its mapping is not a Gray mapping: in <code>my_qammod</code>, 8 of the 52 pairs of neighboring points differ in more than one bit. Equation (6) does not hold for it. Its required SNR is therefore measured with the simulated receiver.</li>
+<li>The simulated receiver needs about <span class="nt">0.1 dB</span> more than equation (6) for 16QAM. The header of <code>adequalizet</code> gives the reason: with noise, the trained equalizer makes the constellation slightly smaller than the grid. The header of <code>main_three_stage_conventional</code> states <span class="nt">14.0 dB</span> for this receiver.</li>
+<li>The two simulated values have a random error. With twelve different seeds of the random numbers, the demo gives <span class="nt">13.9 dB</span> to <span class="nt">14.1 dB</span> for 16QAM and <span class="nt">16.9 dB</span> to <span class="nt">17.1 dB</span> for 32QAM. The value <span class="nt">17.06 dB</span> in Table 3 is at the upper end of its range: read it as about 17 dB.</li>
+</ul>
+<p>Every additional bit per symbol costs about <span class="nt">3 dB</span> of SNR. A switch that must carry 32QAM tolerates less noise and weaker leaks than a switch that carries 16QAM.</p>
+
+<h3>How many symbols are enough</h3>
+<p>A simulated BER is a count of random events, and such a count scatters from run to run. If \(n_{\mathrm{err}}\) bit errors are counted, the relative random error of the BER (its standard deviation divided by its value) is about</p>
+<div class="eq" id="e7"><div class="m">\[ \frac{\sigma_{\mathrm{BER}}}{\mathrm{BER}} \;\approx\; \frac{1}{\sqrt{n_{\mathrm{err}}}} \]</div><span class="eqno nt">(7)</span></div>
+<p>With <code>datasize = 3e4</code>, 20000 symbols are counted. That is 80000 bits for 16QAM and 100000 bits for 32QAM. At the FEC limit, the scripts count 800 or 1000 errors, so the random error is about <span class="nt">3.5 %</span> or <span class="nt">3.2 %</span> of the BER. Near the limit, the BER of 16QAM changes by a factor of 1.9 for <span class="nt">1 dB</span> of SNR (equation (6)), so <span class="nt">3.5 %</span> of the BER corresponds to about <span class="nt">0.05 dB</span>. This is far below the steps of <span class="nt">0.5 dB</span> or <span class="nt">1 dB</span> in which the main scripts change the transmitter power. With only 10 counted errors, the random error would be about <span class="nt">30 %</span>. The header of <code>measure_BER_QAM</code> gives the rule: a BER is reliable only if about 100 or more bit errors were counted.</p>
+</section>
+
+<section id="s6">
+<h2>6. Run the demo</h2>
+<div class="box run"><span class="label">Run it</span>
+<p>In MATLAB, make the folder <code>matlab</code> the current folder and run <code>setup_path</code> (once per MATLAB session). Then run <code>demo14_coherent_rx_dsp_ber</code>. The script needs a few seconds. It prints four lines that begin with <code>Self-check</code>, and each of them must contain <code>passed</code>.</p></div>
+<p>Open the script in the editor and read it next to Table 4. The section numbers are the numbers of the <code>%%</code> sections of the script.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. What <code>demo14_coherent_rx_dsp_ber</code> does.</caption>
+<thead><tr><th>Section</th><th>What it does</th><th>Self-check of the result</th></tr></thead>
+<tbody>
+<tr><td class="nt">1</td><td>Sets the example: <code>datasize = 3e4</code>, <code>baudrate = 32e9</code>, <code>up = 5</code> (the step scripts use 2; the interferer of section 5 needs a wider simulated band, see equation (3)), the SNR values 11 to 15 dB for 16QAM and 14 to 18 dB for 32QAM, <code>Morder = 16</code>, and the second signal of section 5, the interferer: <code>xt_ratio_dB = 0</code> (its power relative to the target signal, in dB) and <code>foff = 50e9</code> (its frequency offset in Hz).</td><td>none</td></tr>
+<tr><td class="nt">2</td><td>Calculates <code>Fs</code> (<span class="nt">160 GHz</span>), the transmit mask <code>Hrcos</code>, the receive filter <code>H</code> and <code>training_num</code> (10000).</td><td>none</td></tr>
+<tr><td class="nt">3</td><td>For each format: one signal from <code>TL_QAM</code>. For each SNR value: white Gaussian noise is added, then the receiver of <a href="#s4">section 4</a> follows: <code>apply_filter</code> with <code>H</code>, <code>adequalizet</code>, <code>measure_BER_QAM</code> on the 20000 symbols after the training.</td><td>none</td></tr>
+<tr><td class="nt">4</td><td>Calculates equation (6) for 16QAM and the required SNR of QPSK, 16QAM and 64QAM. Reads the required SNR of the simulated 16QAM and 32QAM from the simulated points: a straight line through \(\log_{10}\mathrm{BER}\) between the two nearest SNR values. Prints the table.</td><td><span class="nt">1</span>: the simulated BER of 16QAM is within 0.1 decades (a factor of 1.26) of equation (6). <span class="nt">2</span>: the required SNR of the simulated 16QAM is within 0.3 dB of equation (6).</td></tr>
+<tr><td class="nt">5</td><td>Checks equation (3). Makes a 16QAM target at an SNR of 14 dB and the interferer, a second 16QAM signal with other data. Measures the BER in three cases: without the interferer, with the interferer shifted by <code>foff</code> with <code>freqoff</code>, and with the interferer at 0 Hz.</td><td><span class="nt">3</span>: the interferer outside the receive filter does not change the BER. <span class="nt">4</span>: the interferer on the wavelength of the target signal raises the BER.</td></tr>
+<tr><td class="nt">6</td><td>Runs the four self-checks of the last column and prints one line for each.</td><td>none</td></tr>
+<tr><td class="nt">7</td><td>Draws the figure: BER versus SNR.</td><td>none</td></tr>
+</tbody></table></div>
+<p>Section 3 sets the noise power from the wanted SNR with these two lines (shown without their indentation):</p>
+<pre><code>P_noise = mean(abs(signal).^2)*up/10^(snr_dB_ary(q, s)/10);  % in Fs [W]
+noise = sqrt(P_noise/2)*(randn(datasize*up, 1) + 1i*randn(datasize*up, 1));</code></pre>
+<p>The noise is white over the whole simulated band, and the receive filter keeps the fraction <code>1/up</code> of it (<a href="#s4">section 4</a>). The noise power in the simulated band must therefore be <code>up</code> times the noise power that the SNR allows inside the signal bandwidth. The script prints this text:</p>
+<pre><code>BER in white Gaussian noise (20000 symbols counted)
+  SNR [dB]  16QAM theory  16QAM simulation |  SNR [dB]  32QAM simulation
+    11.0    4.221e-02      4.644e-02     |    14.0      4.507e-02
+    12.0    2.813e-02      2.810e-02     |    15.0      3.046e-02
+    13.0    1.716e-02      1.713e-02     |    16.0      1.788e-02
+    14.0    9.376e-03      9.800e-03     |    17.0      1.043e-02
+    15.0    4.465e-03      4.875e-03     |    18.0      5.160e-03
+Required SNR at the FEC limit 1e-02 [dB]
+  theory    : QPSK 7.33, 16QAM 13.90, 64QAM 19.74
+  simulation: 16QAM 13.96, 32QAM 17.06
+16QAM, SNR 14 dB, interferer/target power 0 dB
+  no interferer          : BER = 9.687e-03
+  interferer at +50 GHz  : BER = 9.687e-03
+  interferer at   0 GHz  : BER = 3.127e-01
+Self-check 1 passed: BER of 16QAM = theory within 0.1 decades
+Self-check 2 passed: required SNR of 16QAM = theory within 0.3 dB
+Self-check 3 passed: interferer outside the receive filter = same BER
+Self-check 4 passed: interferer on the same wavelength = higher BER</code></pre>
+<p>Note three details of this output. The simulated BER of 16QAM is not exactly the theory: every point has the random error of equation (7), here between <span class="nt">1.6 %</span> (3715 counted errors at 11 dB) and <span class="nt">5 %</span> (390 counted errors at 15 dB), and the equalizer adds a few percent (<a href="#s5">section 5</a>). The BER with the interferer at <span class="nt">+50 GHz</span> is the BER without the interferer in every digit: the two runs count the same 775 bit errors, because the receive filter removes the interferer completely. At 0 Hz, the same interferer raises the BER to <span class="nt">0.31</span>, about 30 times the FEC limit.</p>
+<figure id="f5"><img src="assets/expected/demo14_coherent_rx_dsp_ber.png" alt="BER on a logarithmic axis versus SNR from 10 dB to 19 dB. A black theory curve for 16QAM falls from 0.06 at 10 dB to 0.002 at 16 dB; five blue circles lie on it. Five red squares for 32QAM lie about 3 dB to the right. A dashed horizontal line marks the FEC limit 0.01. At 14 dB, a magenta cross lies on the 16QAM curve and a magenta triangle lies at 0.31.">
+<figcaption><b>Fig. 5.</b> Expected figure of <code>demo14_coherent_rx_dsp_ber</code>. Black line: equation (6) for 16QAM. Circles and squares: simulated BER of 16QAM and 32QAM. Dashed line: FEC limit. A curve crosses the dashed line at the required SNR of its format. The cross is the 16QAM signal with the interferer <span class="nt">50 GHz</span> away: it lies on the 16QAM curve. The triangle is the same signal with the interferer at 0 Hz.</figcaption></figure>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>All four self-checks print <code>passed</code>, and your figure looks like Fig. 5.</li>
+<li>In section 3 of the script, you can point to the receive filter, the equalizer and the bit-error count, and you find the same three calls in block [10] of <code>step21_two_stage_one_point</code>.</li>
+<li>You can explain why the BER with the interferer at <span class="nt">+50 GHz</span> is exactly the BER without it.</li>
+<li>You can read the required SNR of 16QAM and of 32QAM from your figure.</li>
+</ul></div>
+<div class="box todo"><span class="label">Your task</span>
+<p>Change one parameter in section 1 of the script, predict the result, and then run the script. Set the parameter back before the next experiment.</p>
+<ol>
+<li>Move the interferer: set <code>foff = 32e9</code>, then <code>foff = 24e9</code>. For each value, draw the two spectra as in Fig. 3(b) and predict whether the BER changes. Then try <code>foff = 25e9</code> and read the error message.</li>
+<li>Make the interferer weaker: set <code>xt_ratio_dB = -10</code>, then <code>-20</code>, then <code>-30</code>. How weak must an interferer on the wavelength of the target signal be before the BER comes close to the BER without it? Then set <code>xt_ratio_dB = 20</code> and look at the BER at <span class="nt">+50 GHz</span>.</li>
+<li>Use fewer symbols: set <code>datasize = 3200</code>. Run the script three times, with <code>rng(1)</code>, <code>rng(2)</code> and <code>rng(3)</code> in its first executable line. Before you run it, estimate with equation (7) the random error of the 16QAM point at 15 dB.</li>
+</ol>
+<details><summary>What you should see</summary>
+<ol>
+<li><code>foff = 32e9</code>: the interferer occupies <span class="nt">16 GHz</span> to <span class="nt">48 GHz</span>. It touches the band of the target signal but does not overlap it, and the BER stays at <span class="nt">9.687e-03</span>. <code>foff = 24e9</code>: the interferer occupies <span class="nt">8 GHz</span> to <span class="nt">40 GHz</span>. A quarter of its spectrum lies inside the receive filter, the BER rises to <span class="nt">1.240e-01</span>, and the script prints <code>Self-check 3 skipped</code>. <code>foff = 25e9</code>: <code>freqoff</code> stops, because <span class="nt">25 GHz</span> is not a multiple of the bin spacing <span class="nt">160 GHz / 150000 = 1.0667 MHz</span>.</li>
+<li>The BER with the interferer at 0 Hz is <span class="nt">1.005e-01</span>, <span class="nt">1.755e-02</span> and <span class="nt">1.046e-02</span>. Only at <span class="nt">-30 dB</span> does the BER come close to the BER without the interferer: it is still 8 % higher. At <span class="nt">-20 dB</span> the interferer has 1 % of the power of the target signal, and the BER is still 1.8 times the BER without it. The reason: at an SNR of 14 dB the noise has 4 % of the signal power. The interferer adds 1 %, which lowers the SNR to <span class="nt">13.0 dB</span>, and equation (6) gives <span class="nt">1.69e-02</span> there. An interferer on the wavelength of the target signal acts like noise of the same power (<a href="16_space_switch_crosstalk.html">page 16</a>). With <code>xt_ratio_dB = 20</code>, the BER at <span class="nt">+50 GHz</span> is still <span class="nt">9.687e-03</span>: the ideal filter removes an interferer that is 100 times stronger than the target signal. This is the idealization of <a href="#s3">section 3</a>.</li>
+<li>With 3200 symbols, 2134 symbols are counted, that is 8536 bits. At 15 dB the theory expects about 38 bit errors, so equation (7) gives a random error of about <span class="nt">16 %</span>. In the printed table, the simulated values scatter around the theory. With <code>rng(2)</code> and <code>rng(3)</code>, the point at 15 dB is more than 0.1 decades away from the theory, and the script stops at self-check 1. The script is not wrong: the run is too short for this check. Use 3200 and not 3000: with 3000 symbols, <span class="nt">50 GHz</span> is not a multiple of the bin spacing, and <code>freqoff</code> stops.</li>
+</ol></details></div>
+</section>
+
+<section id="s7">
+<h2>7. Check your understanding</h2>
+<ol>
+<li><code>step21_two_stage_one_point</code> uses <code>baudrate = 24e9</code> and <code>up = 2</code>. You want to add a leak on the next wavelength channel, <span class="nt">50 GHz</span> away. Which band does the leak occupy after the coherent receiver? Does the receive filter remove it? Which <code>up</code> do you need?
+<details><summary>Answer</summary><p>The leak occupies <span class="nt">50 GHz ± 12 GHz</span>, that is <span class="nt">38 GHz</span> to <span class="nt">62 GHz</span>. The receive filter passes <span class="nt">-12 GHz</span> to <span class="nt">+12 GHz</span>, so it removes the leak. Equation (3) demands \(F_s \ge\) <span class="nt">2 × (50 + 12) GHz = 124 GHz</span>. With <code>up = 2</code> the sampling rate is only <span class="nt">48 GHz</span>, and with <code>up = 5</code> it is <span class="nt">120 GHz</span>. The smallest value is <code>up = 6</code> (<span class="nt">144 GHz</span>).</p></details></li>
+<li><code>step22_three_stage_one_point</code> has the default <code>PTx = 4</code> (dBm) and <code>pol_flag = 1</code>. What is the power of the simulated polarization in dBm and in mW?
+<details><summary>Answer</summary><p><code>pin = PTx - 3*pol_flag</code> = <span class="nt">4 - 3 = 1 dBm</span>, which is \(10^{0.1}\) mW = <span class="nt">1.26 mW</span>. The transmitter sends <span class="nt">4 dBm = 2.51 mW</span> on both polarizations together.</p></details></li>
+<li><code>step21_two_stage_one_point</code> uses 32QAM and <code>datasize = 3e4</code>. How many bits does it compare? With its default values it prints <code>763 errors in 100000 bits</code>. How large is the random error of this BER?
+<details><summary>Answer</summary><p><code>training_num</code> is 10000, so 20000 symbols are counted. With 5 bits per symbol, that is <span class="nt">5 × 20000 = 100000</span> bits. Equation (7) gives \(1/\sqrt{763}\) = <span class="nt">3.6 %</span>: the printed BER <span class="nt">7.630e-03</span> has a random error of about <span class="nt">0.28e-03</span>.</p></details></li>
+<li>With their default values, <code>step22_three_stage_one_point</code> (16QAM) prints a simulated SNR of <span class="nt">14.19 dB</span>, and <code>step21_two_stage_one_point</code> (32QAM) prints <span class="nt">17.40 dB</span>. Use Table 3 to decide whether each BER is below the FEC limit, and state the margin in dB.
+<details><summary>Answer</summary><p>The simulated receiver needs <span class="nt">13.96 dB</span> for 16QAM and <span class="nt">17.06 dB</span> for 32QAM. Both scripts are above these values, by about <span class="nt">0.2 dB</span> and <span class="nt">0.3 dB</span>, so both BER values are below the FEC limit. The scripts print <span class="nt">8.700e-03</span> and <span class="nt">7.630e-03</span>. The margins are small: both default points lie just below the limit.</p></details></li>
+<li>A leak has the wavelength of the target signal. Why can no filter in the receiver remove it? What decides how much it disturbs the target signal?
+<details><summary>Answer</summary><p>After the coherent receiver, the band from \(-B/2\) to \(+B/2\) holds the target signal and the leak together. A filter selects by frequency, so every filter that passes the target signal passes the leak too. Only the power of the leak relative to the target signal counts: the leak acts like noise of the same power and lowers the SNR (the second experiment of <a href="#s6">section 6</a>, and <a href="16_space_switch_crosstalk.html">page 16</a>).</p></details></li>
+<li>The scripts call <code>adequalizet</code> with <code>Morder = 16</code>. How many taps does the equalizer have? How many symbol periods does its window cover with <code>up = 2</code>? Why are the outputs for the first <code>training_num</code> symbols not counted in the BER?
+<details><summary>Answer</summary><p>The equalizer has <code>Morder + 1</code> = 17 taps. The first and the last sample of the window are 16 samples apart, which is <span class="nt">16 / 2 = 8</span> symbol periods: four on each side of the symbol instant. The first <code>training_num</code> outputs were made while the taps were still moving, and the receiver knew these symbols in advance. They do not show how well the receiver detects unknown data.</p></details></li>
+</ol>
+<div class="box"><span class="label">What to carry forward</span>
+<p>A coherent receiver detects the band of the width \(B\) around its LO frequency. A signal on another wavelength channel lies outside this band and is removed; a signal on the wavelength of the target signal stays and acts like noise. In the simulation, a connection works if the BER of the symbols after the training is at most \(10^{-2}\): 16QAM needs an SNR of about <span class="nt">14 dB</span> for this, and 32QAM about <span class="nt">17 dB</span>. The next pages show where the SNR comes from: the noise of the amplifiers (<a href="15_edfa_ase.html">page 15</a>) and the leaks of the space switches (<a href="16_space_switch_crosstalk.html">page 16</a>).</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="13_waveform_fft_filter.html">&larr; <span class="nt">13</span> Waveforms, FFT, filters</a>
+<a class="next" href="15_edfa_ase.html"><span class="nt">15</span> EDFA and ASE &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12 Units and power budget | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a class="current" href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Background</p>
+<h1><span class="num nt">12</span>Units and power budget</h1>
+<p class="lead">Almost every optical quantity in this project is a power in dBm or a loss in dB. This page shows how to convert between watts, dBm and dB, what a loss in dB does to the optical field of the simulation, how much loss a selector, a coupler and a DC switch have, and how these losses add up to the power budget of a switch.</p>
+
+<div class="pair"><span><b>Script:</b> <code>matlab/demos/demo12_units_power_budget.m</code></span><span><b>Library:</b> <code>attenuation</code>, <code>set_signal_power</code>, <code>calc_signal_power</code>, <code>coupler_loss</code>, <code>selector_loss</code>, <code>DCS_loss</code>, <code>plot_level_diagram</code></span></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Why you need this</a></li>
+<li><a href="#s2">Watt, dBm and dB</a></li>
+<li><a href="#s3">Field and power</a></li>
+<li><a href="#s4">Loss rules of the elements</a></li>
+<li><a href="#s5">The level diagram</a></li>
+<li><a href="#s6">Run the demo</a></li>
+<li><a href="#s7">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Why you need this</h2>
+<p>In the practice chapters every signal was normalized: the symbol energy was 1, and you chose the SNR. In a switch nobody chooses the SNR. The transmitter sends a certain power, every optical element on the path removes a part of it, and the optical amplifier adds noise. The less power arrives at the amplifier, the more this noise disturbs the signal. The SNR at the receiver is the result.</p>
+<p>The research asks how many ports the switch can have. A switch with more ports needs larger elements, and larger elements have more loss. The port count is therefore limited by a <strong>power budget</strong>: the list of the power of a signal after every element on its path, from the transmitter to the receiver. After this page you can write this list by hand and compare it with the simulation.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>A power is an absolute quantity and is written in dBm. A loss or a gain is a ratio and is written in dB. In these units, the power after a chain of elements is the power before it minus the sum of the losses.</p></div>
+<div class="box note"><span class="label">Source</span>
+<p>The loss rules of <a href="#s4">section 4</a> and the level diagram of <a href="#s5">section 5</a> follow one paper. This page calls it the JLT paper.</p>
+<ul>
+<li><span class="nt">Mitsuya et al., "Three-Stage Optical Circuit Switch Architectures for Intra-Datacenter Networking," J. Lightw. Technol., vol. 43, no. 2, pp. 400-407, 2025 (doi 10.1109/JLT.2024.3465208)</span></li>
+</ul></div>
+</section>
+
+<section id="s2">
+<h2>2. Watt, dBm and dB</h2>
+<p>The powers in a switch differ by many orders of magnitude. A transmitter sends about 1 mW, and less than 1 µW of it can arrive at the amplifier. A logarithmic unit keeps such numbers short. The power \(P\) is compared with 1 mW, and ten times the logarithm of this ratio is the power in <strong>dBm</strong>:</p>
+<div class="eq" id="e1"><div class="m">\[ P_{\mathrm{dBm}} = 10\log_{10}\!\left(\frac{P}{1\ \mathrm{mW}}\right), \qquad P = 1\ \mathrm{mW} \times 10^{P_{\mathrm{dBm}}/10} \]</div><span class="eqno nt">(1)</span></div>
+<p>An optical element passes only a part of the power that enters it. Its <strong>loss</strong> is the ratio of the input power \(P_{\mathrm{in}}\) to the output power \(P_{\mathrm{out}}\). Ten times the logarithm of this ratio is the loss in <strong>dB</strong> (decibel):</p>
+<div class="eq" id="e2"><div class="m">\[ L = 10\log_{10}\!\left(\frac{P_{\mathrm{in}}}{P_{\mathrm{out}}}\right) \quad [\mathrm{dB}] \]</div><span class="eqno nt">(2)</span></div>
+<p>dBm is the unit of a power, and dB is the unit of a ratio. A <strong>gain</strong> is a loss with a negative sign: an amplifier with a gain of 40 dB has a loss of -40 dB.</p>
+<p>The logarithm turns a ratio into a difference. By Eq. (1) and Eq. (2), the output power in dBm is the input power in dBm minus the loss in dB. For \(n\) elements one after the other, the losses add:</p>
+<div class="eq" id="e3"><div class="m">\[ P_{\mathrm{out,dBm}} = P_{\mathrm{in,dBm}} - L_1 - L_2 - \dots - L_n \]</div><span class="eqno nt">(3)</span></div>
+<p>This is the reason for the two units: a chain of elements becomes a subtraction.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. Values worth remembering. Read each row as a ratio (the value in dB) or as a power (the same value in dBm).</caption>
+<thead><tr><th class="num">Value</th><th class="num">in dB: a factor of</th><th class="num">in dBm: a power of</th></tr></thead>
+<tbody>
+<tr><td class="num nt">-30</td><td class="num nt">1/1000</td><td class="num nt">1 µW</td></tr>
+<tr><td class="num nt">-10</td><td class="num nt">1/10</td><td class="num nt">0.1 mW</td></tr>
+<tr><td class="num nt">-3</td><td class="num nt">1/2</td><td class="num nt">0.5 mW</td></tr>
+<tr><td class="num nt">0</td><td class="num nt">1</td><td class="num nt">1 mW</td></tr>
+<tr><td class="num nt">3</td><td class="num nt">2</td><td class="num nt">2 mW</td></tr>
+<tr><td class="num nt">10</td><td class="num nt">10</td><td class="num nt">10 mW</td></tr>
+<tr><td class="num nt">20</td><td class="num nt">100</td><td class="num nt">100 mW</td></tr>
+</tbody></table></div>
+<p>The rows for -3 and 3 are rounded: 3 dB is a factor of 1.995, and a factor of 2 is 3.01 dB. Other values follow from the table, because adding values in dB multiplies the ratios:</p>
+<ul>
+<li><span class="nt">13 dB = 10 dB + 3 dB</span> is a factor of <span class="nt">10 × 2 = 20</span>.</li>
+<li><span class="nt">17 dBm = 20 dBm - 3 dB</span> is <span class="nt">100 mW / 2 = 50 mW</span>.</li>
+<li><span class="nt">-40 dBm = -30 dBm - 10 dB</span> is <span class="nt">1 µW / 10 = 0.1 µW</span>.</li>
+</ul>
+<p>One ratio of this project is not round. The switch uses 96 wavelength channels, that is 96 laser frequencies on a fixed grid (\(N = 96\), <code>N</code> in the scripts). A factor of 96 is \(10\log_{10} 96 = 19.8\) dB.</p>
+
+<h3>Several signals in one fiber: add the powers in watts</h3>
+<p>Equation (3) follows one signal through elements one after the other. It does not apply when several signals are in the same fiber at the same time. Their powers add, and powers add in watts.</p>
+<p>An example from this project: the optical amplifier of the switch, an erbium-doped fiber amplifier (EDFA, <a href="15_edfa_ase.html">page 15</a>), has a total output power of <span class="nt">20 dBm = 100 mW</span>. This is its saturation output power \(P_{\mathrm{sat}}\) (<code>edfa_sat1 = 20</code> in the scripts). In the model, the 96 wavelength channels share this power equally, so each channel gets <span class="nt">100 mW / 96 = 1.042 mW</span>. In dB the division is a subtraction: <span class="nt">20 dBm - 19.82 dB = 0.18 dBm</span>, which is about 0.2 dBm.</p>
+<p>Now read the example backward. One fiber carries 96 channels of 0.18 dBm each. Their total power is <span class="nt">96 × 1.042 mW = 100 mW = 20 dBm</span>. The sum of the 96 values in dBm, <span class="nt">96 × 0.18 = 17.3</span>, has no meaning.</p>
+<div class="box warn"><span class="label">Common mistake</span>
+<p>Never add two powers in dBm. Two signals of 0 dBm together have <span class="nt">2 mW = 3 dBm</span>. Convert to watts, add, and convert back. For \(n\) signals of equal power there is a short way: add \(10\log_{10} n\) dB to the power of one signal. The only thing that you may add to a power in dBm is a ratio in dB.</p></div>
+<p><strong>In the code.</strong> The scripts keep powers in dBm and losses in dB. They convert to watts only where powers are added. Section 2 of the demo writes the two directions of Eq. (1) as follows. The factors <code>1e-3</code> and <code>1e3</code> change between W and mW.</p>
+<pre><code>P_W = 1e-3*10.^(P_dBm/10);  % dBm -&gt; W
+P_back = 10*log10(P_W*1e3);  % W -&gt; dBm</code></pre>
+<p>The division of the amplifier power among the channels is one subtraction in the demo: <code>ch_dBm = edfa_sat1 - 10*log10(N)</code>. The two-stage and the three-stage scripts divide the output power of the EDFA among its channels with the same term: <code>- 10*log10(N)</code> in <code>step22_three_stage_one_point</code> and <code>- 10*log10(N_agg)</code> in <code>step21_two_stage_one_point</code>.</p>
+</section>
+
+<section id="s3">
+<h2>3. Field and power</h2>
+<p>The simulation does not store the power of a signal. It stores the optical <strong>field</strong>: the complex envelope that you know from the practice chapters, as a column vector of samples. In the practice chapters the envelope was normalized. Here it has a physical unit, \(\sqrt{\mathrm{W}}\), so that the squared magnitude of a sample is a power in watts. The power of a signal with the samples \(x_1, \dots, x_n\) is the mean of these squared magnitudes:</p>
+<div class="eq" id="e4"><div class="m">\[ P = \frac{1}{n}\sum_{i=1}^{n} |x_i|^2 \quad [\mathrm{W}] \]</div><span class="eqno nt">(4)</span></div>
+<p>By Eq. (2), an element with a loss of \(L\) dB multiplies the power by \(10^{-L/10}\). The power is the square of the field, so the element multiplies every sample of the field by the square root of this factor:</p>
+<div class="eq" id="e5"><div class="m">\[ y_i = a\,x_i, \qquad a = 10^{-L/20} \]</div><span class="eqno nt">(5)</span></div>
+<p>The number \(a\) is the <strong>amplitude factor</strong>. Two examples: a loss of 3 dB multiplies the power by 0.5012 and the field by 0.7079, which is close to \(1/\sqrt{2}\). A loss of 20 dB multiplies the power by 0.01 and the field by 0.1.</p>
+<div class="box warn"><span class="label">Common mistake</span>
+<p>Divide the value in dB by 10 for a power and by 20 for a field. If you multiply a field by \(10^{-L/10}\), its power falls by \(2L\) dB.</p></div>
+<p><strong>In the code.</strong> Three library functions handle power and loss (Table 2). A signal is a column vector, and a matrix holds one signal per column.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. The library functions for power and loss.</caption>
+<thead><tr><th>Call</th><th>Inputs</th><th>Output</th></tr></thead>
+<tbody>
+<tr><td><code>signal_power_dB = calc_signal_power(signal_w)</code></td><td>field [<span class="nt">sqrt(W)</span>]</td><td>mean power of each column [dBm]: Eq. (4), then Eq. (1)</td></tr>
+<tr><td><code>signal = set_signal_power(signal_data, power_dB)</code></td><td>waveform on any scale; wanted mean power [dBm]</td><td>the same waveform, scaled to this power [<span class="nt">sqrt(W)</span>]</td></tr>
+<tr><td><code>[y, att] = attenuation(x, loss)</code></td><td>field [<span class="nt">sqrt(W)</span>]; loss [dB], where a negative value is a gain</td><td>field after the loss [<span class="nt">sqrt(W)</span>]; amplitude factor \(a\) of Eq. (5)</td></tr>
+</tbody></table></div>
+<ul>
+<li>The names <code>power_dB</code> and <code>signal_power_dB</code> come from the earlier laboratory code. Their unit is dBm.</li>
+<li><code>set_signal_power</code> changes only the scale of the waveform. The shape and the phase stay the same. The transmitter function <code>TL_QAM</code> (<a href="13_waveform_fft_filter.html">page 13</a>) ends with this call: this is where the transmitter power enters the simulation.</li>
+<li><code>calc_signal_power</code> measures everything that the vector contains, as a power meter does: the signal, and also noise and crosstalk (light that leaks in from other signals, <a href="16_space_switch_crosstalk.html">page 16</a>) once a script has added them.</li>
+<li>For a matrix, <code>calc_signal_power</code> returns one value per column, and <code>power_dB</code> or <code>loss</code> can be a row vector with one value per column. A signal that is a row vector stops the two power functions with an error, for example <code>calc_signal_power: signal_w is a row vector. Signals must be column vectors.</code></li>
+</ul>
+<p>You can try the three functions in the Command Window after <code>setup_path</code>:</p>
+<pre><code>x = randn(1000, 1) + 1i*randn(1000, 1);  % any complex field, as a column vector
+x = set_signal_power(x, 0);              % scale it to 0 dBm = 1 mW
+y = attenuation(x, 24.5);                % a loss of 24.5 dB
+calc_signal_power(y)                     % ans = -24.5000</code></pre>
+</section>
+
+<section id="s4">
+<h2>4. Loss rules of the elements</h2>
+<p>The space switches of this project are built from two elements, the selector and the coupler (<a href="11_network_ocs_clos.html">page 11</a>). The JLT paper gives each element a loss that depends only on its number of ports, and the code uses the same rules. This page writes \(D\) for the number of ports of one element, as the JLT paper does. The letters \(M\) and \(N\) stay reserved for the sizes of the switches.</p>
+<ul>
+<li>A \(1 \times D\) <strong>selector</strong> is a switch that connects its single port to one of \(D\) ports. It is a tree of \(1 \times 2\) switch elements. The light passes one element in each <strong>stage</strong> of the tree, that is \(\lceil \log_2 D \rceil\) elements, and loses 0.5 dB in each.</li>
+<li>A \(D \times 1\) <strong>coupler</strong> is a passive element: it has nothing to control, and it adds the light of all \(D\) inputs into one output. It is a tree of \(2 \times 1\) couplers with \(\lceil \log_2 D \rceil\) stages. A \(2 \times 1\) coupler passes only half of the power of each input. This loss of 3 dB is the <strong>splitting loss</strong>, and it cannot be avoided. A real coupler loses 0.5 dB more, which is its <strong>excess loss</strong>. Each stage therefore costs 3.5 dB.</li>
+<li>A \(D \times D\) <strong>delivery-and-coupling (DC) switch</strong> has a \(1 \times D\) selector at every input port and a \(D \times 1\) coupler at every output port. A signal passes one selector and one coupler.</li>
+</ul>
+<div class="eq" id="e6"><div class="m">\[ L_{\mathrm{sel}} = 0.5\,\lceil \log_2 D \rceil, \qquad L_{\mathrm{cpl}} = 3.5\,\lceil \log_2 D \rceil, \qquad L_{\mathrm{DC}} = L_{\mathrm{sel}} + L_{\mathrm{cpl}} = 4\,\lceil \log_2 D \rceil \quad [\mathrm{dB}] \]</div><span class="eqno nt">(6)</span></div>
+<p>The brackets \(\lceil\ \rceil\) mean rounding up to the next integer. In MATLAB this is <code>ceil</code>.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. The loss rules of the JLT paper and their library functions. A coupler stage costs 3 dB of splitting loss and 0.5 dB of excess loss. A stage of a DC switch is one selector stage and one coupler stage.</caption>
+<thead><tr><th>Element</th><th>Loss per stage</th><th>Loss [dB]</th><th class="num">\(D = 16\)</th><th class="num">\(D = 96\)</th><th>Function</th></tr></thead>
+<tbody>
+<tr><td>\(1 \times D\) selector</td><td class="nt">0.5 dB</td><td>\(0.5\,\lceil \log_2 D \rceil\)</td><td class="num nt">2 dB</td><td class="num nt">3.5 dB</td><td><code>selector_loss(D)</code></td></tr>
+<tr><td>\(D \times 1\) coupler</td><td class="nt">3.5 dB = 3 dB + 0.5 dB</td><td>\(3.5\,\lceil \log_2 D \rceil\)</td><td class="num nt">14 dB</td><td class="num nt">24.5 dB</td><td><code>coupler_loss(D)</code></td></tr>
+<tr><td>\(D \times D\) DC switch</td><td class="nt">4 dB = 0.5 dB + 3.5 dB</td><td>\(4\,\lceil \log_2 D \rceil\)</td><td class="num nt">16 dB</td><td class="num nt">28 dB</td><td><code>DCS_loss(D)</code></td></tr>
+</tbody></table></div>
+<p>Every doubling of \(D\) costs 0.5 dB in a selector and 3.5 dB in a coupler. In power, 0.5 dB leaves 89% and 3.5 dB leaves 45%. A <span class="nt">96 × 1</span> coupler with its 24.5 dB leaves 1/282 of the power. The couplers, not the selectors, use up the power budget of a switch.</p>
+
+<h3>Rounding up: 96 inputs cost as much as 128</h3>
+<p>The number of stages is rounded up. A tree for 96 inputs needs 7 stages, because \(\log_2 96 = 6.58\), and a tree for 128 inputs needs 7 stages too. Both couplers cost <span class="nt">7 × 3.5 = 24.5 dB</span>. The loss is a staircase: every coupler with 65 to 128 inputs costs 24.5 dB, and a coupler with 64 inputs costs 21 dB.</p>
+<p>This rounding is a deliberate choice of the model, and it is conservative: the model does not underestimate the loss. The splitting loss of seven stages halves the power seven times. This is a division by 128, or 21 dB, although the coupler has only 96 inputs and a division by 96 is 19.8 dB. The JLT paper sets the coupler that collects the 96 wavelength channels to 24.5 dB, and the code keeps this value. Remember the staircase when you compare coupler sizes that are not powers of two.</p>
+<p><strong>In the code.</strong> Each rule is one library function (last column of Table 3). The function takes the number of ports and returns the loss in dB. The number of ports can be a vector. It must be an integer of at least 1: <code>coupler_loss(1)</code> is 0 dB, and <code>coupler_loss(0)</code> stops with an error. The help texts call the argument <code>M</code> or <code>N</code>; it is the \(D\) of this page.</p>
+<p>These functions only return a number. A signal loses power when a script passes this number to <code>attenuation</code>. In <code>step21_two_stage_one_point</code>, the coupler before the EDFA is these three lines:</p>
+<pre><code>agg_coupler_loss = coupler_loss(N_agg);
+signal = attenuation(signal, agg_coupler_loss);
+stage_power(4) = calc_signal_power(signal);</code></pre>
+<p>The first line calculates the loss from the number of inputs <code>N_agg</code>. The second line applies it to the field. The third line measures the power after the element. The main scripts write every switch and every coupler in this pattern.</p>
+</section>
+
+<section id="s5">
+<h2>5. The level diagram</h2>
+<p>A <strong>level diagram</strong> shows the power of a signal after every element of its path. It is the power budget as a picture. Figure 1 is the level diagram of the two-stage switch of <a href="11_network_ocs_clos.html">page 11</a>. A signal first passes a DC switch of size \(M \times M\) and then a <strong>wavelength-routing (WR) switch</strong> of size \(N \times N\). The WR switch has three parts. The <strong>aggregation coupler</strong> (\(N \times 1\)) collects the \(N\) wavelength channels into one fiber, the EDFA amplifies them, and the arrayed-waveguide grating (AWG) separates them again.</p>
+<p>The example uses a transmitter power of \(P_{\mathrm{Tx}} = 0\) dBm (<code>PTx</code> in the scripts), \(M = 16\) (<code>dcs_input_port_num</code>) and \(N = 96\) (<code>N</code>).</p>
+<figure id="f1"><img src="assets/fig/fig_level_diagram.svg" alt="Chain of transmitter, selector, coupler, aggregation coupler, EDFA, AWG and receiver. Below it, the power of one channel after each element: 0, -2, -16, -40.5, +0.2 and -5.8 dBm.">
+<figcaption><b>Fig. 1.</b> Level diagram of the two-stage switch for <span class="nt">PTx = 0 dBm</span>, <span class="nt">M = 16</span> and <span class="nt">N = 96</span> (after Fig. 2 of the JLT paper, with the numbers of this example). Each point is the power of one wavelength channel at the place in the chain that the dashed line above it marks. The total EDFA output power of 20 dBm and the AWG loss of 6 dB are the values of the JLT paper. The gray names are the functions and parameters of the code.</figcaption></figure>
+<p>Before the EDFA the signal only loses power. By Eq. (3) and Eq. (6), the power at the input of the EDFA is</p>
+<div class="eq" id="e7"><div class="m">\[ P_{\mathrm{EDFA,in}} = P_{\mathrm{Tx}} - L_{\mathrm{DC}}(M) - L_{\mathrm{cpl}}(N) = P_{\mathrm{Tx}} - 4\,\lceil \log_2 M \rceil - 3.5\,\lceil \log_2 N \rceil \quad [\mathrm{dBm}] \]</div><span class="eqno nt">(7)</span></div>
+<p>For the example this is <span class="nt">0 - 16 - 24.5 = -40.5 dBm</span>. In watts it is 89 nW: less than one ten-thousandth of the transmitter power arrives at the EDFA.</p>
+<p>The EDFA raises the power again. Its total output power is 20 dBm, and the 96 channels share it. Each channel leaves the EDFA with 0.18 dBm, as in <a href="#s2">section 2</a>; the figure rounds this value to +0.2 dBm. The scripts ask for the gain that lifts the channel to this power. Here the gain is <span class="nt">0.18 - (-40.5) = 40.7 dB</span>. Page 15 refines this picture: the EDFA also adds noise, and the noise that lies in the band of the channel shares the 0.18 dBm with the signal. The AWG then removes 6 dB, and the channel goes on to the receiver with <span class="nt">-5.8 dBm</span>.</p>
+
+<h3>The lowest point decides the signal quality</h3>
+<p>The power is lowest at the input of the EDFA. The JLT paper states this for the two-stage switch and adds that the power at this point must not fall below the minimum that the receiver needs to decode the signal. The reason is the noise of the amplifier. The EDFA adds noise of its own to whatever it amplifies. The weaker the signal at its input, the smaller the ratio of signal to noise at its output. No later element repairs this ratio, because a loss or a gain after the EDFA acts on the signal and on the noise in the same way. <a href="15_edfa_ase.html">Page 15</a> derives this result.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>To judge a switch design, first calculate the power at the input of the EDFA. Every dB of loss before the EDFA lowers this power by 1 dB. A loss after the EDFA does not change it.</p></div>
+<p>Figure 1 and Eq. (7) show where the research starts. In the two-stage switch every doubling of \(M\) adds 4 dB before the EDFA. The aggregation coupler alone costs 24.5 dB, more than half of the 40.5 dB of the example. <a href="17_awg_wavelength_routing.html">Page 17</a> shows an AWG with several input ports. With it, the 96 channels are divided among several small aggregation couplers, each with its own EDFA. With \(K = 12\) couplers (<code>ULCF_deg = 12</code> in <code>step21_two_stage_one_point</code>), each coupler has <span class="nt">96 / 12 = 8</span> inputs and costs 10.5 dB. The power at the input of the EDFA then rises by 14 dB, from -40.5 dBm to -26.5 dBm. The demo of <a href="#s6">section 6</a> shows this comparison. It is the "low-loss wavelength routing" in the title of your research.</p>
+<p><strong>In the code.</strong> <code>plot_level_diagram(stage_names, power_dBm)</code> draws a level diagram in a new figure. <code>stage_names</code> is a cell array (a list written in curly brackets) with one name per point, and <code>power_dBm</code> is a vector with the power at each point in dBm. The help text of the function gives this example:</p>
+<pre><code>plot_level_diagram({'Tx', 'Switch', 'EDFA'}, [0, -12, 3]);</code></pre>
+<p>The scripts <code>step21_two_stage_one_point</code> and <code>step22_three_stage_one_point</code> store the power after block <code>k</code> of their chain in <code>stage_power(k)</code>, as in the three lines of <a href="#s4">section 4</a>. At the end they call <code>plot_level_diagram(stage_names, stage_power)</code>.</p>
+<div class="box note"><span class="label">Note</span>
+<p>The level diagram of <code>step21_two_stage_one_point</code> does not show the numbers of Fig. 1. It differs in three ways. First, a channel carries two signals, one in each of the two polarizations of the light (<a href="14_coherent_rx_dsp_ber.html">page 14</a>), and the given scripts simulate one of them. It has half of the transmitter power (<code>pin = PTx - 3*pol_flag</code>), so every level is 3 dB lower than the power of the channel. Second, that script has more blocks than Fig. 1 and treats the DC switch as one block (<a href="21_two_stage_ulcf_switch.html">page 21</a>). Third, its parameter values differ from the example of Fig. 1. For instance, it sets <code>ULCF_deg = 12</code>, which is the case of the <span class="nt">8 × 1</span> aggregation couplers.</p>
+<p>The word "stage" has three meanings in this package: the two or three stages of the whole switch, the stages of a selector or coupler tree (<a href="#s4">section 4</a>), and, in <code>stage_names</code> and in the printed tables, the points along the path of the signal.</p></div>
+</section>
+
+<section id="s6">
+<h2>6. Run the demo</h2>
+<div class="box run"><span class="label">Run it</span>
+<p>In MATLAB, make the folder <code>matlab</code> the current folder and run <code>setup_path</code> (once per MATLAB session). Then run <code>demo12_units_power_budget</code>. The script needs a few seconds. It prints four lines that begin with <code>Self-check</code>, and each of them must contain <code>passed</code>.</p></div>
+<p>Open the script in the editor and read it next to Table 4. The section numbers are the numbers of the <code>%%</code> sections of the script.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. What <code>demo12_units_power_budget</code> does.</caption>
+<thead><tr><th>Section</th><th>What it does</th><th>Self-check</th></tr></thead>
+<tbody>
+<tr><td class="nt">1</td><td>Sets the example: <code>PTx = 0</code>, <code>loss_dB = 3</code>, <code>dcs_input_port_num = 16</code>, <code>N = 96</code>, <code>N_agg = 8</code>, <code>edfa_sat1 = 20</code>.</td><td>none</td></tr>
+<tr><td class="nt">2</td><td>Converts six powers from dBm to W and back (Eq. (1)). Divides <code>edfa_sat1</code> among <code>N</code> channels in dB, then adds the <code>N</code> channel powers in W.</td><td><span class="nt">1</span>: the conversion returns the starting values, and the channels add up to <code>edfa_sat1</code>.</td></tr>
+<tr><td class="nt">3</td><td>Makes a random field <code>x</code>, sets it to <code>PTx</code> with <code>set_signal_power</code>, applies <code>loss_dB</code> with <code>attenuation</code> and measures both fields with <code>calc_signal_power</code>. A random field is enough here: a power budget needs only the power of the signal.</td><td><span class="nt">2</span>: the power falls by <code>loss_dB</code>, and the field is <code>x</code> times \(10^{-L/20}\) (Eq. (5)).</td></tr>
+<tr><td class="nt">4</td><td>Prints the loss of a selector, a coupler and a DC switch for 2 to 128 ports (Eq. (6)).</td><td><span class="nt">3</span>: DC switch = selector + coupler; a coupler costs 3.5 dB per stage; 96 inputs cost as much as 128.</td></tr>
+<tr><td class="nt">5</td><td>Calculates the power after the transmitter, the selector, the coupler and the aggregation coupler in two ways: (a) by subtracting the losses in dB, (b) by passing the field through <code>attenuation</code> and measuring it. Column 1 is the <span class="nt">96 × 1</span> aggregation coupler, column 2 the <span class="nt">8 × 1</span> one.</td><td><span class="nt">4</span>: (a) and (b) agree at every point, in both columns.</td></tr>
+<tr><td class="nt">6</td><td>Draws both budgets with <code>plot_level_diagram</code>, moves the numbers to the right of their markers so that the falling lines do not cover them, and marks the difference at the input of the EDFA.</td><td>none</td></tr>
+</tbody></table></div>
+<p>The script prints this text:</p>
+<pre><code>Power in dBm and in mW
+   -30.0 dBm =    0.0010 mW
+   -10.0 dBm =    0.1000 mW
+     0.0 dBm =    1.0000 mW
+     3.0 dBm =    1.9953 mW
+    10.0 dBm =   10.0000 mW
+    20.0 dBm =  100.0000 mW
+96 channels of 0.18 dBm (1.042 mW) each: total 100.0 mW = 20.00 dBm
+Self-check 1 passed: W &lt;-&gt; dBm; 96 channels add up to 20 dBm
+
+x (set to 0.0 dBm) : mean(abs(x).^2) = 1.0000 mW
+y (x after 3.0 dB) : mean(abs(y).^2) = 0.5012 mW = -3.000 dBm
+Amplitude factor 0.7079 = 10^(-3.0/20), power factor 0.5012 = 10^(-3.0/10)
+Self-check 2 passed: a loss of 3.0 dB = field times 0.7079
+
+Loss [dB] for D ports (number of stages = ceil(log2(D)))
+      D   stages   selector    coupler   DC switch
+      2        1        0.5        3.5         4.0
+      4        2        1.0        7.0         8.0
+      8        3        1.5       10.5        12.0
+     16        4        2.0       14.0        16.0
+     32        5        2.5       17.5        20.0
+     64        6        3.0       21.0        24.0
+     96        7        3.5       24.5        28.0
+    128        7        3.5       24.5        28.0
+Self-check 3 passed: loss rules; coupler_loss(96) = 24.5 dB
+
+Power after every stage [dBm] (PTx = 0.0 dBm, 16 x 16 DC switch)
+  stage           agg. coupler 96 x 1   agg. coupler 8 x 1
+  Tx                              0.0                  0.0
+  Selector                       -2.0                 -2.0
+  Coupler                       -16.0                -16.0
+  Agg. coupler                  -40.5                -26.5
+EDFA input with the small coupler: 14.0 dB higher
+Self-check 4 passed: field power = budget in dB at every stage (both cases)</code></pre>
+<p>Note three details of this output. The power of 3.0 dBm is 1.9953 mW and not 2 mW, because a factor of 2 is 3.01 dB. The rows for 96 and 128 ports are equal (<a href="#s4">section 4</a>). The left column of the last table holds the first four points of Fig. 1.</p>
+<figure id="f2"><img src="assets/expected/demo12_units_power_budget.png" alt="Two level diagrams from Tx to the aggregation coupler. They coincide at 0.0, -2.0 and -16.0 dBm and end at -40.5 dBm (96 x 1) and -26.5 dBm (8 x 1); a bar marks +14.0 dB.">
+<figcaption><b>Fig. 2.</b> Expected figure of <code>demo12_units_power_budget</code>. The two curves coincide up to the output of the DC switch. They separate at the aggregation coupler: the power at the input of the EDFA is -40.5 dBm with the <span class="nt">96 × 1</span> coupler and -26.5 dBm with the <span class="nt">8 × 1</span> coupler. The bar marks the difference of 14.0 dB.</figcaption></figure>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>All four self-checks print <code>passed</code>, and your figure looks like Fig. 2.</li>
+<li>You can convert 20 dBm, -10 dBm and -30 dBm to watts without a calculator.</li>
+<li>You can calculate the left column of the last printed table by hand from <code>PTx</code>, <code>dcs_input_port_num</code> and <code>N</code>.</li>
+<li>You can explain why the two curves of Fig. 2 differ by exactly 14.0 dB.</li>
+</ul></div>
+<div class="box todo"><span class="label">Your task</span>
+<p>Change one parameter in section 1 of the script at a time. Write down your prediction first, then run the script and compare. Set the parameter back before the next experiment.</p>
+<ol>
+<li>Set <code>dcs_input_port_num = 64</code>. Predict the four powers of both columns of the last table.</li>
+<li>Set <code>N_agg</code> to 48, 24, 16, 12 and 6 in turn. These are the coupler sizes <span class="nt">96 / K</span> for <span class="nt">K = 2, 4, 6, 8, 16</span> couplers. For each size, predict the number in the printed line <code>EDFA input with the small coupler: ... dB higher</code>. Then put all sizes in one row, together with the original size 8: <span class="nt">48, 24, 16, 12, 8, 6</span>. Two sizes of this row give the same number as the size before them. Find the reason.</li>
+<li>Set <code>loss_dB = 6</code> and then <code>loss_dB = 20</code>. Predict the amplitude factor and the power factor.</li>
+</ol></div>
+<details><summary>Results of the three experiments</summary>
+<p>Experiment 1: the selector costs 3 dB and the coupler 21 dB. Both columns print <span class="nt">0.0, -3.0, -24.0</span>; the last row is <span class="nt">-48.5</span> and <span class="nt">-34.5</span>. The difference stays at 14.0 dB, because the DC switch is the same in both columns.</p>
+<p>Experiment 2: the printed number is <span class="nt">3.5, 7.0, 10.5, 10.5, 14.0 dB</span> for <span class="nt">N_agg = 48, 24, 16, 12, 6</span>. A coupler with 12 inputs has 4 stages, like one with 16 inputs. A coupler with 6 inputs has 3 stages, like the coupler with 8 inputs of the original script, which also prints 14.0 dB. Because of the rounding, the power at the input of the EDFA is the same with 8 couplers as with 6, and the same with 16 couplers as with 12.</p>
+<p>Experiment 3: for 6 dB the amplitude factor is 0.5012 and the power factor 0.2512. For 20 dB they are 0.1000 and 0.0100.</p>
+</details>
+</section>
+
+<section id="s7">
+<h2>7. Check your understanding</h2>
+<ol>
+<li>A signal of 3 dBm passes a <span class="nt">16 × 1</span> coupler. What is the output power?
+<details><summary>Answer</summary>
+<p><span class="nt">3 - 14 = -11 dBm</span>. A <span class="nt">16 × 1</span> coupler has four stages of 3.5 dB.</p>
+</details></li>
+<li>Convert without a calculator: (a) 23 dBm to mW, (b) 0.05 mW to dBm, (c) -40.5 dBm to µW, roughly.
+<details><summary>Answer</summary>
+<p>(a) <span class="nt">23 dBm = 20 dBm + 3 dB</span>, that is <span class="nt">100 mW × 2 = 200 mW</span>. (b) <span class="nt">0.05 mW = 0.1 mW / 2</span>, that is <span class="nt">-10 dBm - 3 dB = -13 dBm</span>. (c) <span class="nt">-40 dBm = 0.1 µW</span>, and 0.5 dB less is a little less: about 0.09 µW. The exact value is 89 nW.</p>
+</details></li>
+<li>An EDFA with a total output power of 20 dBm carries 8 wavelength channels of equal power, not 96. What is the power of one channel at its output? By how many dB is it higher than with 96 channels?
+<details><summary>Answer</summary>
+<p><span class="nt">100 mW / 8 = 12.5 mW</span>. In dB: <span class="nt">20 dBm - 9.03 dB = 10.97 dBm</span>. With 96 channels it was 0.18 dBm. The difference is <span class="nt">10.79 dB</span>, which is the factor <span class="nt">96 / 8 = 12</span> in dB. This is the case of the 12 small aggregation couplers of <a href="#s5">section 5</a>: each of the 12 EDFAs carries only 8 channels.</p>
+</details></li>
+<li>A field passes the <span class="nt">16 × 16</span> DC switch of Fig. 1. By what factor does its amplitude change, and by what factor does its power change?
+<details><summary>Answer</summary>
+<p>The loss is 16 dB. The amplitude factor is \(10^{-16/20} = 0.158\), and the power factor is \(10^{-16/10} = 0.0251\), about 1/40. In MATLAB: <code>[y, att] = attenuation(x, DCS_loss(16))</code> returns <code>att = 0.1585</code>.</p>
+</details></li>
+<li>In the two-stage switch of Fig. 1 the transmitter power rises from 0 dBm to 4 dBm. How large can \(M\) become if the power at the input of the EDFA must not fall below -40.5 dBm?
+<details><summary>Answer</summary>
+<p>\(M = 32\). By Eq. (7), every doubling of \(M\) costs 4 dB in the DC switch, so 4 dB more transmitter power pays for exactly one doubling: <span class="nt">4 - 20 - 24.5 = -40.5 dBm</span>. You can check it in the demo with <code>PTx = 4</code> and <code>dcs_input_port_num = 32</code>.</p>
+</details></li>
+<li>The model charges 24.5 dB for a <span class="nt">96 × 1</span> coupler. How much of this is splitting loss, and how much is excess loss? What loss does the model give a coupler with 100 inputs, and a coupler with 129 inputs?
+<details><summary>Answer</summary>
+<p>The coupler has 7 stages. The splitting loss is <span class="nt">7 × 3 = 21 dB</span>, and the excess loss is <span class="nt">7 × 0.5 = 3.5 dB</span>. A coupler with 100 inputs also has 7 stages and costs 24.5 dB. A coupler with 129 inputs needs 8 stages and costs <span class="nt">8 × 3.5 = 28 dB</span>. In MATLAB: <code>coupler_loss([96 100 129])</code>.</p>
+</details></li>
+</ol>
+<div class="box"><span class="label">What to carry forward</span>
+<p>Powers are written in dBm and losses in dB: along the path of one signal you subtract the losses, and for several signals in one fiber you add the powers in watts. In the simulation a loss of \(L\) dB multiplies the field by \(10^{-L/20}\), and a selector costs 0.5 dB and a coupler 3.5 dB for every doubling of its number of ports. With these rules you can calculate by hand the power at the input of the EDFA, the lowest point of the level diagram; <a href="15_edfa_ase.html">page 15</a> shows why this point decides the signal quality.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="11_network_ocs_clos.html">&larr; <span class="nt">11</span> Networks, OCS, Clos</a>
+<a class="next" href="13_waveform_fft_filter.html"><span class="nt">13</span> Waveforms, FFT, filters &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

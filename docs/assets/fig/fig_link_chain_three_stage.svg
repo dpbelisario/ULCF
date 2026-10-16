@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="620" viewBox="0 0 1150 620">
+<defs>
+  <marker id="ar_opt" markerWidth="6" markerHeight="5" refX="4.4" refY="2.2" orient="auto"><path d="M0,0 L5,2.2 L0,4.4 z" fill="#C0392B"/></marker>
+  <marker id="ar_ele" markerWidth="6" markerHeight="5" refX="4.4" refY="2.2" orient="auto"><path d="M0,0 L5,2.2 L0,4.4 z" fill="#1F4E79"/></marker>
+</defs>
+<rect x="0" y="0" width="1150" height="620" fill="white"/>
+<text x="575" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle" fill="#222222" font-weight="bold">Simulation chain of the conventional three-stage switch (blocks of step22, section 3)</text>
+<line x1="216" y1="196" x2="256" y2="196" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="430" y1="196" x2="470" y2="196" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="644" y1="196" x2="684" y2="196" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="858" y1="196" x2="898" y2="196" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="216" y1="456" x2="256" y2="456" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="430" y1="456" x2="470" y2="456" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="644" y1="456" x2="684" y2="456" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="858" y1="456" x2="898" y2="456" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<polyline points="1072,196 1112,196 1112,305 20,305 20,456 42,456" fill="none" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="1072" y1="456" x2="1118" y2="456" stroke="#1F4E79" stroke-width="3" marker-end="url(#ar_ele)"/>
+<text x="1128" y="444.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#1F4E79" font-weight="bold">BER</text>
+<rect x="44" y="150" width="172" height="92" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="53" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[1]</text>
+<text x="130.0" y="194" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Transmitter</text>
+<text x="130.0" y="215" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">16QAM, one polarization</text>
+<text x="130.0" y="262" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">TL_QAM</text>
+<rect x="258" y="150" width="172" height="92" rx="8" fill="#FFFFFF" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="7,5"/>
+<text x="267" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D" font-weight="bold">[2]</text>
+<text x="344.0" y="194" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#7F8C8D" font-weight="bold">Fan-in / fan-out</text>
+<text x="344.0" y="215" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">not used: 0 dB</text>
+<text x="344.0" y="262" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">fiber_flag = 0</text>
+<rect x="472" y="150" width="172" height="92" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="481" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[3]</text>
+<text x="558.0" y="194" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">First-stage switch</text>
+<text x="558.0" y="215" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">selector + selector</text>
+<text x="558.0" y="262" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">selector_loss</text>
+<text x="558.0" y="279" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">TL_QAM (leaks)</text>
+<rect x="686" y="150" width="172" height="92" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="695" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[4]</text>
+<text x="772.0" y="194" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Aggregation coupler</text>
+<text x="772.0" y="215" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">N × 1</text>
+<text x="772.0" y="262" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">coupler_loss</text>
+<rect x="900" y="150" width="172" height="92" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="909" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[5]</text>
+<text x="986.0" y="194" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">EDFA</text>
+<text x="986.0" y="215" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">shared by N wavelengths</text>
+<text x="986.0" y="262" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">amplified_by_EDFA3</text>
+<rect x="44" y="410" width="172" height="92" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="53" y="430" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[6]</text>
+<text x="130.0" y="454" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">AWG</text>
+<text x="130.0" y="475" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">1 × N, Gaussian passband</text>
+<text x="130.0" y="522" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">awg</text>
+<rect x="258" y="410" width="172" height="92" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="267" y="430" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[7]</text>
+<text x="344.0" y="454" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Third-stage switch</text>
+<text x="344.0" y="475" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">A1: selector + selector</text>
+<text x="344.0" y="522" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">selector_loss, coupler_loss</text>
+<text x="344.0" y="539" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">TL_QAM (leaks)</text>
+<rect x="472" y="410" width="172" height="92" rx="8" fill="#FFFFFF" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="7,5"/>
+<text x="481" y="430" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D" font-weight="bold">[8]</text>
+<text x="558.0" y="454" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#7F8C8D" font-weight="bold">Fan-in / fan-out</text>
+<text x="558.0" y="475" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">not used: 0 dB</text>
+<text x="558.0" y="522" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">fiber_flag = 0</text>
+<rect x="686" y="410" width="172" height="92" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="695" y="430" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[9]</text>
+<text x="772.0" y="454" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Pre-amplifier</text>
+<text x="772.0" y="475" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">one wavelength</text>
+<text x="772.0" y="522" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">amplified_by_EDFA3</text>
+<rect x="900" y="410" width="172" height="92" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="909" y="430" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[10]</text>
+<text x="986.0" y="454" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Coherent receiver</text>
+<text x="986.0" y="475" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">filter, equalizer, decision</text>
+<text x="986.0" y="522" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">nyquistfilter, adequalizet,</text>
+<text x="986.0" y="539" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">measure_BER_QAM</text>
+<text x="344.0" y="493" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">A2: selector + coupler</text>
+<rect x="472" y="70" width="172" height="46" rx="8" fill="#FFFFFF" stroke="#C0392B" stroke-width="1.4"/>
+<text x="558.0" y="89" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">crosstalk: M − 1 leaks</text>
+<text x="558.0" y="107" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">each 2 ER below the target</text>
+<line x1="558" y1="116" x2="558" y2="148" stroke="#C0392B" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#ar_opt)"/>
+<rect x="900" y="70" width="172" height="46" rx="8" fill="#FFFFFF" stroke="#C0392B" stroke-width="1.4"/>
+<text x="986.0" y="89" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">ASE noise</text>
+<text x="986.0" y="107" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">noise figure NF</text>
+<line x1="986" y1="116" x2="986" y2="148" stroke="#C0392B" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#ar_opt)"/>
+<rect x="236" y="330" width="216" height="46" rx="8" fill="#FFFFFF" stroke="#C0392B" stroke-width="1.4"/>
+<text x="344.0" y="349" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">crosstalk: M − 1 leaks</text>
+<text x="344.0" y="367" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">A1: 2 ER below,  A2: ER below</text>
+<line x1="344" y1="376" x2="344" y2="408" stroke="#C0392B" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#ar_opt)"/>
+<rect x="686" y="330" width="172" height="46" rx="8" fill="#FFFFFF" stroke="#C0392B" stroke-width="1.4"/>
+<text x="772.0" y="349" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">ASE noise</text>
+<text x="772.0" y="367" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">noise figure NF2</text>
+<line x1="772" y1="376" x2="772" y2="408" stroke="#C0392B" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#ar_opt)"/>
+<line x1="60" y1="585" x2="104" y2="585" stroke="#C0392B" stroke-width="3"/>
+<text x="112" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">target signal (optical)</text>
+<line x1="300" y1="585" x2="344" y2="585" stroke="#C0392B" stroke-width="2.2" stroke-dasharray="6,4"/>
+<text x="352" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">crosstalk or noise that is added</text>
+<rect x="610" y="574" width="40" height="22" rx="5" fill="#FFFFFF" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="7,5"/>
+<text x="658" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">block without effect in this switch</text>
+<text x="930" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">gray text: code name</text>
+</svg>

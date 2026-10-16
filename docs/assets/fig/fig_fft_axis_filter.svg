@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="640" viewBox="0 0 1100 640">
+<defs>
+  <marker id="ar_nav" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#1F4E79"/></marker>
+  <marker id="ar_gry" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#7F8C8D"/></marker>
+</defs>
+<rect x="0" y="0" width="1100" height="640" fill="white"/>
+<text x="550" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle" fill="#222" font-weight="bold">Filtering = multiplying the spectrum by a mask (example: Nyquist pulse shaping, up = 4)</text>
+<rect x="25" y="62" width="210" height="64" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="130" y="89" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222" font-weight="bold">time samples x</text>
+<text x="130" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555">nsamp x 1 column</text>
+<rect x="305" y="62" width="210" height="64" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="410" y="89" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222" font-weight="bold">spectrum X</text>
+<text x="410" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555">nsamp bins, 0 Hz in the middle</text>
+<text x="410" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">X = fftshift(fft(x))</text>
+<rect x="585" y="62" width="210" height="64" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="690" y="89" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222" font-weight="bold">multiply by the mask H</text>
+<text x="690" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555">bin by bin: this is the filter</text>
+<text x="690" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">Y = H .* X</text>
+<rect x="865" y="62" width="210" height="64" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="970" y="89" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222" font-weight="bold">time samples y</text>
+<text x="970" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555">nsamp x 1 column</text>
+<text x="970" y="147" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">y = ifft(ifftshift(Y))</text>
+<line x1="235" y1="94" x2="302" y2="94" stroke="#1F4E79" stroke-width="2.6" marker-end="url(#ar_nav)"/>
+<line x1="515" y1="94" x2="582" y2="94" stroke="#1F4E79" stroke-width="2.6" marker-end="url(#ar_nav)"/>
+<line x1="795" y1="94" x2="862" y2="94" stroke="#1F4E79" stroke-width="2.6" marker-end="url(#ar_nav)"/>
+<text x="25" y="196" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-weight="bold">What happens on the frequency axis</text>
+<text x="1004" y="196" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="end" fill="#7F8C8D">f = freq_axis(nsamp, Fs): one value (bin) every Fs/nsamp</text>
+<line x1="464" y1="214" x2="464" y2="560" stroke="#B7791F" stroke-width="1.4" stroke-dasharray="6,5"/>
+<line x1="680" y1="214" x2="680" y2="560" stroke="#B7791F" stroke-width="1.4" stroke-dasharray="6,5"/>
+<line x1="140" y1="214" x2="140" y2="560" stroke="#7F8C8D" stroke-width="1.2" stroke-dasharray="3,5"/>
+<line x1="1004" y1="214" x2="1004" y2="560" stroke="#7F8C8D" stroke-width="1.2" stroke-dasharray="3,5"/>
+<polygon points="140,306 140,245.333 148,240 172,264 196,250 224,260 248,246 248,306" fill="#E3ECF5" stroke="#1F4E79" stroke-width="1.6" stroke-linejoin="round"/>
+<polygon points="896,306 896,262 916,248 940,266 964,244 988,256 1004,245.333 1004,306" fill="#E3ECF5" stroke="#1F4E79" stroke-width="1.6" stroke-linejoin="round"/>
+<polygon points="248,306 248,262 268,248 292,266 316,244 340,256 364,240 388,264 412,250 440,260 464,246 464,306" fill="#E3ECF5" stroke="#1F4E79" stroke-width="1.6" stroke-linejoin="round"/>
+<polygon points="680,306 680,262 700,248 724,266 748,244 772,256 796,240 820,264 844,250 872,260 896,246 896,306" fill="#E3ECF5" stroke="#1F4E79" stroke-width="1.6" stroke-linejoin="round"/>
+<polygon points="464,306 464,262 484,248 508,266 532,244 556,256 580,240 604,264 628,250 656,260 680,246 680,306" fill="#BFD3E8" stroke="#1F4E79" stroke-width="2.2" stroke-linejoin="round"/>
+<line x1="140" y1="306" x2="1004" y2="306" stroke="#34495E" stroke-width="1.4"/>
+<text x="128" y="264" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="end" fill="#222" font-weight="bold">|X|</text>
+<text x="128" y="284" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#555">after zero</text>
+<text x="128" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#555">insertion</text>
+<text x="356" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">copy</text>
+<text x="788" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">copy</text>
+<text x="572" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1F4E79" font-weight="bold">copy</text>
+<text x="194" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">half copy</text>
+<text x="950" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">half copy</text>
+<line x1="140" y1="416" x2="1004" y2="416" stroke="#34495E" stroke-width="1.4"/>
+<rect x="464" y="356" width="216" height="60" fill="#FDF4DC" stroke="none"/>
+<polyline points="140,416 464,416 464,356 680,356 680,416 1004,416" fill="none" stroke="#B7791F" stroke-width="2.6" stroke-linejoin="miter"/>
+<text x="128" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="end" fill="#B7791F" font-weight="bold">H</text>
+<text x="128" y="400" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#555">mask</text>
+<text x="572" y="392" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#B7791F" font-weight="bold">1 = pass</text>
+<text x="302" y="404" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#B7791F">0 = stop</text>
+<text x="842" y="404" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#B7791F">0 = stop</text>
+<polygon points="464,526 464,482 484,468 508,486 532,464 556,476 580,460 604,484 628,470 656,480 680,466 680,526" fill="#BFD3E8" stroke="#1F4E79" stroke-width="2.2" stroke-linejoin="round"/>
+<line x1="140" y1="526" x2="1004" y2="526" stroke="#34495E" stroke-width="1.4"/>
+<text x="128" y="484" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="end" fill="#222" font-weight="bold">|Y|</text>
+<text x="128" y="504" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#555">after the</text>
+<text x="128" y="520" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#555">mask</text>
+<text x="842" y="492" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">one copy is left:</text>
+<text x="842" y="511" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">the waveform occupies B</text>
+<text x="302" y="511" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">removed</text>
+<line x1="130" y1="560" x2="1038" y2="560" stroke="#34495E" stroke-width="1.8" marker-end="url(#ar_gry)"/>
+<path d="M140,560 v5 M146,560 v5 M152,560 v5 M158,560 v5 M164,560 v5 M170,560 v5 M176,560 v5 M182,560 v5 M188,560 v5 M194,560 v5 M200,560 v5 M206,560 v5 M212,560 v5 M218,560 v5 M224,560 v5 M230,560 v5 M236,560 v5 M242,560 v5 M248,560 v5 M254,560 v5 M260,560 v5 M266,560 v5 M272,560 v5 M278,560 v5 M284,560 v5 M290,560 v5 M296,560 v5 M302,560 v5 M308,560 v5 M314,560 v5 M320,560 v5 M326,560 v5 M332,560 v5 M338,560 v5 M344,560 v5 M350,560 v5 M356,560 v5 M362,560 v5 M368,560 v5 M374,560 v5 M380,560 v5 M386,560 v5 M392,560 v5 M398,560 v5 M404,560 v5 M410,560 v5 M416,560 v5 M422,560 v5 M428,560 v5 M434,560 v5 M440,560 v5 M446,560 v5 M452,560 v5 M458,560 v5 M464,560 v5 M470,560 v5 M476,560 v5 M482,560 v5 M488,560 v5 M494,560 v5 M500,560 v5 M506,560 v5 M512,560 v5 M518,560 v5 M524,560 v5 M530,560 v5 M536,560 v5 M542,560 v5 M548,560 v5 M554,560 v5 M560,560 v5 M566,560 v5 M572,560 v5 M578,560 v5 M584,560 v5 M590,560 v5 M596,560 v5 M602,560 v5 M608,560 v5 M614,560 v5 M620,560 v5 M626,560 v5 M632,560 v5 M638,560 v5 M644,560 v5 M650,560 v5 M656,560 v5 M662,560 v5 M668,560 v5 M674,560 v5 M680,560 v5 M686,560 v5 M692,560 v5 M698,560 v5 M704,560 v5 M710,560 v5 M716,560 v5 M722,560 v5 M728,560 v5 M734,560 v5 M740,560 v5 M746,560 v5 M752,560 v5 M758,560 v5 M764,560 v5 M770,560 v5 M776,560 v5 M782,560 v5 M788,560 v5 M794,560 v5 M800,560 v5 M806,560 v5 M812,560 v5 M818,560 v5 M824,560 v5 M830,560 v5 M836,560 v5 M842,560 v5 M848,560 v5 M854,560 v5 M860,560 v5 M866,560 v5 M872,560 v5 M878,560 v5 M884,560 v5 M890,560 v5 M896,560 v5 M902,560 v5 M908,560 v5 M914,560 v5 M920,560 v5 M926,560 v5 M932,560 v5 M938,560 v5 M944,560 v5 M950,560 v5 M956,560 v5 M962,560 v5 M968,560 v5 M974,560 v5 M980,560 v5 M986,560 v5 M992,560 v5 M998,560 v5 M1004,560 v5" fill="none" stroke="#AAB4BD" stroke-width="1"/>
+<line x1="140" y1="554" x2="140" y2="570" stroke="#34495E" stroke-width="1.8"/>
+<text x="140" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">-Fs/2</text>
+<text x="140" y="609" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">-48 GHz</text>
+<line x1="464" y1="554" x2="464" y2="570" stroke="#34495E" stroke-width="1.8"/>
+<text x="464" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">-B/2</text>
+<text x="464" y="609" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">-12 GHz</text>
+<line x1="572" y1="554" x2="572" y2="570" stroke="#34495E" stroke-width="1.8"/>
+<text x="572" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">0</text>
+<text x="572" y="609" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">carrier</text>
+<line x1="680" y1="554" x2="680" y2="570" stroke="#34495E" stroke-width="1.8"/>
+<text x="680" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">+B/2</text>
+<text x="680" y="609" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">+12 GHz</text>
+<line x1="1004" y1="554" x2="1004" y2="570" stroke="#34495E" stroke-width="1.8"/>
+<text x="1004" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">+Fs/2</text>
+<text x="1004" y="609" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">+48 GHz</text>
+<text x="1046" y="565" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222" font-style="italic">f</text>
+<text x="302" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">simulated band: Fs = up x B</text>
+<text x="842" y="590" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">numbers for B = 24 GBd, up = 4</text>
+</svg>

@@ -1,0 +1,292 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="984" height="992" viewBox="0 0 984 992">
+<rect x="0" y="0" width="984" height="992" fill="white"/>
+<text x="12" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#222222" font-weight="bold">(a) Two-stage ULCF switch</text>
+<text x="280" y="52" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">M wavelength-routing (WR) switches, each N × N</text>
+<rect x="272" y="60" width="430" height="256" rx="12" fill="none" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="7,5"/>
+<line x1="292" y1="94.8" x2="315.0" y2="106.8" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="133.2" x2="315.0" y2="121.2" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="186.8" x2="314.0" y2="198.8" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="206" x2="314.0" y2="206.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="225.2" x2="314.0" y2="213.2" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="504" y1="200" x2="598.0" y2="121.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="504" y1="212" x2="598.0" y2="219.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="504" y1="120" x2="598.0" y2="199.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="654" y1="83" x2="670.0" y2="83.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="97" x2="670.0" y2="97.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="125" x2="670.0" y2="125.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="139" x2="670.0" y2="139.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="181" x2="670.0" y2="181.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="195" x2="670.0" y2="195.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="209" x2="670.0" y2="209.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="223" x2="670.0" y2="223.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="237" x2="670.0" y2="237.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<polygon points="598,91 654,71 654,151 598,131" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<polygon points="598,189 654,169 654,249 598,229" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<line x1="343" y1="206" x2="386.0" y2="206.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="420" y1="206" x2="464.0" y2="206.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<circle cx="328" cy="206" r="15" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<polygon points="386,188 386,224 420,206" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<rect x="464" y="191" width="40" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="471" y1="206" x2="483.0" y2="206.0" stroke="#34495E" stroke-width="2.2"/>
+<polyline points="497.0,198.0 483.0,206.0 497.0,214.0" fill="none" stroke="#34495E" stroke-width="2.2" stroke-linejoin="round"/>
+<line x1="343" y1="114" x2="386.0" y2="114.0" stroke="#C0392B" stroke-width="2.6"/>
+<line x1="420" y1="114" x2="464.0" y2="114.0" stroke="#C0392B" stroke-width="2.6"/>
+<circle cx="328" cy="114" r="15" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<polygon points="386,96 386,132 420,114" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<rect x="464" y="99" width="40" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="471" y1="114" x2="483.0" y2="114.0" stroke="#34495E" stroke-width="2.2"/>
+<polyline points="497.0,106.0 483.0,114.0 497.0,122.0" fill="none" stroke="#34495E" stroke-width="2.2" stroke-linejoin="round"/>
+<polygon points="597.0,101.0 587.4,106.2 586.7,97.3" fill="#C0392B"/>
+<line x1="504" y1="108" x2="590.0" y2="101.5" stroke="#C0392B" stroke-width="2.6"/>
+<circle cx="328" cy="153" r="1.9" fill="#7F8C8D"/>
+<circle cx="328" cy="160" r="1.9" fill="#7F8C8D"/>
+<circle cx="328" cy="167" r="1.9" fill="#7F8C8D"/>
+<circle cx="400" cy="153" r="1.9" fill="#7F8C8D"/>
+<circle cx="400" cy="160" r="1.9" fill="#7F8C8D"/>
+<circle cx="400" cy="167" r="1.9" fill="#7F8C8D"/>
+<circle cx="484" cy="153" r="1.9" fill="#7F8C8D"/>
+<circle cx="484" cy="160" r="1.9" fill="#7F8C8D"/>
+<circle cx="484" cy="167" r="1.9" fill="#7F8C8D"/>
+<text x="328" y="274" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">coupler</text>
+<text x="403" y="274" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">EDFA</text>
+<text x="484" y="274" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">1 × 2 splitter</text>
+<text x="626" y="274" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">pair of ULCF AWGs</text>
+<text x="626" y="294" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">K inputs each</text>
+<polyline points="312.0,281.0 312.0,286.0 505.0,286.0 505.0,281.0" fill="none" stroke="#7F8C8D" stroke-width="1.3" stroke-linejoin="round"/>
+<text x="408.5" y="305" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">K branches, each coupler (N/K) × 1</text>
+<text x="613" y="116" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#555555">odd</text>
+<text x="613" y="214" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#555555">even</text>
+<rect x="12" y="143" width="48" height="34" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="36" y="165.76" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<rect x="86" y="122" width="164" height="76" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<line x1="137" y1="151" x2="156.0" y2="136.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="180" y1="136" x2="199.0" y2="151.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="137" y1="169" x2="156.0" y2="184.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="180" y1="184" x2="199.0" y2="169.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="107" y="145" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="114" y1="160" x2="130.0" y2="160.0" stroke="#34495E" stroke-width="2.2"/>
+<circle cx="114" cy="160" r="2.6" fill="#34495E"/>
+<circle cx="130" cy="152" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="130" cy="160" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="130" cy="168" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="214" cy="160" r="15" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="137" y1="160" x2="199.0" y2="160.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="106.0,160.0 96.0,164.5 96.0,155.5" fill="#C0392B"/>
+<line x1="60" y1="160" x2="99.0" y2="160.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="312.0,114.0 302.0,118.5 302.0,109.5" fill="#C0392B"/>
+<polyline points="229.0,160.0 258.0,160.0 284.0,114.0 305.0,114.0" fill="none" stroke="#C0392B" stroke-width="2.6" stroke-linejoin="round"/>
+<text x="168" y="114" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">N DC switches</text>
+<text x="168" y="219" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222">M × M DC switch</text>
+<text x="168" y="238" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">selector + coupler</text>
+<polygon points="923.0,111.0 913.0,115.5 913.0,106.5" fill="#C0392B"/>
+<line x1="654" y1="111" x2="916.0" y2="111.0" stroke="#C0392B" stroke-width="2.6"/>
+<rect x="924" y="94" width="48" height="34" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="948" y="116.76" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Rx</text>
+<text x="812" y="137" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D" font-style="italic">no third stage: every AWG output</text>
+<text x="812" y="156" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D" font-style="italic">goes straight to a receiver</text>
+<line x1="12" y1="328" x2="972" y2="328" stroke="#D9DEE4" stroke-width="1.2"/>
+<text x="12" y="354" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#222222" font-weight="bold">(b) Conventional three-stage switch</text>
+<rect x="272" y="380" width="430" height="174" rx="12" fill="none" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="7,5"/>
+<text x="280" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">middle stage: M WR switches, each N × N</text>
+<rect x="12" y="437" width="48" height="34" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="36" y="459.76" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<rect x="86" y="416" width="164" height="76" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<line x1="137" y1="445" x2="156.0" y2="430.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="180" y1="430" x2="199.0" y2="445.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="137" y1="463" x2="156.0" y2="478.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="180" y1="478" x2="199.0" y2="463.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="107" y="439" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="114" y1="454" x2="130.0" y2="454.0" stroke="#34495E" stroke-width="2.2"/>
+<circle cx="114" cy="454" r="2.6" fill="#34495E"/>
+<circle cx="130" cy="446" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="130" cy="454" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="130" cy="462" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<rect x="199" y="439" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="222" y1="454" x2="206.0" y2="454.0" stroke="#34495E" stroke-width="2.2"/>
+<circle cx="222" cy="454" r="2.6" fill="#34495E"/>
+<circle cx="206" cy="446" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="206" cy="454" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="206" cy="462" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<line x1="137" y1="454" x2="199.0" y2="454.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="106.0,454.0 96.0,458.5 96.0,449.5" fill="#C0392B"/>
+<line x1="60" y1="454" x2="99.0" y2="454.0" stroke="#C0392B" stroke-width="2.6"/>
+<text x="168" y="408" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">first stage: N switches</text>
+<text x="168" y="513" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222">M × M space switch</text>
+<text x="168" y="532" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">selector + selector</text>
+<line x1="292" y1="434.8" x2="315.0" y2="446.8" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="473.2" x2="315.0" y2="461.2" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="418" x2="670.0" y2="418.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="436" x2="670.0" y2="436.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="472" x2="670.0" y2="472.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="490" x2="670.0" y2="490.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<polygon points="598,432 654,404 654,504 598,476" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<polygon points="312.0,454.0 302.0,458.5 302.0,449.5" fill="#C0392B"/>
+<line x1="229" y1="454" x2="305.0" y2="454.0" stroke="#C0392B" stroke-width="2.6"/>
+<line x1="343" y1="454" x2="386.0" y2="454.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="597.0,454.0 587.0,458.5 587.0,449.5" fill="#C0392B"/>
+<line x1="420" y1="454" x2="590.0" y2="454.0" stroke="#C0392B" stroke-width="2.6"/>
+<circle cx="328" cy="454" r="15" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<polygon points="386,436 386,472 420,454" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<text x="325" y="500" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">N × 1 coupler</text>
+<text x="410" y="500" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">EDFA</text>
+<text x="626" y="532" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">1 × N AWG</text>
+<text x="509" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">one input</text>
+<rect x="730" y="416" width="164" height="76" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<line x1="781" y1="445" x2="800.0" y2="430.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="824" y1="430" x2="843.0" y2="445.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="781" y1="463" x2="800.0" y2="478.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="824" y1="478" x2="843.0" y2="463.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="751" y="439" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="758" y1="454" x2="774.0" y2="454.0" stroke="#34495E" stroke-width="2.2"/>
+<circle cx="758" cy="454" r="2.6" fill="#34495E"/>
+<circle cx="774" cy="446" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="774" cy="454" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="774" cy="462" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<rect x="843" y="439" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<circle cx="858" cy="454" r="10" fill="none" stroke="#34495E" stroke-width="1.5"/>
+<line x1="781" y1="454" x2="843.0" y2="454.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="750.0,454.0 740.0,458.5 740.0,449.5" fill="#C0392B"/>
+<line x1="654" y1="454" x2="743.0" y2="454.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="923.0,454.0 913.0,458.5 913.0,449.5" fill="#C0392B"/>
+<line x1="873" y1="454" x2="916.0" y2="454.0" stroke="#C0392B" stroke-width="2.6"/>
+<rect x="924" y="437" width="48" height="34" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="948" y="459.76" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Rx</text>
+<text x="812" y="408" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">third stage: N switches</text>
+<text x="812" y="513" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222">M × M space switch</text>
+<text x="812" y="532" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">A1: selector + selector</text>
+<text x="812" y="550" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">A2: selector + coupler</text>
+<line x1="12" y1="560" x2="972" y2="560" stroke="#D9DEE4" stroke-width="1.2"/>
+<text x="12" y="586" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#222222" font-weight="bold">(c) Proposed three-stage switch</text>
+<text x="280" y="610" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#B7791F" font-weight="bold">new middle stage: M WR switches built as in (a)</text>
+<rect x="272" y="618" width="430" height="256" rx="12" fill="#FDF4DC" stroke="#B7791F" stroke-width="2.2"/>
+<line x1="292" y1="652.8" x2="315.0" y2="664.8" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="691.2" x2="315.0" y2="679.2" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="744.8" x2="314.0" y2="756.8" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="764" x2="314.0" y2="764.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="292" y1="783.2" x2="314.0" y2="771.2" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="504" y1="758" x2="598.0" y2="679.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="504" y1="770" x2="598.0" y2="777.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="504" y1="678" x2="598.0" y2="757.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="654" y1="641" x2="670.0" y2="641.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="655" x2="670.0" y2="655.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="683" x2="670.0" y2="683.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="697" x2="670.0" y2="697.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="739" x2="670.0" y2="739.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="753" x2="670.0" y2="753.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="767" x2="670.0" y2="767.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="781" x2="670.0" y2="781.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="654" y1="795" x2="670.0" y2="795.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<polygon points="598,649 654,629 654,709 598,689" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<polygon points="598,747 654,727 654,807 598,787" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<line x1="343" y1="764" x2="386.0" y2="764.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="420" y1="764" x2="464.0" y2="764.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<circle cx="328" cy="764" r="15" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<polygon points="386,746 386,782 420,764" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<rect x="464" y="749" width="40" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="471" y1="764" x2="483.0" y2="764.0" stroke="#34495E" stroke-width="2.2"/>
+<polyline points="497.0,756.0 483.0,764.0 497.0,772.0" fill="none" stroke="#34495E" stroke-width="2.2" stroke-linejoin="round"/>
+<line x1="343" y1="672" x2="386.0" y2="672.0" stroke="#C0392B" stroke-width="2.6"/>
+<line x1="420" y1="672" x2="464.0" y2="672.0" stroke="#C0392B" stroke-width="2.6"/>
+<circle cx="328" cy="672" r="15" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<polygon points="386,654 386,690 420,672" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<rect x="464" y="657" width="40" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="471" y1="672" x2="483.0" y2="672.0" stroke="#34495E" stroke-width="2.2"/>
+<polyline points="497.0,664.0 483.0,672.0 497.0,680.0" fill="none" stroke="#34495E" stroke-width="2.2" stroke-linejoin="round"/>
+<polygon points="597.0,659.0 587.4,664.2 586.7,655.3" fill="#C0392B"/>
+<line x1="504" y1="666" x2="590.0" y2="659.5" stroke="#C0392B" stroke-width="2.6"/>
+<circle cx="328" cy="711" r="1.9" fill="#7F8C8D"/>
+<circle cx="328" cy="718" r="1.9" fill="#7F8C8D"/>
+<circle cx="328" cy="725" r="1.9" fill="#7F8C8D"/>
+<circle cx="400" cy="711" r="1.9" fill="#7F8C8D"/>
+<circle cx="400" cy="718" r="1.9" fill="#7F8C8D"/>
+<circle cx="400" cy="725" r="1.9" fill="#7F8C8D"/>
+<circle cx="484" cy="711" r="1.9" fill="#7F8C8D"/>
+<circle cx="484" cy="718" r="1.9" fill="#7F8C8D"/>
+<circle cx="484" cy="725" r="1.9" fill="#7F8C8D"/>
+<text x="328" y="832" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">coupler</text>
+<text x="403" y="832" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">EDFA</text>
+<text x="484" y="832" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">1 × 2 splitter</text>
+<text x="626" y="832" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">pair of ULCF AWGs</text>
+<text x="626" y="852" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">K inputs each</text>
+<polyline points="312.0,839.0 312.0,844.0 505.0,844.0 505.0,839.0" fill="none" stroke="#7F8C8D" stroke-width="1.3" stroke-linejoin="round"/>
+<text x="408.5" y="863" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">K branches, each coupler (N/K) × 1</text>
+<text x="613" y="674" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#555555">odd</text>
+<text x="613" y="772" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#555555">even</text>
+<rect x="12" y="701" width="48" height="34" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="36" y="723.76" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<rect x="86" y="680" width="164" height="76" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<line x1="137" y1="709" x2="156.0" y2="694.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="180" y1="694" x2="199.0" y2="709.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="137" y1="727" x2="156.0" y2="742.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="180" y1="742" x2="199.0" y2="727.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="107" y="703" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="114" y1="718" x2="130.0" y2="718.0" stroke="#34495E" stroke-width="2.2"/>
+<circle cx="114" cy="718" r="2.6" fill="#34495E"/>
+<circle cx="130" cy="710" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="130" cy="718" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="130" cy="726" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<rect x="199" y="703" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="222" y1="718" x2="206.0" y2="718.0" stroke="#34495E" stroke-width="2.2"/>
+<circle cx="222" cy="718" r="2.6" fill="#34495E"/>
+<circle cx="206" cy="710" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="206" cy="718" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="206" cy="726" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<line x1="137" y1="718" x2="199.0" y2="718.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="106.0,718.0 96.0,722.5 96.0,713.5" fill="#C0392B"/>
+<line x1="60" y1="718" x2="99.0" y2="718.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="312.0,672.0 302.0,676.5 302.0,667.5" fill="#C0392B"/>
+<polyline points="229.0,718.0 258.0,718.0 284.0,672.0 305.0,672.0" fill="none" stroke="#C0392B" stroke-width="2.6" stroke-linejoin="round"/>
+<text x="168" y="653" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">first stage: N switches</text>
+<text x="168" y="672" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#B7791F" font-weight="bold">in K input groups</text>
+<text x="168" y="777" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222">M × M space switch</text>
+<text x="168" y="796" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">selector + selector</text>
+<rect x="730" y="680" width="164" height="76" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<line x1="781" y1="709" x2="800.0" y2="694.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="824" y1="694" x2="843.0" y2="709.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="781" y1="727" x2="800.0" y2="742.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<line x1="824" y1="742" x2="843.0" y2="727.0" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="751" y="703" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="758" y1="718" x2="774.0" y2="718.0" stroke="#34495E" stroke-width="2.2"/>
+<circle cx="758" cy="718" r="2.6" fill="#34495E"/>
+<circle cx="774" cy="710" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="774" cy="718" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="774" cy="726" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<rect x="843" y="703" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<circle cx="858" cy="718" r="10" fill="none" stroke="#34495E" stroke-width="1.5"/>
+<line x1="781" y1="718" x2="843.0" y2="718.0" stroke="#C0392B" stroke-width="2.6"/>
+<polygon points="750.0,718.0 740.0,722.5 740.0,713.5" fill="#C0392B"/>
+<polyline points="654.0,669.0 690.0,669.0 714.0,718.0 743.0,718.0" fill="none" stroke="#C0392B" stroke-width="2.6" stroke-linejoin="round"/>
+<polygon points="923.0,718.0 913.0,722.5 913.0,713.5" fill="#C0392B"/>
+<line x1="873" y1="718" x2="916.0" y2="718.0" stroke="#C0392B" stroke-width="2.6"/>
+<rect x="924" y="701" width="48" height="34" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="948" y="723.76" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Rx</text>
+<text x="812" y="672" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">third stage: N switches</text>
+<text x="812" y="777" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222">M × M space switch</text>
+<text x="812" y="796" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">A1: selector + selector</text>
+<text x="812" y="814" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#555555">A2: selector + coupler</text>
+<line x1="12" y1="892" x2="972" y2="892" stroke="#D9DEE4" stroke-width="1.2"/>
+<rect x="15" y="907" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="22" y1="922" x2="38.0" y2="922.0" stroke="#34495E" stroke-width="2.2"/>
+<circle cx="22" cy="922" r="2.6" fill="#34495E"/>
+<circle cx="38" cy="914" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="38" cy="922" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<circle cx="38" cy="930" r="2.2" fill="#FFFFFF" stroke="#34495E" stroke-width="1.3"/>
+<text x="54" y="927" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">selector: connects to ONE port</text>
+<circle cx="308" cy="922" r="15" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<text x="332" y="927" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">coupler: adds all inputs</text>
+<rect x="533" y="907" width="30" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<circle cx="548" cy="922" r="10" fill="none" stroke="#34495E" stroke-width="1.5"/>
+<text x="572" y="927" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">selector (A1) or coupler (A2)</text>
+<polygon points="762,904 762,940 796,922" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<text x="802" y="927" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">EDFA (optical amplifier)</text>
+<polygon points="16,953 44,945 44,979 16,971" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<text x="54" y="967" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">AWG: separates the wavelengths</text>
+<rect x="288" y="947" width="40" height="30" rx="4" fill="#FFFFFF" stroke="#34495E" stroke-width="1.8"/>
+<line x1="295" y1="962" x2="307.0" y2="962.0" stroke="#34495E" stroke-width="2.2"/>
+<polyline points="321.0,954.0 307.0,962.0 321.0,970.0" fill="none" stroke="#34495E" stroke-width="2.2" stroke-linejoin="round"/>
+<text x="336" y="967" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">1 × 2 splitter: divides the light</text>
+<line x1="532" y1="962" x2="564.0" y2="962.0" stroke="#C0392B" stroke-width="2.6"/>
+<text x="572" y="967" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">signal that is followed</text>
+<line x1="762" y1="962" x2="794.0" y2="962.0" stroke="#7F8C8D" stroke-width="1.6"/>
+<text x="802" y="967" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">other ports and signals</text>
+</svg>

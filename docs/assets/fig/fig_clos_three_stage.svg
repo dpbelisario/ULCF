@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="668" viewBox="0 0 1040 668">
+<defs>
+  <marker id="ar_opt" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="12" refX="13" refY="6" orient="auto"><path d="M0,0 L15,6 L0,12 z" fill="#C0392B"/></marker>
+  <marker id="ar_ele" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="12" refX="13" refY="6" orient="auto"><path d="M0,0 L15,6 L0,12 z" fill="#1F4E79"/></marker>
+  <marker id="ar_gry" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="12" refX="13" refY="6" orient="auto"><path d="M0,0 L15,6 L0,12 z" fill="#7F8C8D"/></marker>
+  <marker id="ar_amb" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="12" refX="13" refY="6" orient="auto"><path d="M0,0 L15,6 L0,12 z" fill="#B7791F"/></marker>
+</defs>
+<rect x="0" y="0" width="1040" height="668" fill="white"/>
+<text x="260.1" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="middle" fill="#222222" font-weight="bold">First stage</text>
+<text x="260.1" y="57" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">N = 2 space switches</text>
+<text x="260.1" y="77" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">each M x M = 3 x 3</text>
+<text x="522.8" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="middle" fill="#222222" font-weight="bold">Middle stage</text>
+<text x="522.8" y="57" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">M = 3 WR switches</text>
+<text x="522.8" y="77" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">each N x N = 2 x 2</text>
+<text x="785.5" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="middle" fill="#222222" font-weight="bold">Third stage</text>
+<text x="785.5" y="57" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">N = 2 space switches</text>
+<text x="785.5" y="77" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">each M x M = 3 x 3</text>
+<line x1="324" y1="174.4" x2="466" y2="157.4" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="579.6" y1="157.4" x2="721.6" y2="174.4" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="324" y1="217" x2="466" y2="313.6" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="579.6" y1="313.6" x2="721.6" y2="217" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="324" y1="259.6" x2="466" y2="469.8" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="579.6" y1="469.8" x2="721.6" y2="259.6" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="324" y1="401.6" x2="466" y2="191.4" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="579.6" y1="191.4" x2="721.6" y2="401.6" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="324" y1="444.2" x2="466" y2="347.6" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="579.6" y1="347.6" x2="721.6" y2="444.2" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="324" y1="486.8" x2="466" y2="503.8" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="579.6" y1="503.8" x2="721.6" y2="486.8" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="128" y1="174.4" x2="196.2" y2="174.4" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="849.4" y1="174.4" x2="917.6" y2="174.4" stroke="#8E9AA4" stroke-width="1.5"/>
+<text x="118.1" y="179.4" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end" fill="#222222">In 1</text>
+<text x="927.5" y="179.4" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222222">Out 1</text>
+<line x1="128" y1="217" x2="196.2" y2="217" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="849.4" y1="217" x2="917.6" y2="217" stroke="#8E9AA4" stroke-width="1.5"/>
+<text x="118.1" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end" fill="#222222">In 2</text>
+<text x="927.5" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222222">Out 2</text>
+<line x1="128" y1="259.6" x2="196.2" y2="259.6" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="849.4" y1="259.6" x2="917.6" y2="259.6" stroke="#8E9AA4" stroke-width="1.5"/>
+<text x="118.1" y="264.6" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end" fill="#222222">In 3</text>
+<text x="927.5" y="264.6" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222222">Out 3</text>
+<line x1="128" y1="401.6" x2="196.2" y2="401.6" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="849.4" y1="401.6" x2="917.6" y2="401.6" stroke="#8E9AA4" stroke-width="1.5"/>
+<text x="118.1" y="406.6" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end" fill="#222222">In 4</text>
+<text x="927.5" y="406.6" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222222">Out 4</text>
+<line x1="128" y1="444.2" x2="196.2" y2="444.2" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="849.4" y1="444.2" x2="917.6" y2="444.2" stroke="#8E9AA4" stroke-width="1.5"/>
+<text x="118.1" y="449.2" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end" fill="#222222">In 5</text>
+<text x="927.5" y="449.2" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222222">Out 5</text>
+<line x1="128" y1="486.8" x2="196.2" y2="486.8" stroke="#8E9AA4" stroke-width="1.5"/>
+<line x1="849.4" y1="486.8" x2="917.6" y2="486.8" stroke="#8E9AA4" stroke-width="1.5"/>
+<text x="118.1" y="491.8" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end" fill="#222222">In 6</text>
+<text x="927.5" y="491.8" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222222">Out 6</text>
+<rect x="196.2" y="131.8" width="127.8" height="170.4" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="721.6" y="131.8" width="127.8" height="170.4" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="196.2" y="359" width="127.8" height="170.4" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="721.6" y="359" width="127.8" height="170.4" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="466" y="124.7" width="113.6" height="99.4" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="466" y="280.9" width="113.6" height="99.4" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="466" y="437.1" width="113.6" height="99.4" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<polyline points="196.2,174.4 324,174.4 466,157.4 579.6,191.4 721.6,401.6 849.4,444.2" fill="none" stroke="#C0392B" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="196.2,174.4 324,217 466,313.6 579.6,347.6 721.6,444.2 849.4,444.2" fill="none" stroke="#C0392B" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="196.2,174.4 324,259.6 466,469.8 579.6,503.8 721.6,486.8 849.4,444.2" fill="none" stroke="#C0392B" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="128" y1="174.4" x2="196.2" y2="174.4" stroke="#C0392B" stroke-width="3"/>
+<line x1="849.4" y1="444.2" x2="914.6" y2="444.2" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<text x="260.1" y="122.8" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Space switch 1</text>
+<text x="785.5" y="122.8" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Space switch 1</text>
+<text x="260.1" y="350" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Space switch 2</text>
+<text x="785.5" y="350" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Space switch 2</text>
+<text x="522.8" y="115.7" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">WR switch 1</text>
+<text x="522.8" y="271.9" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">WR switch 2</text>
+<text x="522.8" y="428.1" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">WR switch 3</text>
+<text x="68" y="567.4" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#7F8C8D">MN = 6 transmitters</text>
+<text x="979.6" y="567.4" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#7F8C8D">MN = 6 receivers</text>
+<line x1="60" y1="599.4" x2="104" y2="599.4" stroke="#C0392B" stroke-width="3"/>
+<text x="112" y="604.4" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#222222">The M = 3 possible paths from In 1 to Out 5, one through each WR switch (a connection uses one of them)</text>
+<line x1="60" y1="627.4" x2="104" y2="627.4" stroke="#8E9AA4" stroke-width="1.5"/>
+<text x="112" y="632.4" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#222222">Link: one between every space switch and every WR switch (ports are numbered from top to bottom)</text>
+</svg>

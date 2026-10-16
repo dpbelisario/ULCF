@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15 EDFA and ASE noise | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a class="current" href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Background</p>
+<h1><span class="num nt">15</span>EDFA and ASE noise</h1>
+<p class="lead">An optical amplifier gives back the power that the switch has lost, but it also adds noise. This page gives the formula for this noise, shows that the signal-to-noise ratio (SNR) after an amplifier is set by the power at its input, and explains how the scripts model the limited output power of an amplifier. Page 12 stated that the lowest point of the level diagram decides the signal quality. This page gives the reason.</p>
+
+<div class="pair"><span><b>Script:</b> <code>matlab/demos/demo15_edfa_ase.m</code></span><span><b>Library:</b> <code>amplified_by_EDFA3</code>, <code>attenuation</code>, <code>calc_signal_power</code></span></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Why you need this</a></li>
+<li><a href="#s2">Gain, ASE noise and noise figure</a></li>
+<li><a href="#s3">The input power sets the SNR</a></li>
+<li><a href="#s4">Saturation and the pre-amplifier</a></li>
+<li><a href="#s5">How the code calls the amplifier</a></li>
+<li><a href="#s6">Run the demo</a></li>
+<li><a href="#s7">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Why you need this</h2>
+<p>Between the transmitter and the optical amplifier, the switch of this research loses most of the signal power: <span class="nt">30.5 dB</span> in the conventional three-stage switch with \(M = 64\) and \(N = 96\) (<a href="11_network_ocs_clos.html">page 11</a>). The amplifier, an erbium-doped fiber amplifier (EDFA), restores the power. If the EDFA did nothing else, loss would be harmless. But the EDFA adds noise, and the weaker the signal is when it arrives at the EDFA, the more this noise disturbs it.</p>
+<p>The title of the planned paper contains the words "low-loss wavelength routing". The loss that these words mean is the loss in front of the EDFA. With the formulas of this page you can calculate what one dB of loss costs, and you can see why it matters where the loss is: before the amplifier or after it.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>An EDFA restores the power, but not the signal quality. The SNR after an EDFA is set by the signal power at its <em>input</em>. A loss before the EDFA lowers the SNR by the same number of dB. The same loss after the EDFA changes the SNR very little.</p></div>
+<div class="box note"><span class="label">Sources</span>
+<p>The formulas of this page are the formulas of the library function <code>amplified_by_EDFA3</code>; the header of the function derives them. The statements about the switch come from the two papers of the laboratory. The page calls them the JLT paper and the JOCN paper.</p>
+<ul>
+<li><span class="nt">Mitsuya et al., "Three-Stage Optical Circuit Switch Architectures for Intra-Datacenter Networking," J. Lightw. Technol., vol. 43, no. 2, pp. 400-407, 2025 (doi 10.1109/JLT.2024.3465208)</span></li>
+<li><span class="nt">Nagai et al., "Design and Verification of Large-Scale Optical Circuit Switch Using ULCF AWGs for Datacenter Application," J. Opt. Commun. Netw., 2018</span></li>
+</ul></div>
+</section>
+
+<section id="s2">
+<h2>2. Gain, ASE noise and noise figure</h2>
+
+<h3>Gain</h3>
+<p>An <strong>EDFA</strong> is an optical amplifier: light enters, and the same light leaves with more power. The light is not converted to an electrical signal on the way. One EDFA amplifies many wavelength channels at the same time. A wavelength-routing (WR) switch uses this property. Its aggregation coupler collects \(N\) signals with different wavelengths into one fiber, and one EDFA amplifies all of them (page 11).</p>
+<p>The <strong>gain</strong> \(G\) is the ratio of the output power to the input power. In dB, a gain is added to a power in dBm: a signal of <span class="nt">-20 dBm</span> and a gain of <span class="nt">20 dB</span> give <span class="nt">0 dBm</span>. The field is multiplied by \(\sqrt{G}\), in the same way as a loss multiplies it by a factor below 1 (<a href="12_units_power_budget.html">page 12</a>).</p>
+
+<h3>ASE noise and the noise figure</h3>
+<p>An EDFA also emits light by itself. This light is not related to the signal, and the EDFA amplifies it together with the signal. It is called <strong>amplified spontaneous emission (ASE)</strong>. For the receiver, ASE is noise. In the simulation it is white Gaussian noise over the whole simulated band (the band of width \(F_s\) around the carrier, <a href="13_waveform_fft_filter.html">page 13</a>), like the AWGN of the practice chapters. There is one difference: you do not choose its power from an SNR. The amplifier fixes it.</p>
+<p>The <strong>noise figure</strong> \(F\) is the number that tells how much ASE an amplifier produces. Let \(G\) and \(F\) be plain ratios, not values in dB. The ASE power in one polarization and in a bandwidth \(B\) is then</p>
+<div class="eq" id="e1"><div class="m">\[ P_{\mathrm{ASE}} = \frac{(GF-1)\,h\nu\,B}{2} \]</div><span class="eqno nt">(1)</span></div>
+<p>The product \(h\nu\) is the energy of one photon: \(h\) is the Planck constant and \(\nu\) is the optical frequency. The code takes the frequency at the wavelength 1550 nm, which gives \(h\nu = 1.2816\times10^{-19}\ \mathrm{J}\). An EDFA emits ASE in both polarizations. Equation (1) counts one of them, and this is the reason for the factor 1/2.</p>
+<p>In dB the noise figure is \(\mathrm{NF} = 10\log_{10}F\). According to the header of <code>amplified_by_EDFA3</code>, a real EDFA has a noise figure of about 4 to 6 dB, and 3 dB is the lowest possible value at high gain.</p>
+
+<h3>The SNR after the amplifier</h3>
+<p>The signal of this project is polarization multiplexed: its two polarizations carry independent signals of equal power (<a href="14_coherent_rx_dsp_ber.html">page 14</a>). Let \(P_{\mathrm{in}}\) be the power of one wavelength channel at the input of the amplifier, both polarizations together. The coherent receiver detects the two polarizations separately, so a signal is disturbed only by the ASE in its own polarization. The receiver also passes only a band whose width is the symbol rate \(B\) (page 14), so only the ASE inside this band counts. Three lines give the SNR of one polarization:</p>
+<ol>
+<li>signal power of one polarization after the amplifier: \(G\,P_{\mathrm{in}}/2\)</li>
+<li>ASE power in the same polarization inside the band \(B\), from Eq. (1): \((GF-1)\,h\nu B/2\)</li>
+<li>the ratio of the two:</li>
+</ol>
+<div class="eq" id="e2"><div class="m">\[ \mathrm{SNR} = \frac{G\,P_{\mathrm{in}}/2}{(GF-1)\,h\nu B/2} = \frac{G\,P_{\mathrm{in}}}{(GF-1)\,h\nu B} \approx \frac{P_{\mathrm{in}}}{F\,h\nu B} \qquad (GF \gg 1) \]</div><span class="eqno nt">(2)</span></div>
+<p>The last step neglects the 1 beside \(GF\). The two step scripts, <code>step21_two_stage_one_point</code> and <code>step22_three_stage_one_point</code>, each simulate one operating point, that is one set of parameters such as the transmitter power and the switch size. At their default operating points the gains lie between <span class="nt">16.7 dB</span> and <span class="nt">40.5 dB</span>, and the error of this step is below <span class="nt">0.05 dB</span>. In dB, Eq. (2) is a subtraction:</p>
+<div class="eq" id="e3"><div class="m">\[ \begin{aligned} \mathrm{SNR}\ [\mathrm{dB}] &amp;= P_{\mathrm{in}}\ [\mathrm{dBm}] - (h\nu B)\ [\mathrm{dBm}] - \mathrm{NF}\ [\mathrm{dB}] \\ &amp;= P_{\mathrm{in}}\ [\mathrm{dBm}] + 53.9 - \mathrm{NF}\ [\mathrm{dB}] \qquad (B = 32\ \mathrm{GHz}) \end{aligned} \]</div><span class="eqno nt">(3)</span></div>
+<p>The number 53.9 comes from the constants of the code: for \(B = 32\ \mathrm{GHz}\) the power \(h\nu B\) is \(1.2816\times10^{-19}\ \mathrm{J} \times 32\times10^{9}\ \mathrm{Hz} = 4.10\times10^{-9}\ \mathrm{W}\), which is <span class="nt">-53.87 dBm</span>. Table 1 gives the constant for the two symbol rates of the given scripts.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. The constant of Eq. (3) in the given scripts. The noise figure is that of the EDFA of the WR switch.</caption>
+<thead><tr><th>Script</th><th class="num"><code>baudrate</code></th><th class="num">\(h\nu B\)</th><th class="num"><code>NF</code></th><th>SNR [dB] from Eq. (3)</th></tr></thead>
+<tbody>
+<tr><td><code>step21_two_stage_one_point</code></td><td class="num nt">24&nbsp;GHz</td><td class="num nt">-55.12&nbsp;dBm</td><td class="num nt">5&nbsp;dB</td><td>\(P_{\mathrm{in}}\ [\mathrm{dBm}] + 50.12\)</td></tr>
+<tr><td><code>step22_three_stage_one_point</code>, <code>demo15_edfa_ase</code></td><td class="num nt">32&nbsp;GHz</td><td class="num nt">-53.87&nbsp;dBm</td><td class="num nt">6&nbsp;dB</td><td>\(P_{\mathrm{in}}\ [\mathrm{dBm}] + 47.87\)</td></tr>
+</tbody></table></div>
+<p>The header of <code>amplified_by_EDFA3</code> writes the same rule for a bandwidth of 12.5 GHz. The constant is then 58 dB. This page uses the symbol rate as the bandwidth, because this is the width of the band that the receiver passes.</p>
+<p>The JLT paper and the JOCN paper both state a noise figure of 6 dB for this EDFA. The value 5 dB of <code>step21_two_stage_one_point</code> is the value of the earlier laboratory code that this script follows.</p>
+<p>Example: at the default operating point of <code>step22_three_stage_one_point</code> (\(P_{\mathrm{Tx}} = 4\ \mathrm{dBm}\), \(M = 64\)) the channel reaches the EDFA with <span class="nt">4 - 30.5 = -26.5 dBm</span>. Equation (3) gives <span class="nt">-26.5 + 53.87 - 6 = 21.37 dB</span>. The script prints <span class="nt">21.38 dB</span> for this term, in the line <code>ASE of the EDFA</code> of its SNR table. The difference of 0.01 dB is a rounding effect: the scripts use exactly 3 dB for the factor 2 between the channel and one polarization, and the exact value is 3.01 dB.</p>
+<div class="box warn"><span class="label">Common mistake</span>
+<p>\(P_{\mathrm{in}}\) in Eqs. (2) and (3) is the power of one channel, in both polarizations, at the <em>input</em> of the amplifier. It is not the transmitter power, and it is not the output power of the amplifier. The scripts simulate one polarization, so every power that they print is 3 dB lower than the power of the channel (<code>pin = PTx - 3*pol_flag</code>). Add 3 dB to a printed power before you put it into Eq. (3).</p></div>
+
+<p><strong>In the code.</strong> The lines of <code>amplified_by_EDFA3</code> that make the ASE are Eq. (1), with the bandwidth \(B\) replaced by the width \(F_s\) of the simulated band (<code>Fs</code>):</p>
+<pre><code>P_ase = (gain*F - 1) * h * f * Fs / 2;  % ASE power in one polarization inside Fs [W]
+noise_re = randn(n, 1);  % real part first, then the imaginary part (legacy order)
+noise_im = randn(n, 1);
+% (noise_re + 1i*noise_im)/sqrt(2) has the mean power 1, so aseNoise has P_ase
+aseNoise = sqrt(P_ase) * (noise_re + 1i*noise_im) / sqrt(2);
+amplified_signal = sqrt(gain) * signal + aseNoise;  % POWER gain G = FIELD factor sqrt(G)</code></pre>
+<p>The function adds ASE over the whole simulated band. The receive filter later removes the part outside the signal band, so the fraction \(B/F_s\) of <code>P_ase</code> remains. The oversampling rate <code>up</code> is the number of samples per symbol, so \(F_s\) is <code>up</code> times \(B\) (page 13). With the default value <code>up = 2</code>, one half of <code>P_ase</code> remains. Table 2 lists the symbols of this page with their names in the code.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. Symbols of this page and their names in the code.</caption>
+<thead><tr><th>Symbol</th><th>Meaning</th><th>In the code</th></tr></thead>
+<tbody>
+<tr><td>\(G\)</td><td>gain as a power ratio</td><td><code>gain</code> in the function; in dB <code>gain_dB</code> (function) and <code>edfaGain</code> (scripts)</td></tr>
+<tr><td>\(F\), \(\mathrm{NF}\)</td><td>noise figure as a ratio and in dB</td><td><code>F</code> and <code>NF_dB</code> in the function; <code>NF</code> and <code>NF2</code> in the scripts</td></tr>
+<tr><td>\(h\nu\)</td><td>energy of one photon at 1550 nm</td><td><code>h*f</code> in the function</td></tr>
+<tr><td>\(B\)</td><td>symbol rate, the width of the band that the receiver passes</td><td><code>baudrate</code></td></tr>
+<tr><td>\(F_s\)</td><td>width of the simulated band</td><td><code>Fs</code></td></tr>
+<tr><td>\(P_{\mathrm{in}}\)</td><td>power of one channel at the amplifier input, both polarizations</td><td>In <code>demo15_edfa_ase</code> it is <code>P_in</code>. Inside the function, <code>P_in</code> is the power of the one simulated polarization, which is 3 dB lower.</td></tr>
+<tr><td>\(P_{\mathrm{sat}}\)</td><td>saturation output power (<a href="#s4">section 4</a>)</td><td><code>edfa_sat1</code>, <code>edfa_sat2</code></td></tr>
+<tr><td>\(N_{\mathrm{ch}}\)</td><td>number of wavelength channels that one amplifier carries (section 4)</td><td>argument <code>N</code> of the function; in <code>step21_two_stage_one_point</code> it is <code>N_agg</code></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="s3">
+<h2>3. The input power sets the SNR</h2>
+<p>Equation (2) contains the input power, the noise figure and the bandwidth. The gain has dropped out, and nothing that follows the amplifier appears in it. Figure 1 shows what this means for a loss of 10 dB.</p>
+<figure id="f1"><img src="assets/fig/fig_edfa_loss_before_after.svg" alt="Two level diagrams. Left: a 10-dB loss before the EDFA lowers the EDFA input to -30 dBm and the SNR to 17.9 dB. Right: the same loss after the EDFA lowers signal and ASE together, and the SNR stays at 27.9 dB.">
+<figcaption><b>Fig. 1.</b> The same loss of 10 dB before and after an EDFA with a gain of 20 dB and a noise figure of 6 dB. The channel power is -20 dBm before the loss and the amplifier. The red line is the signal power of the channel. The blue dashed line is the ASE power inside the signal bandwidth of 32 GHz. Both lines count both polarizations, so the ASE power is twice the value of Eq. (1). The names under the blocks are the library functions.</figcaption></figure>
+<ul>
+<li><strong>Loss before the amplifier</strong> (Fig. 1(a)). The EDFA input falls from <span class="nt">-20 dBm</span> to <span class="nt">-30 dBm</span>. The ASE power does not depend on the input power (Eq. (1)), so it stays at <span class="nt">-27.9 dBm</span>. This value is twice Eq. (1) for \(G = 100\), \(F = 3.98\) and \(B = 32\ \mathrm{GHz}\). The SNR falls by 10 dB, from <span class="nt">27.9 dB</span> to <span class="nt">17.9 dB</span>.</li>
+<li><strong>Loss after the amplifier</strong> (Fig. 1(b)). The loss attenuates the signal and the ASE by the same factor. Both fall by 10 dB, and their ratio stays at <span class="nt">27.9 dB</span>.</li>
+</ul>
+<p>The rule is: every dB of loss before the EDFA costs one dB of SNR, and a loss after the EDFA costs almost nothing. The word "almost" has a reason. The receiver has an amplifier of its own, and <a href="#s4">section 4</a> shows when its noise counts.</p>
+
+<h3>What this means for the switch</h3>
+<p>In a WR switch the EDFA follows the aggregation coupler. The space switch in front of the WR switch and the aggregation coupler are therefore losses before the EDFA. The arrayed-waveguide grating (AWG), which separates the wavelength channels behind the EDFA, and the third-stage switch of a three-stage switch are losses after it. The JLT paper notes that the signal power is generally lowest just before the EDFA. The JOCN paper states that the SNR of the switch is mostly determined by the EDFA input power. This is why the lowest point of the level diagram of page 12, the EDFA input, decides the signal quality.</p>
+<p>The largest loss before the EDFA is the aggregation coupler: <span class="nt">24.5 dB</span> for \(N = 96\). An AWG with \(K\) input ports allows \(K\) small couplers with \(N/K\) inputs to replace it, each followed by its own EDFA (<a href="17_awg_wavelength_routing.html">page 17</a>). Table 3 shows the effect. It uses <code>step21_two_stage_one_point</code> at its default operating point (\(P_{\mathrm{Tx}} = -4\ \mathrm{dBm}\), 8 x 8 DC switch) and changes only <code>ULCF_deg</code>, the name of \(K\) in the code. The DC switch is the space switch of the two-stage switch (page 11). In front of the aggregation coupler the channel power is <span class="nt">-4 - 3 - 12 = -19 dBm</span>: this script subtracts 3 dB for the fan-in and fan-out devices of a multicore fiber (<code>fiber_flag = 1</code>) and 12 dB for the DC switch (<a href="21_two_stage_ulcf_switch.html">page 21</a> explains both).</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. A smaller aggregation coupler raises the SNR that the ASE of the EDFA allows (24 GBd, <code>NF = 5</code> dB). "EDFA input" is the channel power at the EDFA input. "SNR, script" is the line <code>ASE of the EDFA</code> that the script prints.</caption>
+<thead><tr><th class="num">\(K\)</th><th>Coupler</th><th class="num">Coupler loss</th><th class="num">EDFA input</th><th class="num">SNR, Eq. (3)</th><th class="num">SNR, script</th></tr></thead>
+<tbody>
+<tr><td class="num nt">1</td><td class="nt">96 x 1</td><td class="num nt">24.5 dB</td><td class="num nt">-43.5 dBm</td><td class="num nt">6.62 dB</td><td class="num nt">6.63 dB</td></tr>
+<tr><td class="num nt">4</td><td class="nt">24 x 1</td><td class="num nt">17.5 dB</td><td class="num nt">-36.5 dBm</td><td class="num nt">13.62 dB</td><td class="num nt">13.63 dB</td></tr>
+<tr><td class="num nt">12</td><td class="nt">8 x 1</td><td class="num nt">10.5 dB</td><td class="num nt">-29.5 dBm</td><td class="num nt">20.62 dB</td><td class="num nt">20.63 dB</td></tr>
+</tbody></table></div>
+<p>Each coupler stage that is saved removes 3.5 dB of loss and raises this SNR by 3.5 dB. With \(K = 12\) four stages are saved, and the improvement is 14 dB. The JOCN paper states that a loss reduction of over 10 dB is possible with 12 input ports: a factor of 12 in power is 10.8 dB, and with the loss rule of 3.5 dB per coupler stage the reduction becomes 14 dB. This is the "low-loss wavelength routing" of the title.</p>
+
+<p><strong>In the code.</strong> The two step scripts evaluate Eq. (2) without the approximation. They print the result in dB in the line <code>ASE of the EDFA</code> of their SNR table (the last column of Table 3). This is the line of the code:</p>
+<pre><code>nsr_ase1 = (ase1_mW*baudrate/Fs)/(G1*10^(budget_target(4)/10));</code></pre>
+<p><code>nsr_ase1</code> is the ASE power divided by the signal power, that is 1/SNR. The numerator is the ASE power of Eq. (1) inside the signal band: <code>ase1_mW</code> is the ASE power of one polarization inside <code>Fs</code>, in mW. The denominator is the amplified power of the simulated polarization: <code>budget_target(4)</code> is its power at the EDFA input in dBm, and <code>G1</code> is the gain.</p>
+</section>
+
+<section id="s4">
+<h2>4. Saturation and the pre-amplifier</h2>
+
+<h3>The output power is limited and shared</h3>
+<p>An EDFA cannot deliver an unlimited output power. Its total output power, all wavelength channels and both polarizations together, is limited to the <strong>saturation output power</strong> \(P_{\mathrm{sat}}\). Both papers use 20 dBm (100 mW), and so do the scripts (<code>edfa_sat1 = 20</code>). The \(N_{\mathrm{ch}}\) channels that pass through one EDFA share this power equally, and each channel divides its share between its two polarizations. The share of the one field that the scripts simulate is therefore</p>
+<div class="eq" id="e4"><div class="m">\[ P_{\mathrm{out}} = P_{\mathrm{sat}} - 10\log_{10}N_{\mathrm{ch}} - 3 \quad [\mathrm{dBm}] \]</div><span class="eqno nt">(4)</span></div>
+<p>The signal does not get this share alone. The output power of an amplifier is shared by all signals and by the ASE. The \(N_{\mathrm{ch}}\) channels fill a band of \(N_{\mathrm{ch}}\) channel spacings, so the ASE inside one channel spacing belongs to each channel. The channel spacing is 50 GHz (<code>signal_interval = 50e9</code>). In the scripts, \(P_{\mathrm{out}}\) is therefore the power of the simulated signal plus the ASE of its polarization inside 50 GHz. The signal alone is a little lower.</p>
+<p>The conventional WR switch has one EDFA for all channels: \(N_{\mathrm{ch}} = N\). With \(K\) couplers and \(K\) EDFAs, each EDFA carries \(N_{\mathrm{ch}} = N/K\) channels, and each channel gets \(K\) times more power (Table 4).</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. Output power of an EDFA with <code>edfa_sat1 = 20</code> dBm for \(N = 96\). "Channel" is the share of one channel in both polarizations. "Field" is the share of the simulated field, Eq. (4). "Signal" is the power of the signal alone after block [5]: the column <code>(target)</code> that <code>step21_two_stage_one_point</code> prints when <code>ULCF_deg</code> is set to \(K\).</caption>
+<thead><tr><th class="num">\(K\)</th><th class="num">\(N_{\mathrm{ch}} = N/K\)</th><th class="num">\(10\log_{10}N_{\mathrm{ch}}\)</th><th class="num">Channel</th><th class="num">Field, Eq. (4)</th><th class="num">Signal, script</th></tr></thead>
+<tbody>
+<tr><td class="num nt">1</td><td class="num nt">96</td><td class="num nt">19.82 dB</td><td class="num nt">0.18 dBm</td><td class="num nt">-2.82 dBm</td><td class="num nt">-4.449 dBm</td></tr>
+<tr><td class="num nt">4</td><td class="num nt">24</td><td class="num nt">13.80 dB</td><td class="num nt">6.20 dBm</td><td class="num nt">3.20 dBm</td><td class="num nt">2.815 dBm</td></tr>
+<tr><td class="num nt">12</td><td class="num nt">8</td><td class="num nt">9.03 dB</td><td class="num nt">10.97 dBm</td><td class="num nt">7.97 dBm</td><td class="num nt">7.884 dBm</td></tr>
+</tbody></table></div>
+<p>The signal alone is below the share of the field by about 0.1 dB for \(K = 12\), 0.4 dB for \(K = 4\) and 1.6 dB for \(K = 1\). For \(K = 1\) the EDFA input is so low (Table 3) that the ASE inside 50 GHz has 45 % of the signal power.</p>
+<p>The scripts operate the EDFA exactly at this limit. They ask for the gain that would lift the signal alone to \(P_{\mathrm{out}}\), and the function then lowers signal and ASE together until the signal and the ASE inside 50 GHz have \(P_{\mathrm{out}}\) (<a href="#s5">section 5</a>). The gain is therefore a result, not a parameter. At the default operating point of <code>step22_three_stage_one_point</code> the simulated field arrives with <span class="nt">-29.5 dBm</span> and \(P_{\mathrm{out}}\) is <span class="nt">-2.82 dBm</span>, so the script asks for a gain of <span class="nt">26.68 dB</span>. The signal leaves with <span class="nt">-2.87 dBm</span>: here the ASE takes 0.05 dB.</p>
+<p>In the scripts, a loss before the EDFA therefore does not lower the power \(P_{\mathrm{out}}\) at the EDFA output. The script raises the gain by the same number of dB, and the ASE power rises with the gain (Eq. (1)), so the ASE takes a larger part of \(P_{\mathrm{out}}\). The SNR falls by the same amount as in Fig. 1(a). Saturation does not change the SNR that this EDFA produces, because Eq. (2) does not contain \(G\). It decides how much power leaves the EDFA, and with it how much power reaches the next amplifier.</p>
+
+<h3>The pre-amplifier</h3>
+<p>In the simulated chain a second EDFA stands directly in front of the receiver: the <strong>pre-amplifier</strong>. The scripts model it with the same function. It carries one wavelength channel, so \(N_{\mathrm{ch}} = 1\): with <code>edfa_sat2 = 10</code> dBm, Eq. (4) gives <span class="nt">10 - 3 = 7 dBm</span> for the simulated field. Its noise figure is <code>NF2 = 4</code> dB. The two papers do not give these two values. They are the values of the laboratory code, as the header of <code>step22_three_stage_one_point</code> says.</p>
+<p>The pre-amplifier adds ASE according to the same Eq. (3), with its own input power and with <code>NF2</code>. The ASE of the two amplifiers is independent, so the noise powers add. For SNR values that are ratios, not values in dB, this means</p>
+<div class="eq" id="e5"><div class="m">\[ \frac{1}{\mathrm{SNR}} = \frac{1}{\mathrm{SNR}_{\mathrm{EDFA}}} + \frac{1}{\mathrm{SNR}_{\mathrm{pre}}} \]</div><span class="eqno nt">(5)</span></div>
+<p>Table 5 compares the two versions of the third-stage switch at the default operating point of <code>step22_three_stage_one_point</code> (\(P_{\mathrm{Tx}} = 4\ \mathrm{dBm}\), \(M = 64\)). Scheme A1 builds the third-stage switch from selectors only. Scheme A2 has a coupler at every output, which adds loss (page 11). The term of the EDFA is <span class="nt">21.38 dB</span> in both cases.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 5. The pre-amplifier at the default operating point of <code>step22_three_stage_one_point</code> (32 GBd, <code>NF2 = 4</code> dB). "Loss" is the loss of the third-stage switch. "Pre-amplifier input" is the channel power at the pre-amplifier input. "SNR, script" is the line <code>ASE of the pre-amplifier</code> that the script prints.</caption>
+<thead><tr><th>Third-stage switch</th><th class="num">Loss</th><th class="num">Pre-amplifier input</th><th class="num">SNR, Eq. (3)</th><th class="num">SNR, script</th></tr></thead>
+<tbody>
+<tr><td>Scheme A1 (selector + selector)</td><td class="num nt">6 dB</td><td class="num nt">-12.27 dBm</td><td class="num nt">37.60 dB</td><td class="num nt">37.59 dB</td></tr>
+<tr><td>Scheme A2 (selector + coupler)</td><td class="num nt">24 dB</td><td class="num nt">-30.27 dBm</td><td class="num nt">19.60 dB</td><td class="num nt">19.58 dB</td></tr>
+</tbody></table></div>
+<p>The script values are slightly lower than Eq. (3). The script includes one more small effect, which it prints in the line <code>noise gain of the equalizer behind the AWG</code>: 0.03 dB here. This page leaves it out.</p>
+<p>In Scheme A1 the noise of the pre-amplifier is negligible. In Scheme A2 the coupler of the third-stage switch costs 21 dB. The channel then reaches the pre-amplifier with less power than it had at the EDFA input (<span class="nt">-30.3 dBm</span> against <span class="nt">-26.5 dBm</span>), and the pre-amplifier adds more noise than the EDFA. Equation (5) gives <span class="nt">17.4 dB</span> for the two amplifiers together. A loss after the EDFA is free only as long as the power at the pre-amplifier input stays well above the power at the EDFA input.</p>
+
+<p><strong>In the code.</strong> These lines are taken from the power table that <code>step22_three_stage_one_point</code> prints with its default parameters (Scheme A2). The lines of the other blocks are left out here.</p>
+<pre><code>Power after every block [dBm] (one polarization, inside the band Fs)
+  block               simulation      budget      budget
+                         (total)     (total)    (target)
+  [4] Coupler            -29.500     -29.500     -29.500
+  [5] EDFA                -2.813      -2.809      -2.872
+  [8] Fan-in/out         -33.141     -33.133     -33.268
+  [9] Pre-amp              7.020       7.020       6.794</code></pre>
+<p>Equation (4) gives <span class="nt">-2.823 dBm</span> for block [5] (\(N_{\mathrm{ch}} = 96\)) and <span class="nt">7.000 dBm</span> for block [9] (\(N_{\mathrm{ch}} = 1\) and <code>edfa_sat2</code>). The column <code>(target)</code> is the power of the signal alone. After an amplifier it is lower than the value of Eq. (4): the rest of the share is ASE and, at the pre-amplifier, also the disturbances that arrive together with the signal (<a href="#s5">section 5</a>). The two columns <code>(total)</code> are the power that a power meter shows: the signal and everything else inside the simulated band <code>Fs</code>, with all the ASE of this band. They are close to the value of Eq. (4), but not equal to it, because <code>Fs</code> is not the channel spacing. The power of the target signal after block [8] is the input of the pre-amplifier: <span class="nt">-33.268 dBm</span> in one polarization, that is <span class="nt">-30.27 dBm</span> for the channel, the value in Table 5.</p>
+</section>
+
+<section id="s5">
+<h2>5. How the code calls the amplifier</h2>
+<p>Both amplifiers are calls of the same library function. These are blocks [5] and [9] of <code>step21_two_stage_one_point</code>, without the lines that record the power. Blocks [6] to [8] lie between them in the script. The words "legacy lines" in the comments refer to the earlier laboratory code that the script follows.</p>
+<pre><code>% [5] EDFA of the wavelength-routing switch (legacy lines 139-141)
+% edfa_sat1 is shared by N_agg wavelengths and by the polarizations.
+% The gain lifts the signal to the share of the simulated field.
+% The ASE inside the channel spacing signal_interval counts for this share too:
+% the amplifier scales signal and ASE down a little (step 3 of the function).
+sat1 = edfa_sat1 - 3*pol_flag;  % output power of one polarization [dBm]
+edfaGain = sat1 - 10*log10(N_agg) - calc_signal_power(signal);
+[signal, aseNoise] = amplified_by_EDFA3(signal, Fs, edfaGain, NF, sat1, ...
+    N_agg, signal_interval);
+
+% [9] Pre-amplifier of the receiver (legacy lines 190-195)
+% It carries one wavelength: only the polarizations share its output power.
+sat2 = edfa_sat2 - 3*pol_flag;  % output power of one polarization [dBm]
+edfaGain = sat2 - calc_signal_power(signal);
+[signal, aseNoise2] = amplified_by_EDFA3(signal, Fs, edfaGain, NF2, sat2, ...
+    1, signal_interval);</code></pre>
+<p>In each block, the line that sets <code>edfaGain</code> is Eq. (4) solved for the gain: the share of the simulated field minus its input power. <code>N_agg</code> is the number of wavelengths on one coupler and one EDFA, <code>N/ULCF_deg</code>, which is 8 with the default parameters. Table 6 explains the arguments in the order of the call.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 6. Arguments and outputs of <code>amplified_by_EDFA3(signal, Fs, gain_dB, NF_dB, sat, N, B_ref)</code>, with the values of block [5] for the default parameters.</caption>
+<thead><tr><th>Argument</th><th>In block [5]</th><th>Meaning and unit</th></tr></thead>
+<tbody>
+<tr><td><code>signal</code></td><td><code>signal</code></td><td>Optical field of one polarization of one wavelength channel, one column vector [sqrt(W)].</td></tr>
+<tr><td><code>Fs</code></td><td><code>Fs</code> = <span class="nt">48 GHz</span></td><td>Sampling rate = width of the simulated band [Hz]. The function makes ASE over this whole band.</td></tr>
+<tr><td><code>gain_dB</code></td><td><code>edfaGain</code></td><td>Wanted power gain [dB]. The scripts choose it so that the signal alone would reach the output limit.</td></tr>
+<tr><td><code>NF_dB</code></td><td><code>NF</code> = <span class="nt">5 dB</span></td><td>Noise figure [dB].</td></tr>
+<tr><td><code>sat</code></td><td><code>sat1</code>&nbsp;=&nbsp;<span class="nt">17&nbsp;dBm</span></td><td>Saturation output power, counted for the one simulated polarization [dBm]. The caller subtracts the 3 dB for polarization multiplexing.</td></tr>
+<tr><td><code>N</code></td><td><code>N_agg</code> = <span class="nt">8</span></td><td>Number of wavelength channels that this amplifier carries. The function subtracts \(10\log_{10}N\) from <code>sat</code>. For the pre-amplifier it is 1.</td></tr>
+<tr><td><code>B_ref</code></td><td><code>signal_interval</code>&nbsp;=&nbsp;<span class="nt">50&nbsp;GHz</span></td><td>Optical bandwidth whose ASE shares the output power with the signal [Hz]. The scripts pass the channel spacing. Only step 3 below uses it. It does not change the ASE that the function adds.</td></tr>
+<tr><td>output 1</td><td><code>signal</code></td><td>Amplified field with ASE [sqrt(W)].</td></tr>
+<tr><td>output 2</td><td><code>aseNoise</code></td><td>The ASE field that is inside output 1 [sqrt(W)]. The step scripts use it to print and to check the ASE power.</td></tr>
+</tbody></table></div>
+<p>Inside the function three steps follow each other:</p>
+<ol class="steps">
+<li><strong>Gain.</strong> The output limit of this signal is <code>limit = sat - 10*log10(N)</code>, the value of Eq. (4). The field is multiplied by \(\sqrt{G}\). If the amplified signal alone would be above <code>limit</code>, the function reduces the gain so that the signal has exactly the power <code>limit</code>.</li>
+<li><strong>ASE.</strong> The function adds complex Gaussian noise with the power of Eq. (1) for the bandwidth <code>Fs</code> (the code lines of <a href="#s2">section 2</a>).</li>
+<li><strong>Output limit.</strong> The function calculates <code>P_total</code>, the power of the amplified signal plus the ASE power of Eq. (1) for the bandwidth <code>B_ref</code>. It takes this power from the formula and does not measure it on the samples. If <code>P_total</code> is above <code>limit</code>, the function scales signal and ASE down, so that the signal and the ASE inside <code>B_ref</code> together have exactly the power <code>limit</code>. Signal and ASE get the same factor, so the SNR does not change.</li>
+</ol>
+<div class="box note"><span class="label">Note</span>
+<p>Step 3 counts the ASE inside <code>B_ref</code>, that is inside one channel spacing (<a href="#s4">section 4</a>), and not the ASE inside the simulated band <code>Fs</code>. The signal alone is therefore a little below the value of Eq. (4). After block [5] of <code>step21_two_stage_one_point</code> its power is <span class="nt">7.884 dBm</span>, not <span class="nt">7.969 dBm</span>. This power and the SNR do not depend on the oversampling rate <code>up</code>. A larger <code>up</code> widens the simulated band and puts more ASE into it (step 2), but step 3 does not count the additional ASE. What changes with <code>up</code> are the powers that are measured over the whole simulated band, such as the column <code>(total)</code> of the power table. The script sets the gain of the pre-amplifier from such a power, so the signal after block [9] also moves a little: by 0.1 dB between <code>up = 2</code> and <code>up = 8</code> in this script. The SNR stays the same.</p></div>
+<div class="box warn"><span class="label">Common mistake</span>
+<p>Two mistakes in a call stop the function with an error. First, <code>signal</code> must be one column vector, not a matrix. Second, \(GF\) must not be below 1, that is <code>gain_dB</code> must not be below <code>-NF_dB</code>: Eq. (1) would give a negative ASE power. Step 1 can cause this when the input power is more than <code>NF_dB</code> above the output limit.</p></div>
+</section>
+
+<section id="s6">
+<h2>6. Run the demo</h2>
+<div class="box run"><span class="label">Run it</span>
+<p>In MATLAB, make the folder <code>matlab</code> the current folder and run <code>setup_path</code> (once per MATLAB session). Then run <code>demo15_edfa_ase</code>. The run takes a few seconds. Every self-check must print <code>passed</code>.</p></div>
+<p>The script first tests one EDFA against Eqs. (1) and (3). Then it builds the shortest chain that contains both amplifiers of the switch: transmitter, EDFA, pre-amplifier, receiver. It puts one loss into this chain, once before the EDFA and once after it. The amplifier values are those of <code>step22_three_stage_one_point</code>. The channel power before the loss is <span class="nt">-20 dBm</span>, as in Fig. 1.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 7. What <code>demo15_edfa_ase</code> does, section by section.</caption>
+<thead><tr><th>Section of the script</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td>1. Parameters</td><td>Sets the input power <code>P_in</code>, the two noise figures, the two saturation output powers and the list of losses <code>loss_ary</code>.</td></tr>
+<tr><td>2. Test signal and receive filter</td><td>Makes a 16QAM waveform for one polarization with <code>TL_QAM</code> at the power <code>P_in - 3</code> dBm. Makes the rectangular receive filter with <code>nyquistfilter</code>. Calculates \(h\nu B\) in dBm (<code>hfB</code>).</td></tr>
+<tr><td>3. One EDFA with a fixed gain</td><td>Amplifies the signal by 20 dB without an output limit. Compares the ASE power inside <code>Fs</code> with Eq. (1) and the SNR inside the signal band with Eq. (3).</td></tr>
+<tr><td>4. Chain with two amplifiers (simulation)</td><td>For every loss of <code>loss_ary</code>, runs the chain twice: with the loss before the EDFA and with the loss after it. Both amplifiers are called as in section 5 of this page. Measures the SNR of the received symbols against the transmitted symbols.</td></tr>
+<tr><td>5. Chain with two amplifiers (theory)</td><td>Applies Eq. (3) to each amplifier and Eq. (5) to the pair. Prints the table of simulated and calculated SNR.</td></tr>
+<tr><td>6. Self-checks</td><td>Checks the ASE power and the SNR of section 3, the agreement of the table with the theory, and how much SNR the loss costs before and after the EDFA.</td></tr>
+<tr><td>7. Figure</td><td>Plots the SNR against the loss for both positions of the loss.</td></tr>
+</tbody></table></div>
+<p>The script prints this text. It fixes the random numbers with <code>rng(1)</code>, so your numbers should be the same.</p>
+<pre><code>One EDFA (P_in = -20.00 dBm, gain 20 dB, NF = 6.0 dB)
+  ASE power in the band Fs: -27.86 dBm (formula -27.88 dBm)
+  SNR in the signal band  : 27.87 dB (rule P_in + 53.87 - NF = 27.87 dB)
+
+SNR in the signal band [dB] for a loss in the chain
+   loss    loss before the EDFA     loss after the EDFA
+   [dB]  simulation      theory  simulation      theory
+      0       27.87       27.84       27.88       27.84
+      5       22.84       22.86       27.80       27.79
+     10       17.83       17.87       27.65       27.62
+     15       12.88       12.87       27.15       27.11
+     20        7.87        7.87       25.85       25.81
+     25        2.87        2.87       23.18       23.22
+     30       -2.11       -2.13       19.37       19.38
+
+Self-check 1 passed: ASE power and SNR of one EDFA follow the formulas
+Self-check 2 passed: SNR of the chain = theory within 0.5 dB (largest difference 0.04 dB)
+Self-check 3 passed: a loss of 10 dB lowers the SNR by 10.04 dB before the EDFA, by 0.24 dB after it</code></pre>
+<figure id="f2"><img src="assets/expected/demo15_edfa_ase.png" alt="SNR versus loss. With the loss before the EDFA the SNR falls on a straight line from 27.9 dB to -2.1 dB. With the loss after the EDFA it stays near 27.8 dB up to 10 dB and falls to 19.4 dB at 30 dB.">
+<figcaption><b>Fig. 2.</b> Expected figure of <code>demo15_edfa_ase</code>. Circles: the loss is before the EDFA. Squares: the same loss is after the EDFA. Black lines: Eqs. (3) and (5).</figcaption></figure>
+<p>The circles lie on a straight line that falls by 1 dB for every dB of loss. Their values for 0 dB and 10 dB are the two SNR values of Fig. 1. The squares stay near 27.8 dB at first. They bend down when the loss has made the input of the pre-amplifier so low that its ASE counts. At 30 dB the squares are still about <span class="nt">21.5 dB</span> above the circles.</p>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>All three self-checks print <code>passed</code>, and your figure looks like Fig. 2.</li>
+<li>You can calculate the first row of the table (<span class="nt">27.84 dB</span>) by hand with Eqs. (3), (4) and (5).</li>
+<li>You can say in one sentence why the squares bend down and the circles do not.</li>
+</ul></div>
+<div class="box todo"><span class="label">Your task</span>
+<p>Change one parameter of section 1 of the script at a time. Predict the result with the equations of this page before you run the script, then compare. Set the parameter back to its old value before the next experiment.</p>
+<ol>
+<li>Set <code>NF = 4</code>. Which numbers of the output rise by 2 dB, and which do not?</li>
+<li>Set <code>loss_ary = 0:10:40</code>. Calculate both SNR values of the row for 40 dB.</li>
+<li>Find the input power <code>P_in</code> for which the SNR after one EDFA (section 3 of the script) is 20 dB.</li>
+</ol></div>
+<details><summary>What you should see</summary>
+<p>1. The SNR of section 3 becomes <span class="nt">29.88 dB</span>, and every value of the column <code>loss before the EDFA</code> rises by 2 dB. The column <code>loss after the EDFA</code> rises by 2 dB for a small loss, but only from <span class="nt">19.37 dB</span> to <span class="nt">19.61 dB</span> for 30 dB: there the pre-amplifier makes most of the noise, and you did not change <code>NF2</code>.</p>
+<p>2. Before the EDFA: <span class="nt">27.87 - 40 = -12.13 dB</span> (simulation <span class="nt">-12.11 dB</span>). After the EDFA: the pre-amplifier input is <span class="nt">0.18 - 40 = -39.82 dBm</span>, Eq. (3) gives <span class="nt">-39.82 + 53.87 - 4 = 10.05 dB</span>, and Eq. (5) with <span class="nt">27.87 dB</span> gives <span class="nt">9.98 dB</span> (simulation <span class="nt">9.99 dB</span>). Self-check 3 now compares the rows for 0 dB and 20 dB.</p>
+<p>3. Equation (3) solved for the input power: <span class="nt">20 - 53.87 + 6 = -27.87 dBm</span>. With <code>P_in = -27.87</code> the script prints <span class="nt">20.00 dB</span>.</p>
+</details>
+</section>
+
+<section id="s7">
+<h2>7. Check your understanding</h2>
+<ol>
+<li>You run <code>step22_three_stage_one_point</code> with <code>PTx = 0</code>, <code>sw_size = 128</code> and <code>stage3_coupler_flag = 0</code>. What is the channel power at the EDFA input, and which SNR does the ASE of the EDFA allow? How much does this SNR change when <code>sw_size</code> is 64?
+<details><summary>Answer</summary>
+<p>The signal passes two selectors in the first-stage switch: <span class="nt">2 × 0.5 × 7 = 7 dB</span>. The aggregation coupler costs <span class="nt">24.5 dB</span>. The EDFA input is <span class="nt">0 - 7 - 24.5 = -31.5 dBm</span>. Equation (3): <span class="nt">-31.5 + 53.87 - 6 = 16.37 dB</span> (the script prints <span class="nt">16.38 dB</span>). With <code>sw_size = 64</code> the first-stage switch costs <span class="nt">6 dB</span>, 1 dB less, and the SNR is 1 dB higher: <span class="nt">17.37 dB</span>.</p>
+</details></li>
+<li>A WR switch with \(N = 96\) uses \(K = 4\) EDFAs with <code>edfa_sat1 = 20</code> dBm. Which output power does Eq. (4) give for the simulated field? Which gain does the script ask for if the field arrives with <span class="nt">-39.5 dBm</span>?
+<details><summary>Answer</summary>
+<p>Each EDFA carries <span class="nt">96 / 4 = 24</span> channels. Equation (4): <span class="nt">20 - 13.80 - 3 = 3.20 dBm</span>. The script asks for a gain of <span class="nt">3.20 - (-39.5) = 42.7 dB</span>. These are the numbers of <code>step21_two_stage_one_point</code> with <code>ULCF_deg = 4</code>. The signal alone leaves the EDFA with <span class="nt">2.82 dBm</span> (Table 4), because the ASE inside one channel spacing takes a part of the <span class="nt">3.20 dBm</span>.</p>
+</details></li>
+<li>The AWG of the JOCN paper has a higher loss than a conventional AWG: <code>step21_two_stage_one_point</code> uses <span class="nt">9 dB</span> for the AWG and <span class="nt">3.5 dB</span> for a 1 × 2 splitter in front of it (page 17 explains this element), and <code>step22_three_stage_one_point</code> uses <span class="nt">6 dB</span> for its AWG. Which of the two terms of Eq. (5) does this extra loss change? Is it a problem?
+<details><summary>Answer</summary>
+<p>The AWG follows the EDFA, so the term of the EDFA does not change. The extra loss lowers the input power of the pre-amplifier and so the term \(\mathrm{SNR}_{\mathrm{pre}}\). At the default operating point of <code>step21_two_stage_one_point</code> this term is <span class="nt">44.08 dB</span>, far above the <span class="nt">20.63 dB</span> of the EDFA, so the extra loss does almost no harm. The JOCN paper gives the same reason: the higher loss of its AWG hardly changes the SNR, because the SNR is mostly determined by the EDFA input power.</p>
+</details></li>
+<li>In the demo, a loss of 10 dB after the EDFA lowers the SNR by <span class="nt">0.24 dB</span>. Calculate this cost with Eqs. (3), (4) and (5).
+<details><summary>Answer</summary>
+<p>The EDFA gives <span class="nt">-20 + 53.87 - 6 = 27.87 dB</span> in both cases. By Eq. (4) without the 3 dB, the channel leaves the EDFA with <span class="nt">20 - 19.82 = 0.18 dBm</span> (the ASE takes only 0.01 dB of this share here). Without loss the pre-amplifier gives <span class="nt">0.18 + 53.87 - 4 = 50.05 dB</span>, and Eq. (5) gives <span class="nt">27.84 dB</span> for both. With the loss the pre-amplifier input is <span class="nt">-9.82 dBm</span>, its term is <span class="nt">40.05 dB</span>, and Eq. (5) gives \(1/\mathrm{SNR} = 10^{-2.787} + 10^{-4.005} = 1.732\times10^{-3}\), that is <span class="nt">27.62 dB</span>. The cost is <span class="nt">0.22 dB</span>. The simulation gives <span class="nt">0.24 dB</span>.</p>
+</details></li>
+<li>Equation (1) has a factor 1/2, and the scripts subtract 3 dB twice: in <code>pin = PTx - 3*pol_flag</code> and in <code>sat1 = edfa_sat1 - 3*pol_flag</code>. What is the common reason?
+<details><summary>Answer</summary>
+<p>The simulated field is one of the two polarizations of the channel. It carries half of the channel power, it is disturbed by half of the ASE, and it gets half of the output power of the amplifier. In the SNR the first two halves cancel. This is why Eq. (2) can be written with the power of the whole channel.</p>
+</details></li>
+<li>A colleague proposes to raise the gain of the EDFA by 3 dB to get 3 dB more SNR. Why does this not work? What does raise the SNR?
+<details><summary>Answer</summary>
+<p>A higher gain raises the signal and the ASE by the same factor: for \(GF \gg 1\) the ASE power of Eq. (1) grows in proportion to \(G\). This is why \(G\) is not in Eq. (2). In the scripts the gain is also not free, because the saturation output power fixes the output (Eq. (4)). The SNR rises with a higher input power, that is with less loss before the EDFA or with more transmitter power, and with a lower noise figure.</p>
+</details></li>
+</ol>
+<div class="box"><span class="label">What to carry forward</span>
+<p>An EDFA with noise figure \(\mathrm{NF}\) limits the SNR to \(P_{\mathrm{in}}\ [\mathrm{dBm}] + 53.9 - \mathrm{NF}\) for 32 GBd (55.1 for 24 GBd), where \(P_{\mathrm{in}}\) is the power of the channel at the amplifier input. Every dB of loss before the EDFA costs one dB of this SNR, and loss after the EDFA is almost free as long as the input power of the pre-amplifier stays well above the input power of the EDFA. The next two pages build on this: <a href="16_space_switch_crosstalk.html">page 16</a> adds the second kind of disturbance, crosstalk, and <a href="17_awg_wavelength_routing.html">page 17</a> shows how an AWG with several input ports makes the coupler in front of the EDFA smaller.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="14_coherent_rx_dsp_ber.html">&larr; <span class="nt">14</span> Coherent receiver, BER</a>
+<a class="next" href="16_space_switch_crosstalk.html"><span class="nt">16</span> Space switches, crosstalk &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03 Workflow: what to do from here | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a class="current" href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Orientation</p>
+<h1><span class="num nt">03</span>Workflow: what to do from here</h1>
+<p class="lead">This page is the map of your project. It divides the work into nine phases, from the first run of MATLAB to the finished paper. Every phase has a goal, a starting point, a product, a list that tells you when the phase is finished, and a list of what you show your supervisor. The page contains no dates: you make the schedule yourself.</p>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">The road in one picture</a></li>
+<li><a href="#s2">Phase 0: Set up and orient</a></li>
+<li><a href="#s3">Phase 1: Background</a></li>
+<li><a href="#s4">Phase 2: Reproduce the two-stage ULCF switch</a></li>
+<li><a href="#s5">Phase 3: Reproduce the conventional three-stage switch</a></li>
+<li><a href="#s6">Phase 4: Design the proposal on paper and in integers</a></li>
+<li><a href="#s7">Phase 5: Simulate the proposal</a></li>
+<li><a href="#s8">Phase 6: Compare the three switches fairly</a></li>
+<li><a href="#s9">Phase 7: Experiment</a></li>
+<li><a href="#s10">Phase 8: Write the paper</a></li>
+<li><a href="#s11">Make your own schedule</a></li>
+<li><a href="#s12">Good practice</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. The road in one picture</h2>
+<p>A <strong>phase</strong> is a block of work with one goal and one completion condition. The completion condition is a checklist that tells you when the phase is finished. The project has nine phases, numbered 0 to 8. Figure 1 shows them as a chain. The left column sorts the phases by the kind of work. The right column names the part of the paper that each phase feeds, that is, the part for which the phase supplies the material.</p>
+<figure id="f1"><img src="assets/fig/fig_roadmap.svg" alt="Chain of the nine phases in four groups (Learn, Reproduce, Create, Publish); each phase is connected to one part of the paper">
+<figcaption><b>Fig. 1.</b> The nine phases of the project. Solid arrows show the order of the work. Dashed arrows point to the part of the paper that a phase feeds. Amber marks phases 4 to 6. They are your own work: the package gives the tasks, but no answers.</figcaption></figure>
+<ul>
+<li><strong>Learn</strong> (phases 0 and 1). You read the pages and run the demo scripts. Nothing new is created yet.</li>
+<li><strong>Reproduce</strong> (phases 2 and 3). You run the two given simulations and check their results against reference results. Each of the two simulated switches is a <strong>baseline</strong>: an existing switch with which the paper compares the proposal.</li>
+<li><strong>Create</strong> (phases 4 to 6). You design, simulate and evaluate the proposed three-stage switch. The package gives you the tasks and the conditions that a correct result must satisfy. It does not give you the method or the result.</li>
+<li><strong>Publish</strong> (phases 7 and 8). You confirm a part of the result in an experiment, and you write the paper.</li>
+</ul>
+<p>The chain shows the order in which you start the phases. You may have to return to an earlier phase: for example, a simulation result of phase 5 can show that the design of phase 4 needs a change.</p>
+<p>Sections 2 to 10 describe one phase each, always in the same five parts.</p>
+<ul>
+<li><strong>Goal</strong>: what you are able to do when the phase ends.</li>
+<li><strong>You start from</strong>: the pages to read and the scripts to run.</li>
+<li><strong>You produce</strong>: what must exist when the phase ends.</li>
+<li><strong>Done when</strong>: a checklist. The phase is finished when every item is true.</li>
+<li><strong>Bring to your supervisor</strong>: what you show in the meeting that closes the phase.</li>
+</ul>
+<p>The phases use technical terms that you may not know yet. Each term is explained on the pages that the phase names, and the <a href="91_glossary.html">glossary</a> lists all of them.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>A phase ends when every item of its "Done when" list is true. A planned date that has arrived does not end a phase. A script that ran without an error does not end it either.</p></div>
+</section>
+
+<section id="s2">
+<h2>2. Phase 0: Set up and orient</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. Phase 0: set up and orient.</caption>
+<tbody>
+<tr><th>Goal</th><td>The package runs on your PC, and you have a first picture of the research: the question, the three switches that the paper compares, and which code is given and which is yours.</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td><a href="../START_HERE.html">Start here</a>, then pages <a href="01_introduction.html">01</a>, <a href="02_research_overview.html">02</a>, 03 (this page) and <a href="04_matlab_guide.html">04</a>. The scripts <code>matlab/setup_path.m</code> and <code>matlab/tests/run_all_tests.m</code>.</td></tr>
+<tr><th>You&nbsp;produce</th><td>(1) The output of <code>run_all_tests</code> on your PC.<br>(2) Half a page in your own words: the research question, the three switches, and the four quantities that the paper evaluates.<br>(3) A list of the terms and sentences of page 01 that you did not understand.<br>(4) The first version of your schedule (<a href="#s11">section 11</a>).</td></tr>
+</tbody></table></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li><code>setup_path</code> prints <code>Path is set (lib, demos, main, work, tests).</code> and <code>run_all_tests</code> ends with <code>All tests passed.</code></li>
+<li>You can name the three switches that the paper compares, and you can say which two are given as working code and which one is yours.</li>
+<li>You can name the four quantities that the paper evaluates: transmission performance, feasible port count, throughput and hardware count.</li>
+<li>You can say for each folder under <code>matlab</code> what it holds and whether you may edit it (<a href="../START_HERE.html#s4">Start here, section 4</a>, and <a href="04_matlab_guide.html#s1">page 04, section 1</a>).</li>
+<li>Your schedule has a planned start and a planned end for every phase.</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>Your half page, your list and your schedule. The first reading of page 01 will not be fully clear. This is expected: the list shows your supervisor where to help, and you read page 01 again after page 22.</p></div>
+</section>
+
+<section id="s3">
+<h2>3. Phase 1: Background</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. Phase 1: background.</caption>
+<tbody>
+<tr><th>Goal</th><td>You understand the elements of the switch and the simulation methods that the two baselines use, well enough to predict a number before you run a script.</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td>Pages <a href="11_network_ocs_clos.html">11</a>, <a href="12_units_power_budget.html">12</a>, <a href="13_waveform_fft_filter.html">13</a>, <a href="14_coherent_rx_dsp_ber.html">14</a>, <a href="15_edfa_ase.html">15</a>, <a href="16_space_switch_crosstalk.html">16</a> and <a href="17_awg_wavelength_routing.html">17</a>, in this order. The six demo scripts in <code>matlab/demos/</code>, one for each of pages 12 to 17: <code>demo12_units_power_budget</code> to <code>demo17_awg_wavelength_routing</code>. Page 11 has no demo.</td></tr>
+<tr><th>You&nbsp;produce</th><td>For each of pages 12 to 17:<br>(1) the demo, run on your PC;<br>(2) the small experiments of the task box in the section "Run the demo", each with the prediction that you wrote down before the run;<br>(3) your written answers to the section "Check your understanding", written before you opened the collapsed answers.<br>For page 11: the written answers only.</td></tr>
+</tbody></table></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>All six demos run on your PC, and every self-check prints <code>passed</code>.</li>
+<li>You answered every check question of pages 11 to 17 in writing before you opened the answer, and you can explain each answer that you got wrong.</li>
+<li>Without notes, you can explain each of these three points in two or three sentences:
+<ul>
+<li>why a loss in front of the EDFA (erbium-doped fiber amplifier, the optical amplifier of the switch) lowers the signal quality more than the same loss behind it (page 15);</li>
+<li>why the receiver cannot remove a <strong>leak</strong> (the small part of another signal that passes a selector which is switched off) when the leak has the wavelength of the signal, and can remove it when the leak has another wavelength (pages 14 and 16);</li>
+<li>how an AWG (arrayed-waveguide grating, the device that sends each wavelength to its own output port) with several input ports sets the wavelength of a connection (page 17).</li>
+</ul></li>
+<li>You can calculate by hand the power at the input of the EDFA from the transmitter power and the losses in front of the EDFA (page 12).</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>The check questions that you answered wrong, with your corrected explanation. One experiment whose result you did not predict, with what you learned from it.</p></div>
+</section>
+
+<section id="s4">
+<h2>4. Phase 2: Reproduce the two-stage ULCF switch</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. Phase 2: reproduce the two-stage ULCF switch.</caption>
+<tbody>
+<tr><th>Goal</th><td>You can run the given simulation of the two-stage ULCF switch, you reproduce its curve of port count versus transmitter power, and you can explain every block of its <strong>transmission chain</strong>: the sequence of elements that the signal passes from the transmitter to the receiver. The port count is the number of input ports of the whole switch (page 02). This switch is the first baseline of the paper. Its second stage, which consists of wavelength-routing switches, is also the model for the middle stage of your proposal: several small couplers and EDFAs in front of ULCF AWGs. A ULCF (uniform-loss and cyclic-frequency) AWG is a type of AWG that is built for use with several input ports (page 17).</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td><a href="21_two_stage_ulcf_switch.html">Page 21</a>. Then the step script <code>matlab/main/step21_two_stage_one_point.m</code>, which simulates one <strong>operating point</strong>: one transmitter power (<code>PTx</code>), one size \(M\) of the space switches (<code>dcs_input_port_num</code>; the script calls them DC switches) and one number \(K\) of AWG input ports (<code>ULCF_deg</code>). Then the main script <code>matlab/main/main_two_stage_ULCF.m</code>, which searches over many operating points. For every \(K\) and every \(M\) it finds the <strong>required transmitter power</strong>: the lowest transmitter power at which the bit error ratio (BER) is not above the FEC limit of \(10^{-2}\). The FEC limit is the BER up to which forward error correction (FEC) still removes the errors. The reference data are in <code>matlab/ref_data/</code>.</td></tr>
+<tr><th>You&nbsp;produce</th><td>(1) The output of <code>step21_two_stage_one_point</code> at its default operating point. It prints two tables: the power after every block, and the contributions to the signal-to-noise ratio (SNR). In both tables the simulation stands next to a <strong>hand budget</strong>: the same quantity calculated with formulas instead of waveforms. The scripts call it the closed-form budget.<br>(2) Three more runs of this script. In each run you change one parameter of its section 1 (<code>PTx</code>, <code>dcs_input_port_num</code> or <code>ULCF_deg</code>), as the header of the script suggests, and you write down your prediction before you run.<br>(3) Two runs of <code>main_two_stage_ULCF</code>, with their result files in <code>matlab/results/</code>: one quick run with <code>quick_flag = 1</code> and one full-size run with <code>quick_flag = 0</code>. You set <code>quick_flag</code> in section 1 of the script.</td></tr>
+</tbody></table></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li><code>step21_two_stage_one_point</code> prints <code>Self-check 1 passed</code> and <code>Self-check 2 passed</code>.</li>
+<li>Your curve of port count versus transmitter power agrees with the reference curve within one <strong>grid step</strong> along the power axis. The grid step is the spacing of the transmitter powers that the search tries: <span class="nt">1 dB</span> with <code>quick_flag = 1</code> and <span class="nt">0.5 dB</span> with <code>quick_flag = 0</code>. The script prints the comparison as the table <code>Difference: this run - legacy code [dB]</code>. No number in this table is further from zero than one grid step, and <code>NaN</code> stands at the same places in the two tables above it. <code>NaN</code> means that the BER limit is not reached with any power that was tried. The "legacy code" is the earlier laboratory code that produced the reference curve.</li>
+<li>You can say which line of the table <code>SNR contributions in the signal bandwidth [dB]</code> limits the BER at low transmitter power, which line limits it at high transmitter power, and why. Among the four contributions, the one with the lowest value limits the BER.</li>
+<li>You can explain why a curve with a larger \(K\) reaches the same port count at a lower transmitter power.</li>
+<li>You can explain why small differences from the reference curve are expected. Page 21 and the headers of the two scripts list the reasons.</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>The figure of the run with <code>quick_flag = 0</code>, the table of differences, your three predictions next to the three results, and your answer to the question about the SNR table.</p></div>
+</section>
+
+<section id="s5">
+<h2>5. Phase 3: Reproduce the conventional three-stage switch</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. Phase 3: reproduce the conventional three-stage switch.</caption>
+<tbody>
+<tr><th>Goal</th><td>You can run the given simulation of the conventional three-stage switch, you compare its result with the published result, and you can explain the differences. This switch is the second baseline of the paper. Its step script is also the skeleton, that is, the basic structure, from which you build the simulation of your proposal in phase 5.</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td><a href="22_three_stage_conventional.html">Page 22</a>. Then <code>matlab/main/step22_three_stage_one_point.m</code> (the step script: one operating point) and <code>matlab/main/main_three_stage_conventional.m</code> (the main script: the search). The published result is Table V of Mitsuya et al., J. Lightw. Technol., 2025. It is stored in <code>matlab/ref_data/jlt2025_three_stage_ref.csv</code>.</td></tr>
+<tr><th>You&nbsp;produce</th><td>(1) The output of <code>step22_three_stage_one_point</code> for both types of the third stage: <code>stage3_coupler_flag = 0</code> (Scheme A1, selectors on the output side) and <code>stage3_coupler_flag = 1</code> (Scheme A2, couplers on the output side).<br>(2) One run of <code>main_three_stage_conventional</code> with <code>quick_flag = 1</code> and one with <code>quick_flag = 0</code>, with their result files.<br>(3) Half a page that compares your required transmitter powers with Table V: where the two differ, by how much, and why.</td></tr>
+</tbody></table></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li><code>step22_three_stage_one_point</code> prints <code>Self-check 1 passed</code> and <code>Self-check 2 passed</code> for Scheme A1 and for Scheme A2.</li>
+<li>In the table <code>Required transmitter power [dBm]</code> that <code>main_three_stage_conventional</code> prints, no number in the column <code>difference</code> is further from zero than one grid step. For Scheme A2 with \(M = 128\) the columns <code>this run</code>, <code>JLT 2025</code> and <code>difference</code> all show <code>NaN</code>: the paper calls this case infeasible.</li>
+<li>Your half page explains the differences with the reasons that the header of the script lists. You did not change a parameter to make the numbers agree.</li>
+<li>You can say which line of the SNR table limits Scheme A1 and which line limits Scheme A2 for \(M = 64\).</li>
+<li>You can explain why, in this switch, every leak inside a third-stage switch is on the wavelength of the signal. Your proposal starts from this weakness.</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>The figure of the run with <code>quick_flag = 0</code>, which shows your curves and the published points. Your half page. Your explanation of the leaks in the third stage.</p></div>
+</section>
+
+<section id="s6">
+<h2>6. Phase 4: Design the proposal on paper and in integers</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 5. Phase 4: design the proposal on paper and in integers.</caption>
+<tbody>
+<tr><th>Goal</th><td>You find which wavelength every connection of the proposed switch uses, and you count how many leaks in a third-stage switch fall on the wavelength of the target signal. The target signal is the one signal whose bit errors are counted. This phase needs whole numbers only: no waveform, no noise, no BER.</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td><a href="23_three_stage_proposal.html">Page 23</a> and <code>matlab/work/work1_wavelength_rule.m</code>. This file states the task; it holds no solution. Pages <a href="17_awg_wavelength_routing.html">17</a> and <a href="22_three_stage_conventional.html">22</a> and the function <code>awg_channel</code> give you the routing of an AWG and the wiring of the conventional switch.</td></tr>
+<tr><th>You&nbsp;produce</th><td>(1) The wavelength rule: the wavelength channel of a connection from first-stage switch \(i\) to third-stage switch \(j\). Your division of the first-stage switches into \(K\) input groups, one group for each input port of the ULCF AWG, is a part of the rule. Show the rule for a small example that you can check by hand.<br>(2) Exact definitions of two traffic conditions, <strong>dispersed</strong> and <strong>concentrated</strong> (the task files call them traffic patterns). Roughly, the signals that pass one third-stage switch come from many input groups or from one input group. Making this exact is a part of your work.<br>(3) For both traffic conditions: the number of leaks on the wavelength of the target signal in one third-stage switch, for several \(K\) and \(M\), as a table or a figure.</td></tr>
+</tbody></table></div>
+<p>The "Done when" lists of phases 4 to 6 consist of <strong>consistency conditions</strong>. A consistency condition is a property that a correct result must have, whatever the result is. It tests your result, but it does not tell you the result.</p>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>With \(K = 1\) your rule gives the conventional switch again.</li>
+<li>The wavelength of a connection does not depend on the wavelength-routing switch that carries it. A rearrangement (an existing connection moves to another wavelength-routing switch of the middle stage, page 11) then never changes the wavelength of a transmitter.</li>
+<li>With concentrated traffic the crosstalk advantage of the proposed switch is gone. Crosstalk is the disturbance that the leaks cause.</li>
+<li>An aggregation coupler (the coupler that combines the signals in front of an EDFA) never carries two signals of the same wavelength.</li>
+<li>Your code gives the same numbers as your small example that you checked by hand.</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>Before you write code: a plan of one page with your wavelength rule, a small example drawn by hand, your two traffic definitions and the list of the figures that you intend to produce. At the end of the phase: the rule, the definitions and the table of leak counts.</p></div>
+</section>
+
+<section id="s7">
+<h2>7. Phase 5: Simulate the proposal</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 6. Phase 5: simulate the proposal.</caption>
+<tbody>
+<tr><th>Goal</th><td>You simulate the transmission through the proposed switch in the way <code>step22_three_stage_one_point</code> simulates the conventional switch. You find out how much transmitter power, or how many ports, the proposed switch gains. You also find out how much of the gain comes from each of its two differences: the path through the new middle stage, and the leaks in the third stage that are on another wavelength.</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td><code>matlab/work/work2_three_stage_proposed.m</code> (the task) and your result of phase 4. The given material: <code>step22_three_stage_one_point</code> (skeleton of a three-stage switch, with its budgets), <code>step21_two_stage_one_point</code> (middle stage with ULCF AWGs), <code>main_three_stage_conventional</code> (search for the required transmitter power), the functions <code>freqoff</code> and <code>awg_channel</code>, and pages 17, 22 and 23. Leave the given files as they are. Your own scripts belong in <code>matlab/work/</code>.</td></tr>
+<tr><th>You&nbsp;produce</th><td>(1) One operating point of the proposed switch: the BER, the power after every block and the SNR contributions, each from the simulation and from a hand budget of your own.<br>(2) The required transmitter power for several sizes of the space switches and several \(K\), for both types of the third stage and both traffic conditions. Every result is saved together with its parameters and its seed. The <strong>seed</strong> is the number that starts the random number generator (<code>rng(seed)</code> in the given scripts).</td></tr>
+</tbody></table></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>\(K = 1\), with the AWG of <code>step22_three_stage_one_point</code>, gives the result of that script again.</li>
+<li>With concentrated traffic the crosstalk advantage of the proposed switch is gone.</li>
+<li>The simulated SNR agrees with your hand budget, and so does the power after every block. The two step scripts (<code>step21_two_stage_one_point</code> and <code>step22_three_stage_one_point</code>) show how to compare. They accept a difference of <span class="nt">0.1 dB</span> in power and <span class="nt">0.7 dB</span> in SNR.</li>
+<li>Every result can be repeated: a second run with the saved parameters and the saved seed gives the same numbers.</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>For one operating point: the level diagram (the plot of the power after every block) and the SNR table, next to your hand budget. The result of the \(K = 1\) check. Your required transmitter powers. Your answer to this question of the task file: does your simulation reject a leak on another wavelength because you assume it, or because the simulation shows it?</p></div>
+</section>
+
+<section id="s8">
+<h2>8. Phase 6: Compare the three switches fairly</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 7. Phase 6: compare the three switches fairly.</caption>
+<tbody>
+<tr><th>Goal</th><td>You compare three switches in a fair way: the two-stage ULCF switch, the conventional three-stage switch and the proposed three-stage switch. You compare the port count, the throughput and the hardware count. The two given main scripts use the parameters of two different earlier studies, so a fair comparison needs one common parameter set. You choose it, and you give a reason for every value.</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td><code>matlab/work/work3_comparison.m</code> (the task), the two main scripts (<code>main_two_stage_ULCF</code> and <code>main_three_stage_conventional</code>), your results of phases 4 and 5, the file <code>matlab/ref_data/jlt2025_three_stage_ref.csv</code>, and pages <a href="21_two_stage_ulcf_switch.html">21</a>, <a href="22_three_stage_conventional.html">22</a> and <a href="23_three_stage_proposal.html">23</a>.</td></tr>
+<tr><th>You&nbsp;produce</th><td>(1) The common parameter set as a table, with the reason for every value.<br>(2) One figure with the port count versus transmitter power of the three switches. For the proposed switch it shows several \(K\), both types of the third stage and both traffic conditions.<br>(3) The throughput of the three switches: the port count times the bit rate of one port.<br>(4) The hardware count of the three switches: the number of elements per port (selectors, couplers, EDFAs, AWGs and 1&nbsp;×&nbsp;2 splitters).<br>(5) Your conclusion in five to ten sentences: when the proposed switch is the best choice, what it costs, and when its advantage is gone.</td></tr>
+</tbody></table></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>All curves of one figure use the same common parameter set, and you can justify every value of it.</li>
+<li>The proposed switch with \(K = 1\) and the AWG of <code>step22_three_stage_one_point</code> gives the curve of the conventional three-stage switch again.</li>
+<li>With concentrated traffic the crosstalk advantage of the proposed switch is gone.</li>
+<li>Every point of a curve comes from a chain that agrees with a hand budget, and the point can be repeated from its saved parameters and its saved seed.</li>
+<li>Your number of selectors per port of the conventional three-stage switch agrees with the file <code>jlt2025_three_stage_ref.csv</code>.</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>The table of the common parameter set with your reasons, the comparison figure, the tables of throughput and hardware count, and your conclusion.</p></div>
+</section>
+
+<section id="s9">
+<h2>9. Phase 7: Experiment</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 8. Phase 7: experiment.</caption>
+<tbody>
+<tr><th>Goal</th><td>You confirm a part of the simulated result with real devices.</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td>Your results of phases 5 and 6: they show which configurations are worth building. The experiment sections of the two prior papers (Nagai et al., J. Opt. Commun. Netw., 2018, and Mitsuya et al., J. Lightw. Technol., 2025) show the method. Both built a part of the switch and measured the BER of signals that passed through it. Your supervisor has the PDF files of both papers.</td></tr>
+<tr><th>You&nbsp;produce</th><td>(1) An experiment plan that your supervisor has agreed to: which part of the switch is built, what is measured, and with which simulated result the measurement is compared.<br>(2) The measured data. The received signal is captured as a waveform and demodulated offline, that is, by a program after the measurement.<br>(3) The comparison of the measurement with the simulation.</td></tr>
+</tbody></table></div>
+<p>You plan this phase together with your supervisor. The code for the capture and for the offline demodulation is not a part of this package. The list below is therefore short: it names only what must be true in any case.</p>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>The plan exists in writing, and your supervisor has agreed to it.</li>
+<li>Every measured result is stored together with the conditions of the measurement, in the same way as a simulated result is stored with its parameters.</li>
+<li>You can say where measurement and simulation agree, where they differ, and what may cause the difference.</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>First the plan, before anything is built. Later the measured result next to the simulated result.</p></div>
+</section>
+
+<section id="s10">
+<h2>10. Phase 8: Write the paper</h2>
+<div class="tablewrap"><table class="data">
+<caption>Table 9. Phase 8: write the paper.</caption>
+<tbody>
+<tr><th>Goal</th><td>A manuscript for the target conference in which every claim rests on a figure or a table, and every figure or table rests on a saved result.</td></tr>
+<tr><th>You&nbsp;start&nbsp;from</th><td><a href="01_introduction.html">Page 01</a> (title and introduction, drafted by your supervisor), <a href="02_research_overview.html">page 02</a> (what is evaluated) and the saved results of phases 2 to 7. The two prior papers are your models for the structure.</td></tr>
+<tr><th>You&nbsp;produce</th><td>(1) A list of the figures and tables of the paper. For each one it names the script that draws it and the result file that this script reads.<br>(2) The manuscript.</td></tr>
+</tbody></table></div>
+<h3>What the paper needs</h3>
+<p>Table 10 is a first list. It follows from the tasks in <code>work1_wavelength_rule</code>, <code>work2_three_stage_proposed</code> and <code>work3_comparison</code> and from the last paragraph of the introduction. A short paper cannot hold everything: decide together with your supervisor which items stay.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 10. Figures and tables that the paper may need, and the saved result behind each one.</caption>
+<thead><tr><th>Item of the paper</th><th>Phase</th><th>Saved result behind it</th></tr></thead>
+<tbody>
+<tr><td>Figure: structure of the proposed switch</td><td class="nt">4</td><td>Your own drawing. No result file.</td></tr>
+<tr><td>Table or figure: the wavelength rule for a small example, and the number of leaks on the wavelength of the signal for dispersed and for concentrated traffic</td><td class="nt">4</td><td>Result file of your script for <code>work1_wavelength_rule</code></td></tr>
+<tr><td>Table: the common parameter set</td><td class="nt">6</td><td>The parameters stored in the result files of the next row</td></tr>
+<tr><td>Figure: port count versus transmitter power of the three switches</td><td class="nt">2,&nbsp;3,&nbsp;5,&nbsp;6</td><td>Result files of your script for <code>work2_three_stage_proposed</code> and of your copies of <code>main_two_stage_ULCF</code> and <code>main_three_stage_conventional</code>, all run with the common parameter set</td></tr>
+<tr><td>Table: throughput and hardware count</td><td class="nt">6</td><td>Result file of your script for <code>work3_comparison</code></td></tr>
+<tr><td>Figure: measured result next to the simulated result</td><td class="nt">7</td><td>The stored measurement data and the result file of the simulated operating point</td></tr>
+</tbody></table></div>
+<h3>Structure</h3>
+<p>Both prior papers have six sections in the same order: introduction, earlier switch architectures, proposed switch, simulation, experiment, conclusion. A short conference paper can keep this order in much less space. The introduction on page 01 is a first draft, and it already covers the earlier switches. Four parts remain to be written:</p>
+<ol>
+<li>the proposed switch: its structure and its wavelength rule (phase 4);</li>
+<li>the simulation: the model, the common parameter set and the comparison of the three switches (phases 1 to 3, 5 and 6);</li>
+<li>the experiment (phase 7);</li>
+<li>the conclusion: the answer to the question of the introduction, with numbers.</li>
+</ol>
+<p>Take the page limit and the template from the call for papers of the conference.</p>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>Every figure and every table of the manuscript is in your list, and you can draw it again from its result file.</li>
+<li>Every number in the text can be found in a figure, in a table or in a result file. No number was typed in or changed by hand.</li>
+<li>The parameter values that the paper states are the values stored in the result files.</li>
+<li>Each claim of the paper (<a href="01_introduction.html#s3">page 01, section 3</a>) rests on a figure or a table.</li>
+<li>Your supervisor has read the complete draft.</li>
+</ul></div>
+<div class="box note"><span class="label">Bring to your supervisor</span>
+<p>First the list of figures and tables, before you write the text. Then the complete draft.</p></div>
+</section>
+
+<section id="s11">
+<h2>11. Make your own schedule</h2>
+<p>Copy Table 11 into your notebook and fill in a planned start and a planned end for every phase. Show the table to your supervisor at the end of phase 0, and agree on it. When the work goes differently from the plan, write the actual end and the reason into the table and plan the remaining phases again, but leave the "Done when" lists as they are.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 11. Your schedule. The cells are empty on purpose.</caption>
+<thead><tr><th>Phase</th><th>Planned start</th><th>Planned end</th><th>Actual end</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>0: Set up and orient</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>1: Background</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>2: Reproduce the two-stage ULCF switch</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>3: Reproduce the conventional three-stage switch</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>4: Design the proposal on paper and in integers</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>5: Simulate the proposal</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>6: Compare the three switches fairly</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>7: Experiment</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>8: Write the paper</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="s12">
+<h2>12. Good practice</h2>
+<p>The rules of this section keep your results reproducible. A result is reproducible when you, or another person, can produce exactly the same numbers again at a later time. The section extends the working rules of <a href="../START_HERE.html">Start here</a>.</p>
+<h3>Results</h3>
+<ul>
+<li><strong>One folder for results.</strong> The two main scripts write into <code>matlab/results/</code>. Every run writes new files, and each file name carries the time of the run, so a run never overwrites an earlier one. Do the same in your own scripts.</li>
+<li><strong>Parameters and seed with every result.</strong> The <code>.mat</code> file of a main script holds all parameters, the seed and all results. A result without its parameters cannot be reproduced, so it cannot go into the paper.</li>
+<li><strong>One script per figure.</strong> For every figure that you show to another person, keep one script that loads a result file and draws the figure. You can then change a label without running the simulation again, and you always know which data are behind the figure.</li>
+<li><strong>No number edited by hand.</strong> Not in a result file, not in a table, not in a figure. If a number is wrong, correct the script and run it again.</li>
+<li><strong>The given code stays as it is.</strong> Do not edit the folder <code>lib</code>. In a demo script or a script of <code>matlab/main/</code>, change only the parameter values that a page or the header of the script asks you to try, and set them back afterwards. For every other change, copy the script into <code>matlab/work/</code> under a new name and change the copy. When you doubt the library, run <code>run_all_tests</code>: it must end with <code>All tests passed.</code></li>
+</ul>
+<h3>Notebook</h3>
+<ul>
+<li>Keep a notebook, on paper or in a file. For every run that you keep, write down the name of the result file, what you changed, why you changed it, what you expected and what came out.</li>
+<li>Change one thing at a time, and write down your prediction before you run.</li>
+</ul>
+<h3>Before you believe a result</h3>
+<ul>
+<li><strong>Check a limit case.</strong> A limit case is a case whose answer you know before you run it. Two examples: \(K = 1\), which must give the conventional switch; an operating point that a given script already computes.</li>
+<li><strong>One run near the FEC limit does not decide.</strong> A BER is counted from a finite number of bit errors, so it has a random error: about 30 percent of its value for 10 counted errors and about 4 percent for 700 (see the comments in <code>step21_two_stage_one_point</code>).</li>
+</ul>
+<h3>When you are stuck</h3>
+<ol class="steps">
+<li><strong>Reduce the problem to one operating point.</strong> A search over many operating points hides what happens inside one of them. The main scripts set the seed before every operating point. The step script with the same parameters, the same <code>datasize</code> and the same <code>seed</code> therefore prints the same BER as the search.</li>
+<li><strong>Plot the level diagram</strong> with <code>plot_level_diagram(stage_names, stage_power)</code>, as the step scripts do. Find the first block after which the power is not what you expect.</li>
+<li><strong>Compare with the hand budget.</strong> Calculate the power after every block and the SNR contributions with formulas, as sections 5 and 6 of the step scripts do. The first block at which simulation and budget disagree is the place to look. The error is in the code or in the budget.</li>
+<li><strong>Go back to a case that worked.</strong> Undo your changes one at a time until the result of the given script returns.</li>
+<li><strong>Ask.</strong> If you are still stuck, go to your supervisor with the one operating point, the two tables and a list of what you tried.</li>
+</ol>
+<div class="box"><span class="label">Key idea</span>
+<p>Find your phase on this page, and read its "Done when" list: it tells you what is still missing. In phases 0 to 3 you learn to run and to explain the given material. Phases 4 to 6 are your own work: no answer is given, and consistency conditions test your result instead. Every figure of the paper must lead back to a saved result with its parameters and its seed.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="02_research_overview.html">&larr; <span class="nt">02</span> Research overview</a>
+<a class="next" href="04_matlab_guide.html"><span class="nt">04</span> MATLAB guide &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="740" viewBox="0 0 1150 740">
+<defs>
+  <marker id="ar_opt" markerWidth="6" markerHeight="5" refX="4.4" refY="2.2" orient="auto"><path d="M0,0 L5,2.2 L0,4.4 z" fill="#C0392B"/></marker>
+  <marker id="ar_ele" markerWidth="6" markerHeight="5" refX="4.4" refY="2.2" orient="auto"><path d="M0,0 L5,2.2 L0,4.4 z" fill="#1F4E79"/></marker>
+  <marker id="ar_thin" markerWidth="9" markerHeight="8" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#E3A9A2"/></marker>
+</defs>
+<rect x="0" y="0" width="1150" height="740" rx="0" fill="white" stroke="none" stroke-width="0"/>
+<text x="575" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle" fill="#222222" font-weight="bold">Two-stage ULCF switch: structure and wiring</text>
+<text x="66" y="72" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">Transmitters</text>
+<text x="66" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">MN in total</text>
+<text x="215" y="72" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle" fill="#222222" font-weight="bold">DC switches</text>
+<text x="215" y="93" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">N switches (M × M)</text>
+<text x="695" y="72" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle" fill="#222222" font-weight="bold">Wavelength-routing (WR) switches</text>
+<text x="695" y="93" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">M switches (N × N)</text>
+<text x="1076" y="72" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">Receivers</text>
+<text x="1076" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">MN in total</text>
+<line x1="92" y1="150" x2="150" y2="150" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="92" y1="218" x2="150" y2="218" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="92" y1="366" x2="150" y2="366" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="92" y1="530" x2="150" y2="530" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="92" y1="598" x2="150" y2="598" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="280" y1="150" x2="483" y2="195" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="280" y1="530" x2="483" y2="353" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="280" y1="176" x2="430" y2="483" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="280" y1="218" x2="430" y2="589" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="280" y1="324" x2="430" y2="497" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="280" y1="366" x2="430" y2="603" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="280" y1="556" x2="430" y2="511" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="280" y1="598" x2="430" y2="617" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="452" y1="170" x2="486" y2="190" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="452" y1="322" x2="482" y2="338" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="452" y1="304" x2="486" y2="330" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="520" y1="204" x2="562" y2="204" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="606" y1="204" x2="650" y2="204" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="520" y1="344" x2="562" y2="344" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="606" y1="344" x2="650" y2="344" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="700" y1="196" x2="778" y2="192" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="700" y1="212" x2="778" y2="332" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="700" y1="336" x2="778" y2="216" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="700" y1="352" x2="778" y2="356" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="858" y1="236" x2="1048" y2="236" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="858" y1="312" x2="1048" y2="312" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="858" y1="376" x2="1048" y2="376" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="970" y1="497" x2="1048" y2="497" stroke="#E3A9A2" stroke-width="1.6"/>
+<line x1="970" y1="603" x2="1048" y2="603" stroke="#E3A9A2" stroke-width="1.6"/>
+<rect x="430" y="112" width="540" height="336" rx="12" fill="none" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="7,5"/>
+<text x="444" y="136" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#222222" font-weight="bold">WR switch #1</text>
+<rect x="430" y="472" width="540" height="50" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="700" y="503" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">WR switch #2 (same structure as #1)</text>
+<circle cx="700" cy="541" r="2.2" fill="#7F8C8D"/>
+<circle cx="700" cy="550" r="2.2" fill="#7F8C8D"/>
+<circle cx="700" cy="559" r="2.2" fill="#7F8C8D"/>
+<rect x="430" y="578" width="540" height="50" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="700" y="609" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">WR switch #M</text>
+<rect x="150" y="126" width="130" height="112" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="150" y="274" width="130" height="112" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="150" y="506" width="130" height="112" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<line x1="92" y1="298" x2="150" y2="298" stroke="#C0392B" stroke-width="4" stroke-linecap="round"/>
+<line x1="172" y1="298" x2="258" y2="298" stroke="#C0392B" stroke-width="4" stroke-linecap="round"/>
+<line x1="280" y1="298" x2="480" y2="208" stroke="#C0392B" stroke-width="4" stroke-linecap="round"/>
+<line x1="520" y1="204" x2="562" y2="204" stroke="#C0392B" stroke-width="4"/>
+<line x1="606" y1="204" x2="650" y2="204" stroke="#C0392B" stroke-width="4"/>
+<line x1="700" y1="196" x2="778" y2="192" stroke="#C0392B" stroke-width="4" stroke-linecap="round"/>
+<line x1="858" y1="172" x2="1048" y2="172" stroke="#C0392B" stroke-width="4" stroke-linecap="round"/>
+<text x="215" y="118" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222222" font-weight="bold">DC switch #1</text>
+<text x="160" y="155" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">1</text>
+<text x="160" y="223" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">M</text>
+<circle cx="165" cy="177" r="1.8" fill="#7F8C8D"/>
+<circle cx="165" cy="184" r="1.8" fill="#7F8C8D"/>
+<circle cx="165" cy="191" r="1.8" fill="#7F8C8D"/>
+<text x="270" y="155" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">1</text>
+<text x="270" y="181" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">2</text>
+<text x="270" y="223" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">M</text>
+<circle cx="265" cy="191" r="1.8" fill="#7F8C8D"/>
+<circle cx="265" cy="197" r="1.8" fill="#7F8C8D"/>
+<circle cx="265" cy="203" r="1.8" fill="#7F8C8D"/>
+<text x="215" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">M × M</text>
+<rect x="40" y="138" width="52" height="24" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="66" y="155" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<rect x="40" y="206" width="52" height="24" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="66" y="223" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<circle cx="66" cy="177" r="1.8" fill="#7F8C8D"/>
+<circle cx="66" cy="184" r="1.8" fill="#7F8C8D"/>
+<circle cx="66" cy="191" r="1.8" fill="#7F8C8D"/>
+<text x="215" y="266" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222222" font-weight="bold">DC switch #2</text>
+<text x="160" y="303" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">1</text>
+<text x="160" y="371" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">M</text>
+<circle cx="165" cy="325" r="1.8" fill="#7F8C8D"/>
+<circle cx="165" cy="332" r="1.8" fill="#7F8C8D"/>
+<circle cx="165" cy="339" r="1.8" fill="#7F8C8D"/>
+<text x="270" y="303" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">1</text>
+<text x="270" y="329" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">2</text>
+<text x="270" y="371" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">M</text>
+<circle cx="265" cy="339" r="1.8" fill="#7F8C8D"/>
+<circle cx="265" cy="345" r="1.8" fill="#7F8C8D"/>
+<circle cx="265" cy="351" r="1.8" fill="#7F8C8D"/>
+<rect x="40" y="286" width="52" height="24" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="66" y="303" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<rect x="40" y="354" width="52" height="24" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="66" y="371" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<circle cx="66" cy="325" r="1.8" fill="#7F8C8D"/>
+<circle cx="66" cy="332" r="1.8" fill="#7F8C8D"/>
+<circle cx="66" cy="339" r="1.8" fill="#7F8C8D"/>
+<text x="215" y="498" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222222" font-weight="bold">DC switch #N</text>
+<text x="160" y="535" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">1</text>
+<text x="160" y="603" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">M</text>
+<circle cx="165" cy="557" r="1.8" fill="#7F8C8D"/>
+<circle cx="165" cy="564" r="1.8" fill="#7F8C8D"/>
+<circle cx="165" cy="571" r="1.8" fill="#7F8C8D"/>
+<text x="270" y="535" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">1</text>
+<text x="270" y="561" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">2</text>
+<text x="270" y="603" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="end" fill="#7F8C8D">M</text>
+<circle cx="265" cy="571" r="1.8" fill="#7F8C8D"/>
+<circle cx="265" cy="577" r="1.8" fill="#7F8C8D"/>
+<circle cx="265" cy="583" r="1.8" fill="#7F8C8D"/>
+<text x="215" y="568" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">M × M</text>
+<rect x="40" y="518" width="52" height="24" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="66" y="535" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<rect x="40" y="586" width="52" height="24" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="66" y="603" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Tx</text>
+<circle cx="66" cy="557" r="1.8" fill="#7F8C8D"/>
+<circle cx="66" cy="564" r="1.8" fill="#7F8C8D"/>
+<circle cx="66" cy="571" r="1.8" fill="#7F8C8D"/>
+<circle cx="215" cy="437" r="2.2" fill="#7F8C8D"/>
+<circle cx="215" cy="446" r="2.2" fill="#7F8C8D"/>
+<circle cx="215" cy="455" r="2.2" fill="#7F8C8D"/>
+<circle cx="66" cy="437" r="2.2" fill="#7F8C8D"/>
+<circle cx="66" cy="446" r="2.2" fill="#7F8C8D"/>
+<circle cx="66" cy="455" r="2.2" fill="#7F8C8D"/>
+<circle cx="500" cy="204" r="20" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<polygon points="562,182 562,226 606,204" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="650" y="182" width="50" height="44" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<line x1="658" y1="204" x2="672" y2="204" stroke="#34495E" stroke-width="2.2"/>
+<polyline points="692,195 672,204 692,213" fill="none" stroke="#34495E" stroke-width="2.2" stroke-linejoin="round"/>
+<circle cx="500" cy="344" r="20" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<polygon points="562,322 562,366 606,344" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<rect x="650" y="322" width="50" height="44" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<line x1="658" y1="344" x2="672" y2="344" stroke="#34495E" stroke-width="2.2"/>
+<polyline points="692,335 672,344 692,353" fill="none" stroke="#34495E" stroke-width="2.2" stroke-linejoin="round"/>
+<polygon points="778,174 858,148 858,260 778,234" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="818" y="203" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222222" font-weight="bold">AWG</text>
+<text x="818" y="221" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">odd</text>
+<polygon points="778,314 858,288 858,400 778,374" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="818" y="343" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222222" font-weight="bold">AWG</text>
+<text x="818" y="361" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">even</text>
+<circle cx="500" cy="265" r="2.2" fill="#7F8C8D"/>
+<circle cx="500" cy="274" r="2.2" fill="#7F8C8D"/>
+<circle cx="500" cy="283" r="2.2" fill="#7F8C8D"/>
+<circle cx="578" cy="265" r="2.2" fill="#7F8C8D"/>
+<circle cx="578" cy="274" r="2.2" fill="#7F8C8D"/>
+<circle cx="578" cy="283" r="2.2" fill="#7F8C8D"/>
+<circle cx="675" cy="265" r="2.2" fill="#7F8C8D"/>
+<circle cx="675" cy="274" r="2.2" fill="#7F8C8D"/>
+<circle cx="675" cy="283" r="2.2" fill="#7F8C8D"/>
+<text x="500" y="158" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">aggregation coupler</text>
+<text x="500" y="175" font-family="Segoe UI, Arial, sans-serif" font-size="12" text-anchor="middle" fill="#7F8C8D">(N/K) × 1</text>
+<text x="580" y="174" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">EDFA</text>
+<text x="675" y="174" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">1 × 2 splitter</text>
+<text x="444" y="422" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">K branches, each with a coupler, an EDFA and a 1 × 2 splitter.</text>
+<text x="444" y="440" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">Each AWG of the ULCF AWG pair has K input ports and N/2 output ports.</text>
+<rect x="1048" y="159" width="56" height="26" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="1076" y="177" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Rx</text>
+<rect x="1048" y="223" width="56" height="26" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="1076" y="241" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Rx</text>
+<circle cx="1076" cy="197" r="1.8" fill="#7F8C8D"/>
+<circle cx="1076" cy="204" r="1.8" fill="#7F8C8D"/>
+<circle cx="1076" cy="211" r="1.8" fill="#7F8C8D"/>
+<rect x="1048" y="299" width="56" height="26" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="1076" y="317" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Rx</text>
+<rect x="1048" y="363" width="56" height="26" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="1076" y="381" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">Rx</text>
+<circle cx="1076" cy="337" r="1.8" fill="#7F8C8D"/>
+<circle cx="1076" cy="344" r="1.8" fill="#7F8C8D"/>
+<circle cx="1076" cy="351" r="1.8" fill="#7F8C8D"/>
+<text x="1076" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">N receivers</text>
+<rect x="1048" y="484" width="56" height="26" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="1076" y="502" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">N Rx</text>
+<rect x="1048" y="590" width="56" height="26" rx="6" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="1076" y="608" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">N Rx</text>
+<text x="872" y="163" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#C0392B" font-weight="bold">output j</text>
+<text x="575" y="672" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#222222">Output k of DC switch i goes to input i of WR switch k. Every AWG output goes straight to one receiver.</text>
+<line x1="150" y1="704" x2="204" y2="704" stroke="#C0392B" stroke-width="4" stroke-linecap="round"/>
+<text x="216" y="709" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#222222">example connection: DC switch 2 selects WR switch 1; the wavelength of the laser selects output j of the AWG pair</text>
+</svg>

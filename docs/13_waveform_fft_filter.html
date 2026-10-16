@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13 Waveforms, FFT and filters | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a class="current" href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Background</p>
+<h1><span class="num nt">13</span>Waveforms, FFT and filters</h1>
+<p class="lead">In the practice chapters, a QAM signal had one sample per symbol. This page turns the symbols into a waveform with several samples per symbol. It shows how to look at the spectrum of a waveform, how every filter of this package works, and how the transmitter function <code>TL_QAM</code> builds a waveform whose bandwidth equals the symbol rate.</p>
+
+<div class="pair"><span><b>Script:</b> <code>matlab/demos/demo13_waveform_fft_filter.m</code></span><span><b>Library:</b> <code>TL_QAM</code>, <code>my_qammod</code>, <code>apply_filter</code>, <code>rcosfilter</code>, <code>nyquistfilter</code>, <code>freq_axis</code>, <code>plot_spectrum</code></span></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Why you need this</a></li>
+<li><a href="#s2">A waveform and its spectrum</a></li>
+<li><a href="#s3">Filtering: multiply the spectrum by a mask</a></li>
+<li><a href="#s4">Nyquist pulse shaping</a></li>
+<li><a href="#s5">The transmitter function TL_QAM</a></li>
+<li><a href="#s6">Run the demo</a></li>
+<li><a href="#s7">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Why you need this</h2>
+<p>The proposed switch relies on a statement about frequencies: an unwanted signal on another wavelength, that is, at another optical frequency, lies outside the band of the receiver, and the receiver removes it (<a href="14_coherent_rx_dsp_ber.html">page 14</a>, <a href="23_three_stage_proposal.html">page 23</a>). Other parts of the switch act on frequencies too: an arrayed-waveguide grating (AWG) passes only a band of frequencies (<a href="17_awg_wavelength_routing.html">page 17</a>), and the noise power of an optical amplifier grows with the bandwidth (<a href="15_edfa_ase.html">page 15</a>).</p>
+<p>A signal with one sample per symbol cannot show any of this: the band of frequencies that such a simulation can represent is exactly as wide as the signal itself (<a href="#s2">section 2</a>), with no room for a second wavelength channel (a signal on a neighboring wavelength) or for the edge of a filter. This page therefore provides three tools: a waveform with several samples per symbol, a frequency axis in Hz for its spectrum, and filters that act on the spectrum. Every script in <code>main/</code> starts with the transmitter function of this page and filters with the method of this page.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>A signal is a column of samples. Its spectrum is a column of the same length, with one value per frequency. A filter is a third column of the same length, with one factor per frequency. Filtering means multiplying the spectrum by these factors.</p></div>
+</section>
+
+<section id="s2">
+<h2>2. A waveform and its spectrum</h2>
+
+<h3>The oversampling rate and the sampling rate</h3>
+<p>A transmitter sends \(B\) symbols per second. \(B\) is the <strong>symbol rate</strong>, also called the baud rate (<code>baudrate</code> in the code). It is <span class="nt">24 GBd</span> in <code>step21_two_stage_one_point</code> and <span class="nt">32 GBd</span> in <code>step22_three_stage_one_point</code>; 1 GBd (gigabaud) is \(10^{9}\) symbols per second. One symbol lasts for the <strong>symbol period</strong> \(1/B\).</p>
+<p>A <strong>waveform</strong> is the signal as a function of time. The simulation stores it as samples that are closer together than the symbols. The number of samples per symbol is the <strong>oversampling rate</strong> (<code>up</code> in the code). The <strong>sampling rate</strong> \(F_s\) is the number of samples per second (<code>Fs</code> in the code; the comments call it the sampling frequency):</p>
+<div class="eq" id="e1"><div class="m">\[ F_s = \mathrm{up} \times B \]</div><span class="eqno nt">(1)</span></div>
+<p>All scripts in <code>main/</code> use <code>up = 2</code> as their default. At <span class="nt">24 GBd</span> this gives a sampling rate of <span class="nt">48 GHz</span>: one symbol period is <span class="nt">41.7 ps</span>, and two neighboring samples are <span class="nt">20.8 ps</span> apart. A block of <code>datasize</code> symbols becomes a column vector with <code>datasize*up</code> samples.</p>
+
+<h3>The simulated band</h3>
+<p>The samples are the complex envelope that you know from the practice chapters. The frequency 0 Hz therefore stands for the optical carrier of the signal, and every other frequency is counted from the carrier. Samples that are \(1/F_s\) apart cannot tell a frequency \(f\) from the frequency \(f + F_s\). In the complex envelope, a frequency \(f\) is the oscillation \(e^{\,j2\pi f t}\), where \(t\) is the time. The oscillations of \(f\) and of \(f + F_s\) differ by the factor \(e^{\,j2\pi F_s t}\), and this factor is 1 at every sample, because \(F_s t\) is a whole number there. Both frequencies give exactly the same sample values. The samples can therefore describe only one frequency interval of the width \(F_s\). It is placed around the carrier:</p>
+<div class="eq" id="e2"><div class="m">\[ -\frac{F_s}{2} \;\le\; f \;\lt\; +\frac{F_s}{2} \]</div><span class="eqno nt">(2)</span></div>
+<p>This interval is the <strong>simulated band</strong>. Every signal that a script simulates must lie inside it: the target signal and, in some demos, a signal on a neighboring wavelength channel. A filter needs no such room. It is a mask on the simulated band and acts only where the signal is, so the center of its passband may lie outside the band (page 17). A larger <code>up</code> widens the simulated band. It also makes the run slower, because there are more samples. The default <code>up = 2</code> of the scripts in <code>main/</code> is enough, because all their signals are on the same wavelength and a simulated band of the width \(2B\) holds such a signal for every pulse shape of <a href="#s4">section 4</a>; with <code>up = 4</code>, the bit error rate (BER) and the signal-to-noise ratio (SNR) are the same within the random error of one run. A script needs a larger <code>up</code> when a signal on another wavelength channel must fit into the simulated band (question 5 of <a href="#s7">section 7</a>), or when a plot must show the waveform between the symbols, which is why the demo of this page uses <code>up = 4</code>.</p>
+
+<h3>The spectrum: fft and fftshift</h3>
+<p>The MATLAB function <code>fft</code> converts a block of \(n_{\mathrm{samp}}\) samples into \(n_{\mathrm{samp}}\) complex numbers. Each number gives the amplitude and the phase with which one frequency is present in the block. Together these numbers are the <strong>spectrum</strong> of the block, and each of them is called a <strong>bin</strong>. The \(n_{\mathrm{samp}}\) bins divide the simulated band of the width \(F_s\) into equal steps. The step between neighboring bins is the <strong>bin spacing</strong></p>
+<div class="eq" id="e3"><div class="m">\[ \Delta f = \frac{F_s}{n_{\mathrm{samp}}} \]</div><span class="eqno nt">(3)</span></div>
+<p>The demo of this page has <span class="nt">16000</span> samples at <span class="nt">96 GHz</span>, so its bins are <span class="nt">6 MHz</span> apart.</p>
+<p><code>fft</code> returns the bins in an order that is hard to read: 0 Hz comes first, then the positive frequencies, then the negative frequencies. <code>fftshift</code> reorders the bins so that the frequency rises from the first element to the last, with 0 Hz in the middle. <code>ifftshift</code> restores the order of <code>fft</code>; it is needed before the inverse transform <code>ifft</code>.</p>
+<p>The library function <code>freq_axis</code> returns the frequency of every bin in Hz, in the order of <code>fftshift(fft(x))</code>. This line is from the demo:</p>
+<pre><code>f = freq_axis(nsamp, Fs);  % frequency of every FFT bin [Hz], nsamp x 1</code></pre>
+<p>For an even number of samples, <code>f</code> runs from \(-F_s/2\) to \(+F_s/2 - \Delta f\) in steps of \(\Delta f\), and 0 Hz is element number <code>nsamp/2 + 1</code>. The demo prints the two ends of its axis:</p>
+<pre><code>Simulated band  : -48.000 GHz to +47.994 GHz (Fs = 96 GHz)</code></pre>
+<p>The last bin is not at <span class="nt">+48 GHz</span> but <span class="nt">6 MHz</span> below it. A bin at <span class="nt">+48 GHz</span> would be the same frequency as the bin at <span class="nt">-48 GHz</span>, by the argument that led to <a href="#e2">equation (2)</a>, and that bin is already the first element.</p>
+
+<h3>In the code: plot_spectrum</h3>
+<p><code>plot_spectrum(x, Fs)</code> draws the power spectrum of a signal with these tools. <code>x</code> holds one signal per column, and <code>Fs</code> is the sampling rate in Hz. The core of the function is four lines:</p>
+<pre><code>N = size(x, 1);  % number of samples
+f = freq_axis(N, Fs);  % exact FFT bin frequencies [Hz], N x 1
+
+X = fftshift(fft(x, [], 1), 1);  % spectrum of every column, 0 Hz in the middle
+P = abs(X).^2;  % power of every bin (arbitrary unit)</code></pre>
+<p>The function then plots <code>P</code> in dB, relative to the strongest bin, against <code>f</code> in GHz. The arguments <code>[], 1</code> and <code>1</code> tell <code>fft</code> and <code>fftshift</code> to work down each column, so a matrix gives one curve per signal.</p>
+<div class="box note"><span class="label">Note</span>
+<p>Inside the library functions, the number of samples is called <code>N</code>. On these pages, \(N\) is the number of wavelength channels. This page therefore writes \(n_{\mathrm{samp}}\) for the number of samples, and the demo uses the variable <code>nsamp</code>.</p></div>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. Sampling in <code>demo13_waveform_fft_filter</code> (demo13), <code>step21_two_stage_one_point</code> (step21) and <code>step22_three_stage_one_point</code> (step22), with their default parameters. The values follow from equations (1) to (3).</caption>
+<thead><tr><th>Quantity</th><th>Code</th><th class="num nt">demo13</th><th class="num nt">step21</th><th class="num nt">step22</th></tr></thead>
+<tbody>
+<tr><td>Symbol rate</td><td><code>baudrate</code></td><td class="num nt">24 GBd</td><td class="num nt">24 GBd</td><td class="num nt">32 GBd</td></tr>
+<tr><td>Oversampling rate</td><td><code>up</code></td><td class="num nt">4</td><td class="num nt">2</td><td class="num nt">2</td></tr>
+<tr><td>Sampling rate</td><td><code>Fs</code></td><td class="num nt">96 GHz</td><td class="num nt">48 GHz</td><td class="num nt">64 GHz</td></tr>
+<tr><td>Simulated band</td><td>-</td><td class="num nt">±48 GHz</td><td class="num nt">±24 GHz</td><td class="num nt">±32 GHz</td></tr>
+<tr><td>Number of symbols</td><td><code>datasize</code></td><td class="num nt">4000</td><td class="num nt">30000</td><td class="num nt">30000</td></tr>
+<tr><td>Number of samples</td><td><code>datasize*up</code></td><td class="num nt">16000</td><td class="num nt">60000</td><td class="num nt">60000</td></tr>
+<tr><td>Bin spacing</td><td>-</td><td class="num nt">6 MHz</td><td class="num nt">0.8 MHz</td><td class="num nt">1.067 MHz</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="s3">
+<h2>3. Filtering: multiply the spectrum by a mask</h2>
+<p>A filter changes how strongly each frequency is present in a signal. In this package, a filter is a column <code>H</code> with one real factor per bin, in the order of <code>freq_axis</code>. This column is called a <strong>mask</strong>. A factor 1 passes the bin unchanged, a factor 0 removes it, and a factor between 0 and 1 attenuates it.</p>
+<p>Filtering then takes three steps (top row of Fig. 1): calculate the spectrum, multiply it by the mask bin by bin, and return to the time domain.</p>
+<figure id="f1"><img src="assets/fig/fig_fft_axis_filter.svg" alt="Top: four boxes in a row: time samples x, spectrum X = fftshift(fft(x)), multiply by the mask H, time samples y = ifft(ifftshift(Y)). Bottom: three rows on a frequency axis from -48 GHz to +48 GHz: the spectrum after zero insertion with repeated copies, a rectangular mask from -12 GHz to +12 GHz, and the single copy that is left.">
+<figcaption><b>Fig. 1.</b> Filtering in the frequency domain. Top: the three steps. Bottom: the same steps on the frequency axis, for the example of <a href="#s4">section 4</a> (pulse shaping with <code>up = 4</code>). After zero insertion, the spectrum |X| holds four copies of the spectrum of the symbols; the fourth copy is split into two halves at the edges of the simulated band. The mask H keeps one copy. The numbers are those of the demo (<span class="nt">24 GBd</span>).</figcaption></figure>
+<p>The library does this in <code>apply_filter(dataIn, H, up)</code>. The three statements before the closing <code>end</code> of the function are the three steps:</p>
+<pre><code>% multiply the spectrum of every column by the mask
+spectrum = fftshift(fft(expanded, [], 1), 1);  % 0 Hz in the middle, like H
+spectrum = H .* spectrum;  % H (N x 1) acts on every column
+signal = ifft(ifftshift(spectrum, 1), [], 1);  % back to the time domain</code></pre>
+<p>With <code>up = 1</code>, the variable <code>expanded</code> is the input signal itself, and the function only filters. With a larger <code>up</code> it first inserts zeros (<a href="#s4">section 4</a>). The mask must be a column with as many elements as the output has samples: the number of rows of <code>dataIn</code> times <code>up</code>. Otherwise <code>apply_filter</code> stops with an error.</p>
+<p>The masks come from three library functions (Table 2). All three take their frequency axis from <code>freq_axis</code>, so a mask and a spectrum of the same length line up bin by bin. All frequencies and widths are given in Hz.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. The functions that build a mask. Each returns a column in the order of <code>fftshift(fft(x))</code>.</caption>
+<thead><tr><th>Function</th><th>Shape of the mask</th><th>Used for</th><th>Explained on</th></tr></thead>
+<tbody>
+<tr><td><code>rcosfilter(N, Br, fsam, rolloff)</code></td><td>Raised cosine around 0 Hz; for <code>rolloff = 0</code> a rectangle of the width <code>Br</code></td><td>Pulse shaping in the transmitter</td><td><a href="#s4">section 4</a></td></tr>
+<tr><td><code>nyquistfilter(data_length, center_fleq, Fs, width)</code></td><td>Rectangle around the frequency <code>center_fleq</code> with the width <code>width</code></td><td>Receive filter of the coherent receiver</td><td><a href="14_coherent_rx_dsp_ber.html">page 14</a></td></tr>
+<tr><td><code>gaussfilter(N, shift, Fs, FWHM, er_dB, m)</code></td><td>Gaussian around the frequency <code>shift</code></td><td>Passband of the AWG (the function <code>awg</code> calls it)</td><td><a href="17_awg_wavelength_routing.html">page 17</a></td></tr>
+</tbody></table></div>
+<p>For example, the receiver in <code>step21_two_stage_one_point</code> filters the signal with these two lines:</p>
+<pre><code>H = nyquistfilter(length(signal), 0, Fs, baudrate*(1+rolloff));
+signal = apply_filter(signal, H, 1);</code></pre>
+<p>A rectangular mask of the width \(w\) around 0 Hz passes the bins with \(-w/2 \le f \lt +w/2\). The bin on the lower edge passes, and the bin on the upper edge does not. <a href="#s4">Section 4</a> gives the reason. With this rule, <code>rcosfilter(N, Br, fsam, 0)</code> and <code>nyquistfilter(N, 0, fsam, Br)</code> return the same mask.</p>
+<div class="box note"><span class="label">Note</span>
+<p>The FFT treats the block of samples as one period of a signal that repeats without end, so every filter is circular: the part of a pulse that a filter pushes beyond the end of the block comes back at its beginning.</p></div>
+</section>
+
+<section id="s4">
+<h2>4. Nyquist pulse shaping</h2>
+<p><strong>Pulse shaping</strong> turns <code>datasize</code> symbols into a waveform of <code>datasize*up</code> samples. It has two goals. The waveform should occupy as little bandwidth as possible, and the receiver must be able to read every symbol without a disturbance from the other symbols. The call <code>apply_filter(data_mod, H, up)</code> reaches both goals in two steps.</p>
+<ol class="steps">
+<li><strong>Zero insertion.</strong> The \(m\)-th symbol \(d_m\) is written to sample \(1 + (m-1)\,\mathrm{up}\), and the <code>up - 1</code> samples after it are set to zero. In the code this is the line <code>expanded(1:up:end, :) = dataIn;</code>. The result has the right number of samples, but its spectrum fills the whole simulated band: the spectrum of the symbols repeats every \(B\), <code>up</code> times in total (row \(|X|\) of Fig. 1). The reason is the argument of <a href="#s2">section 2</a> with another spacing: the samples that are not zero are \(1/B\) apart, so they cannot tell \(f\) from \(f + B\).</li>
+<li><strong>Mask.</strong> A rectangular mask of the width \(B\) keeps one of these copies and removes the others (rows \(H\) and \(|Y|\) of Fig. 1).</li>
+</ol>
+<p>The waveform now occupies exactly the bandwidth \(B\). The mask passes <code>datasize</code> bins, one bin per symbol. A narrower mask would lose information, because <code>datasize</code> independent symbols cannot be described by fewer than <code>datasize</code> numbers.</p>
+<p>In the time domain, each symbol has become a pulse that is spread over many symbol periods. A <strong>symbol instant</strong> is a sample with the number \(1 + (m-1)\,\mathrm{up}\): the sample that received the symbol \(d_m\) in step 1. The pulse of a symbol is exactly zero at the symbol instants of all other symbols. At a symbol instant, the waveform \(y\) therefore contains only the one symbol \(d_m\):</p>
+<div class="eq" id="e4"><div class="m">\[ y\bigl[\,1 + (m-1)\,\mathrm{up}\,\bigr] = \frac{d_m}{\mathrm{up}}, \qquad m = 1, 2, \dots, \mathrm{datasize} \]</div><span class="eqno nt">(4)</span></div>
+<p>A contribution of other symbols at a symbol instant is called <strong>inter-symbol interference</strong> (ISI). Equation (4) says that there is none. A pulse with this property is called a Nyquist pulse.</p>
+<p>The reason is again the repetition of the spectrum. Before the mask, the samples at the symbol instants are the symbols \(d_m\) themselves. The spectrum consists of <code>up</code> copies. The symbol instants are \(1/B\) apart, so the copies, which are \(B\) apart, all give the same values there. All copies together give \(d_m\), so one copy alone gives \(d_m/\mathrm{up}\). The mask keeps exactly one copy, and this is equation (4). <code>apply_filter</code> does not rescale the amplitude; the transmitter sets the power afterwards (<a href="#s5">section 5</a>). Between the symbol instants, the pulses of neighboring symbols overlap, and the waveform takes other values (lower plot of Fig. 2).</p>
+<p>The edge rule of <a href="#s3">section 3</a> belongs to this result. The bins at \(-B/2\) and \(+B/2\) are \(B\) apart, so they hold the same value after zero insertion. Exactly one of them must pass. Then the mask keeps exactly one full copy, that is one bin per symbol, and equation (4) holds exactly.</p>
+
+<h3>Roll-off</h3>
+<p>The rectangle is the limiting case of a family of masks. The <strong>roll-off factor</strong> \(\alpha\) (<code>rolloff</code> in the code, from 0 to 1) replaces the two sharp edges by slopes with the shape of a cosine. This is the raised-cosine mask of <code>rcosfilter</code>:</p>
+<div class="eq" id="e5"><div class="m">\[ H(f) = \begin{cases} 1, &amp; |f| \lt (1-\alpha)\,\dfrac{B}{2} \\[1.2ex] \dfrac{1}{2}\left[\,1 - \sin\!\left(\dfrac{\pi}{2\alpha}\left(\dfrac{2|f|}{B} - 1\right)\right)\right], &amp; (1-\alpha)\,\dfrac{B}{2} \le |f| \le (1+\alpha)\,\dfrac{B}{2} \\[1.2ex] 0, &amp; |f| \gt (1+\alpha)\,\dfrac{B}{2} \end{cases} \]</div><span class="eqno nt">(5)</span></div>
+<p>The waveform then occupies the bandwidth \((1+\alpha)B\). Equation (4) still holds. On a slope, the mask removes a part of one copy, but it passes exactly this part of the neighboring copy, because \(H(f) + H(f - B) = 1\) there. The only condition is that <code>up</code> is 2 or more, so that the mask fits into the simulated band. For \(\alpha = 0\) the mask is the rectangle of this section. All scripts in <code>main/</code> and all demos use a roll-off of 0. A note in section 1 of <code>step21_two_stage_one_point</code> and of <code>step22_three_stage_one_point</code> advises you to keep this value unless you study the roll-off itself: with a roll-off above 0, these scripts skip their second self-check, the comparison with the SNR budget (<a href="21_two_stage_ulcf_switch.html">page 21</a>).</p>
+<div class="box note"><span class="label">Assumption of the model</span>
+<p>A roll-off of 0 is an idealization. The pulse of one symbol does not end: it is spread over the whole block, and only the circular block of <a href="#s3">section 3</a> makes this possible. A real transmitter can only approximate a rectangular spectrum.</p></div>
+
+<h3>In the code: rcosfilter</h3>
+<p>Every script in <code>main/</code> builds the transmit mask once, in its section 2:</p>
+<pre><code>Hrcos = rcosfilter(datasize*up, baudrate, Fs, rolloff);  % transmit mask (Nyquist)</code></pre>
+<p>The four inputs are the number of samples, the symbol rate in Hz, the sampling rate in Hz and the roll-off factor. The output is the mask: a column of <code>datasize*up</code> values between 0 and 1. <code>rcosfilter</code> only builds the mask. The transmitter function of the next section applies it.</p>
+</section>
+
+<section id="s5">
+<h2>5. The transmitter function TL_QAM</h2>
+<p><code>TL_QAM</code> makes the waveform of one transmitter: one polarization of one wavelength channel (<a href="14_coherent_rx_dsp_ber.html">page 14</a> explains the two polarizations and the IQ modulator). In the model it stands for the laser and the IQ modulator (TL = tunable laser).</p>
+<pre><code>[signal, data, data_mod] = TL_QAM(datasize, up, H, Pin, bitsPerSymbol)</code></pre>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. Inputs and outputs of <code>TL_QAM</code> (from the header of the function).</caption>
+<thead><tr><th>Name</th><th>Meaning</th><th>Size and unit</th></tr></thead>
+<tbody>
+<tr><td><code>datasize</code></td><td>Number of symbols</td><td>scalar</td></tr>
+<tr><td><code>up</code></td><td>Oversampling rate (samples per symbol)</td><td>scalar</td></tr>
+<tr><td><code>H</code></td><td>Pulse-shaping mask made by <code>rcosfilter</code></td><td><code>(datasize*up) x 1</code></td></tr>
+<tr><td><code>Pin</code></td><td>Mean optical power of the output signal</td><td>scalar, dBm</td></tr>
+<tr><td><code>bitsPerSymbol</code></td><td>Bits per symbol: 2, 4, 5 or 6</td><td>scalar</td></tr>
+<tr><td><code>signal</code></td><td>Output: optical field of one polarization</td><td><code>(datasize*up) x 1</code>, <span class="nt">sqrt(W)</span></td></tr>
+<tr><td><code>data</code></td><td>Output: transmitted bits (0 or 1)</td><td><code>(datasize*bitsPerSymbol) x 1</code></td></tr>
+<tr><td><code>data_mod</code></td><td>Output: transmitted QAM symbols</td><td><code>datasize x 1</code></td></tr>
+</tbody></table></div>
+<p>The function works in five steps. The code lines are copied from <code>lib/TL_QAM.m</code>.</p>
+<ol class="steps">
+<li><strong>Random bits.</strong> <code>data = randi([0 1], datasize*bitsPerSymbol, 1);</code> The bits of one symbol follow each other.</li>
+<li><strong>Bits to symbol numbers.</strong> Each group of <code>bitsPerSymbol</code> bits is read as a binary number, with the first bit as the most significant bit. For 16QAM, the bits <span class="nt">0 1 0 0</span> give the symbol number <span class="nt">0·8 + 1·4 + 0·2 + 0·1 = 4</span>.</li>
+<li><strong>Symbol numbers to constellation points.</strong> <code>data_mod = my_qammod(sym_num, 2^bitsPerSymbol);</code> The function <code>my_qammod</code> returns the points on the grid of odd integers (Table 4). Symbol number 4 of 16QAM is the point <span class="nt">-1 + 3i</span>.</li>
+<li><strong>Pulse shaping.</strong> <code>signal = apply_filter(data_mod, H, up);</code> This is the zero insertion and the mask of <a href="#s4">section 4</a>.</li>
+<li><strong>Power.</strong> <code>signal = set_signal_power(signal, Pin);</code> This call scales the waveform so that its mean power is <code>Pin</code> (<a href="12_units_power_budget.html">page 12</a>). From here on, the samples are an optical field in <span class="nt">sqrt(W)</span>.</li>
+</ol>
+
+<h3>Modulation formats and mod_flag</h3>
+<p>The scripts select the modulation format with the variable <code>mod_flag</code>, the number of bits per symbol (\(k\) on these pages). They pass it to <code>TL_QAM</code> as the input <code>bitsPerSymbol</code>. The number of constellation points is \(2^k\) (<code>Mary = 2^mod_flag</code> in the scripts).</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. The four modulation formats of <code>TL_QAM</code> and <code>my_qammod</code>. The mean power is the mean of \(|d|^2\) over all points \(d\) of a format.</caption>
+<thead><tr><th class="num"><code>mod_flag</code></th><th>Format</th><th class="num">Points</th><th>Levels on each axis</th><th class="num">Mean power of the points</th></tr></thead>
+<tbody>
+<tr><td class="num nt">2</td><td class="nt">QPSK</td><td class="num nt">4</td><td class="nt">-1, +1</td><td class="num nt">2</td></tr>
+<tr><td class="num nt">4</td><td class="nt">16QAM</td><td class="num nt">16</td><td class="nt">-3, -1, +1, +3</td><td class="num nt">10</td></tr>
+<tr><td class="num nt">5</td><td class="nt">32QAM</td><td class="num nt">32</td><td class="nt">-5, -3, -1, +1, +3, +5</td><td class="num nt">20</td></tr>
+<tr><td class="num nt">6</td><td class="nt">64QAM</td><td class="num nt">64</td><td class="nt">-7, -5, -3, -1, +1, +3, +5, +7</td><td class="num nt">42</td></tr>
+</tbody></table></div>
+<p>The points are not normalized: in the practice chapters the mean symbol energy was 1, and here it is the value in Table 4. This is why step 5 sets the power at the end. On this page, <strong>one unit of the grid</strong> is the number 1 in Table 4; neighboring points are 2 units apart. For a roll-off of 0, the samples at the symbol instants have the same mean power as the whole waveform. With <code>Pin</code> = <span class="nt">0 dBm</span> (<span class="nt">1 mW</span>) and 16QAM, the mean power <span class="nt">10</span> of the points therefore corresponds to <span class="nt">1 mW</span>, and one unit of the grid corresponds to \(\sqrt{1\ \mathrm{mW}/10} = 0.01\ \sqrt{\mathrm{W}}\). The square formats (QPSK, 16QAM, 64QAM) use Gray mapping: neighboring levels differ in only one bit, so the most likely symbol error, a decision for a neighboring point, causes only one bit error. The default format is 16QAM in <code>step22_three_stage_one_point</code> and in the demo of this page, and 32QAM in <code>step21_two_stage_one_point</code>.</p>
+
+<h3>The 32QAM cross constellation</h3>
+<p>A square constellation gives half of the bits to the real part and half to the imaginary part. The 5 bits of 32QAM cannot be divided in this way. 32QAM therefore uses a cross: a square of <span class="nt">6 x 6</span> points without its four corners (<span class="nt">36 - 4 = 32</span>). The corners are the four points that would have the highest power.</p>
+<pre><code> Im
+ +5    .   o   o   o   o   .
+ +3    o   o   o   o   o   o
+ +1    o   o   o   o   o   o
+ -1    o   o   o   o   o   o
+ -3    o   o   o   o   o   o
+ -5    .   o   o   o   o   .
+      -5  -3  -1  +1  +3  +5   Re
+
+ o = constellation point     . = corner that is not used</code></pre>
+<p>A cross has no short mapping rule. <code>my_qammod</code> therefore contains the 32 points as a table, in the order of <code>qammod</code>, a function of the Communications Toolbox of MATLAB. This package does not need the toolbox.</p>
+
+<h3>How the scripts call TL_QAM</h3>
+<p>These two lines are from block [1] of <code>step22_three_stage_one_point</code>:</p>
+<pre><code>pin = PTx - 3*pol_flag;  % power of the simulated polarization [dBm]
+[signal, data, data_mod] = TL_QAM(datasize, up, Hrcos, pin, mod_flag);</code></pre>
+<p><a href="14_coherent_rx_dsp_ber.html">Page 14</a> explains the first line. The header of <code>TL_QAM</code> gives three rules for the second line:</p>
+<ul>
+<li>Every call makes new, independent random data. Call the function once for the target signal and once for every interfering signal.</li>
+<li>The bits come from <code>randi</code>. Call <code>rng(seed)</code> before, and a run can be repeated.</li>
+<li>Keep <code>data</code> and <code>data_mod</code> of the target signal for the receiver: <code>data_mod</code> trains the equalizer, and <code>data</code> is compared with the received bits (<a href="14_coherent_rx_dsp_ber.html">page 14</a>).</li>
+</ul>
+</section>
+
+<section id="s6">
+<h2>6. Run the demo</h2>
+<div class="box run"><span class="label">Run it</span>
+<p>In MATLAB, make the folder <code>matlab</code> the current folder and run <code>setup_path</code> (once per MATLAB session). Then run <code>demo13_waveform_fft_filter</code>. The script needs a few seconds. It prints three lines that begin with <code>Self-check</code>, and each of them must contain <code>passed</code>.</p></div>
+<p>Open the script in the editor and read it next to Table 5. The section numbers are the numbers of the <code>%%</code> sections of the script.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 5. What <code>demo13_waveform_fft_filter</code> does.</caption>
+<thead><tr><th>Section</th><th>What it does</th><th>Self-check</th></tr></thead>
+<tbody>
+<tr><td class="nt">1</td><td>Sets the example: <code>datasize = 4000</code>, <code>mod_flag = 4</code> (16QAM), <code>up = 4</code>, <code>baudrate = 24e9</code>, <code>rolloff = 0</code>, <code>pin = 0</code>.</td><td>none</td></tr>
+<tr><td class="nt">2</td><td>Calculates <code>Fs</code>, the number of samples <code>nsamp</code>, the bin spacing <code>df</code> and the frequency axis <code>f</code> (equations (1) to (3)). Prints the two ends of the simulated band.</td><td>none</td></tr>
+<tr><td class="nt">3</td><td>Builds the transmit mask with <code>rcosfilter</code> and calls <code>TL_QAM</code>. Prints the numbers of bits, symbols and samples, the bits and the point of the first symbol, and the mean power of the waveform.</td><td>none</td></tr>
+<tr><td class="nt">4</td><td>Repeats the pulse shaping by hand: zero insertion, <code>fftshift(fft(expanded))</code>, multiplication by the mask, <code>ifft(ifftshift(Y))</code>, then <code>set_signal_power</code>. These are the steps of Fig. 1.</td><td><span class="nt">1</span>: the result is equal to the output of <code>TL_QAM</code>.</td></tr>
+<tr><td class="nt">5</td><td>Takes the samples at the symbol instants (one sample in <code>up</code>) and divides them by <code>scale</code>, the size of one unit of the grid in <span class="nt">sqrt(W)</span>. Prints the first three symbols next to these samples.</td><td><span class="nt">2</span>: the samples at the symbol instants are the transmitted symbols; the largest error is below \(10^{-9}\) (equation (4)).</td></tr>
+<tr><td class="nt">6</td><td>Calculates the spectrum of the waveform and counts the bins that carry power.</td><td><span class="nt">3</span>: the number of these bins times the bin spacing is <code>baudrate*(1 + rolloff)</code>, within 2 bins.</td></tr>
+<tr><td class="nt">7</td><td>Draws one figure with two plots. Top: <code>plot_spectrum</code> of the signal before and after the mask. Bottom: the waveform of the first 16 symbols, with the transmitted symbols as circles.</td><td>none</td></tr>
+</tbody></table></div>
+<p>The script prints this text:</p>
+<pre><code>Samples         : 4000 symbols x 4 samples per symbol = 16000 samples
+Simulated band  : -48.000 GHz to +47.994 GHz (Fs = 96 GHz)
+Bin spacing     : Fs/nsamp = 6.000 MHz
+Transmitter     : 16000 bits -&gt; 4000 symbols (16-QAM) -&gt; 16000 samples
+First symbol    : bits 0 1 0 0 -&gt; point -1+3i
+Mean power      : 1.0000 mW (pin = 0.0 dBm)
+Self-check 1 passed: pulse shaping by hand = TL_QAM (difference 0.0e+00)
+Symbol instants : transmitted symbol -&gt; sample/scale (scale = 1.0055e-02)
+  symbol 1      : -1+3i -&gt; -1.000000000+3.000000000i
+  symbol 2      : -3+3i -&gt; -3.000000000+3.000000000i
+  symbol 3      : -1+1i -&gt; -1.000000000+1.000000000i
+Self-check 2 passed: samples at the symbol instants = symbols (largest error 3.0e-14)
+Occupied band   : -12.000 GHz to +11.994 GHz
+Occupied width  : 4000 bins x 6.000 MHz = 24.000 GHz
+Self-check 3 passed: occupied width = baudrate*(1 + rolloff) = 24.000 GHz (within 2 bins)</code></pre>
+<p>Note three details of this output. The value of <code>scale</code> is <span class="nt">1.0055e-02</span> and not the <span class="nt">0.01</span> of <a href="#s5">section 5</a>, because the 4000 random symbols of this run have a mean power of <span class="nt">9.89</span> instead of <span class="nt">10</span>, and \(\sqrt{1\ \mathrm{mW}/9.89}\) = <span class="nt">1.0055e-02 sqrt(W)</span>. The occupied band ends at <span class="nt">+11.994 GHz</span>: the bin at <span class="nt">+12 GHz</span> does not pass (<a href="#s4">section 4</a>). The largest error of self-check 2 is a rounding error; its last digits can differ on another computer.</p>
+<figure id="f2"><img src="assets/expected/demo13_waveform_fft_filter.png" alt="Top: power spectrum from -48 GHz to +48 GHz. The curve after zero insertion fills the whole band; the curve after the mask exists only between the dashed lines at -12 GHz and +12 GHz. Bottom: the real part of the waveform over 16 symbol periods; the circles of the transmitted symbols lie on the curve at the levels -3, -1, 1 and 3.">
+<figcaption><b>Fig. 2.</b> Expected figure of <code>demo13_waveform_fft_filter</code>. Top: the power spectrum after zero insertion (blue) and after the mask (orange); the dashed lines are the edges of the mask. The spectrum of random data is not smooth: each bin varies by several dB. Between the dashed lines the orange curve covers the blue one. The blue curve repeats every <span class="nt">24 GHz</span>: the pair of deep notches near <span class="nt">+4.2 GHz</span> appears again near <span class="nt">-43.8 GHz</span>, <span class="nt">-19.8 GHz</span> and <span class="nt">+28.2 GHz</span>. Bottom: the real part of the waveform in units of the grid. At the symbol instants (circles) the waveform equals the transmitted symbols. Between them it takes other values.</figcaption></figure>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>All three self-checks print <code>passed</code>, and your figure looks like Fig. 2.</li>
+<li>You can calculate the first three printed lines by hand from <code>datasize</code>, <code>up</code> and <code>baudrate</code>.</li>
+<li>In section 4 of the script, you can say which line is the filter and what each of the other lines does.</li>
+</ul></div>
+<div class="box todo"><span class="label">Your task</span>
+<p>Change one parameter in section 1 of the script, predict the result, and then run the script. Set the parameter back before the next experiment.</p>
+<ol>
+<li>Set <code>up = 8</code>, then <code>up = 2</code>. Predict <code>Fs</code>, the simulated band, the number of samples and the bin spacing. Which printed lines do not change?</li>
+<li>Set <code>mod_flag = 6</code>, then <code>mod_flag = 5</code>. Predict the number of bits and, with Table 4, the value of <code>scale</code>. Read the levels of the circles in the lower plot.</li>
+<li>Set <code>rolloff = 0.2</code>. Look at the edges of the orange spectrum and at the printed occupied width. Does self-check 2 still pass?</li>
+</ol>
+<details><summary>What you should see</summary>
+<ol>
+<li><code>up = 8</code>: <span class="nt">Fs = 192 GHz</span>, band from <span class="nt">-96.000 GHz</span> to <span class="nt">+95.994 GHz</span>, <span class="nt">32000</span> samples. <code>up = 2</code>: <span class="nt">Fs = 48 GHz</span>, band from <span class="nt">-24.000 GHz</span> to <span class="nt">+23.994 GHz</span>, <span class="nt">8000</span> samples. The bin spacing stays at <span class="nt">6.000 MHz</span>, because <code>Fs</code> and the number of samples change by the same factor. The printed symbols, <code>scale</code> and the occupied band do not change either: the waveform is the same signal, sampled more or less densely. The blue spectrum holds 8 or 2 copies. With <code>up = 2</code>, the value of the scripts in <code>main/</code>, the lower plot has only one sample between two symbol instants.</li>
+<li><code>mod_flag = 6</code>: <span class="nt">24000</span> bits, levels up to <span class="nt">±7</span> (the first 16 symbols of this run use the levels from <span class="nt">-7</span> to <span class="nt">+3</span>), <code>scale</code> = <span class="nt">4.9044e-03</span> (prediction \(\sqrt{10^{-3}/42}\) = <span class="nt">4.88e-03</span>). <code>mod_flag = 5</code>: <span class="nt">20000</span> bits, levels up to <span class="nt">±5</span>, <code>scale</code> = <span class="nt">7.1469e-03</span> (prediction \(\sqrt{10^{-3}/20}\) = <span class="nt">7.07e-03</span>). The printed values differ slightly from the predictions, because the random symbols do not have exactly the mean power of Table 4. The spectrum keeps its width: the bandwidth depends on the symbol rate, not on the format.</li>
+<li>The edges of the orange spectrum become slopes. The script prints <span class="nt">4799 bins x 6.000 MHz = 28.794 GHz</span>, which is \((1+\alpha)B\) = <span class="nt">28.8 GHz</span> within one bin. Self-check 2 still passes: a raised-cosine mask causes no ISI. The value of <code>scale</code> rises to <span class="nt">1.0329e-02</span>: with a roll-off above 0, the mean power of the whole waveform is lower than the mean power of the samples at the symbol instants (here by about 5 %), so the same <code>pin</code> gives larger samples at the symbol instants.</li>
+</ol></details></div>
+</section>
+
+<section id="s7">
+<h2>7. Check your understanding</h2>
+<ol>
+<li>You run <code>step22_three_stage_one_point</code> (<code>baudrate = 32e9</code>, <code>datasize = 3e4</code>) with <code>up = 5</code> instead of 2. Calculate the sampling rate, the simulated band, the number of samples and the bin spacing.
+<details><summary>Answer</summary><p>\(F_s\) = <span class="nt">5 × 32 GHz = 160 GHz</span>. The simulated band reaches from <span class="nt">-80 GHz</span> to <span class="nt">+80 GHz</span>. The number of samples is <span class="nt">30000 × 5 = 150000</span>. The bin spacing is <span class="nt">160 GHz / 150000 = 1.067 MHz</span>.</p></details></li>
+<li>In the demo of this page, the bin spacing stays at 6 MHz when you change <code>up</code>. Show this with equations (1) and (3). Which parameter do you change to get a bin spacing of 3 MHz?
+<details><summary>Answer</summary><p>\(\Delta f = F_s / n_{\mathrm{samp}} = (\mathrm{up} \times B) / (\mathrm{datasize} \times \mathrm{up}) = B / \mathrm{datasize}\). The bin spacing does not depend on <code>up</code>. It is <span class="nt">24 GHz / 4000 = 6 MHz</span>. With <code>datasize = 8000</code> it is <span class="nt">24 GHz / 8000 = 3 MHz</span>: a longer block gives a finer frequency axis.</p></details></li>
+<li><code>step21_two_stage_one_point</code> uses <code>datasize = 3e4</code>, <code>up = 2</code>, <code>baudrate = 24e9</code> and <code>rolloff = 0</code>. How many bins does its transmit mask <code>Hrcos</code> pass? What are the lowest and the highest frequency that pass?
+<details><summary>Answer</summary><p>The mask passes one bin per symbol: <span class="nt">30000</span> of the <span class="nt">60000</span> bins. The bin spacing is <span class="nt">48 GHz / 60000 = 0.8 MHz</span>. The lowest bin that passes is at <span class="nt">-12 GHz</span>. The highest is one bin below <span class="nt">+12 GHz</span>, at <span class="nt">+11.9992 GHz</span>, because the bin at <span class="nt">+12 GHz</span> holds the same value as the bin at <span class="nt">-12 GHz</span> and only one of the two may pass.</p></details></li>
+<li>With its default values <code>PTx = -4</code> and <code>pol_flag = 1</code>, <code>step21_two_stage_one_point</code> calls <code>TL_QAM</code> with <code>pin = -7</code> (dBm) and <code>mod_flag = 5</code>. How large is one unit of the grid in <span class="nt">sqrt(W)</span>? What is the magnitude of the field at an instant where the symbol is <span class="nt">5 + 3i</span>?
+<details><summary>Answer</summary><p><span class="nt">-7 dBm</span> is <span class="nt">0.1995 mW</span>. The mean power of the 32QAM points is 20 (Table 4), so one unit of the grid is \(\sqrt{0.1995 \times 10^{-3}\ \mathrm{W} / 20}\) = <span class="nt">3.16e-03 sqrt(W)</span>. The point <span class="nt">5 + 3i</span> has the magnitude \(\sqrt{34}\) = <span class="nt">5.83</span> units, which is <span class="nt">1.84e-02 sqrt(W)</span>. In a run, the value differs slightly, because the random symbols do not have exactly the mean power 20.</p></details></li>
+<li>A second 32-GBd signal is placed 50 GHz above the carrier, like a neighboring wavelength channel. Which frequencies does it occupy? Does it fit into the simulated band with <code>up = 2</code>? With <code>up = 4</code>? With <code>up = 5</code>?
+<details><summary>Answer</summary><p>It occupies <span class="nt">50 GHz ± 16 GHz</span>, that is <span class="nt">34 GHz</span> to <span class="nt">66 GHz</span>. With <code>up = 2</code> the simulated band ends at <span class="nt">+32 GHz</span>, below the lowest frequency of this signal, so no part of it fits. With <code>up = 4</code> the simulated band ends at <span class="nt">+64 GHz</span>, so the signal still does not fit: the part above <span class="nt">+64 GHz</span> would come back at the other end of the band. With <code>up = 5</code> the band ends at <span class="nt">+80 GHz</span>, and the signal fits. The general rule is \(F_s \ge 2\,(f_{\mathrm{off}} + B/2)\), here <span class="nt">160 GHz ≥ 132 GHz</span>. For this reason the demos of pages 14 and 16 use <code>up = 5</code>.</p></details></li>
+</ol>
+<div class="box"><span class="label">What to carry forward</span>
+<p>A signal in this package is a column with <code>up</code> samples per symbol (the oversampling rate), inside a simulated band of the width \(F_s = \mathrm{up} \times B\) around its carrier, and every filter is a mask that multiplies its spectrum. With a roll-off of 0, the transmitted waveform occupies exactly the bandwidth \(B\), and its samples at the symbol instants (one sample in <code>up</code>) are the symbols, multiplied by one common factor. <a href="14_coherent_rx_dsp_ber.html">Page 14</a> uses the same mask at the receiver: it keeps this band and removes everything outside it.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="12_units_power_budget.html">&larr; <span class="nt">12</span> Units, power budget</a>
+<a class="next" href="14_coherent_rx_dsp_ber.html"><span class="nt">14</span> Coherent receiver, BER &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

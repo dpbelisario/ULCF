@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>21 Two-stage ULCF switch (prior work) | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a class="current" href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Research</p>
+<h1><span class="num nt">21</span>Two-stage ULCF switch (prior work)</h1>
+<p class="lead">The two-stage ULCF switch is the first of the two switches whose simulation you are given. This page shows how the switch is built, how the script <code>step21_two_stage_one_point</code> sends one signal through it block by block, which noise and crosstalk terms decide the signal quality, and how <code>main_two_stage_ULCF</code> turns single operating points into a curve of port count versus transmitter power.</p>
+
+<div class="pair"><span><b>Scripts:</b> <code>matlab/main/step21_two_stage_one_point.m</code>, <code>matlab/main/main_two_stage_ULCF.m</code></span><span><b>Reference data:</b> <code>matlab/ref_data/legacy_portcount_32QAM.csv</code>, <code>legacy_ber_points.csv</code>, <code>budget_two_stage_ref.csv</code></span></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">The switch</a></li>
+<li><a href="#s2">The transmission chain, block by block</a></li>
+<li><a href="#s3">The noise and crosstalk budget</a></li>
+<li><a href="#s4">Run one operating point</a></li>
+<li><a href="#s5">Port count versus transmitter power</a></li>
+<li><a href="#s6">Assumptions and limits of the model</a></li>
+<li><a href="#s7">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. The switch</h2>
+<p>A two-stage switch combines two kinds of smaller switches (<a href="11_network_ocs_clos.html">page 11</a>). Its first stage consists of \(N\) <strong>delivery-and-coupling (DC) switches</strong> of size \(M \times M\). A DC switch is a space switch with a \(1 \times M\) selector at every input and an \(M \times 1\) coupler at every output (<a href="16_space_switch_crosstalk.html">page 16</a>). Its second stage consists of \(M\) <strong>wavelength-routing (WR) switches</strong> of size \(N \times N\). A WR switch sends every signal to the output that belongs to its wavelength (<a href="17_awg_wavelength_routing.html">page 17</a>). Every DC switch has one fiber to every WR switch: DC switch \(i\) sends its output \(k\) to WR switch \(k\), where the fiber ends at input \(i\). The switch connects \(MN\) transmitters, each with a tunable laser, to \(MN\) receivers. The number \(MN\) is its <strong>port count</strong>.</p>
+<p>The switch of this page differs from the two-stage switch of page 11 in one place: the inside of the WR switch (Fig. 1). The \(N\) inputs of a WR switch are divided into \(K\) groups of \(N/K\) inputs. Each group has its own <strong>aggregation coupler</strong> of size \((N/K) \times 1\), its own erbium-doped fiber amplifier (EDFA) and its own \(1 \times 2\) splitter. The splitter divides the light of its group between two arrayed-waveguide gratings (AWGs). Each AWG routes every second wavelength channel to its outputs: seen from input port 1, one AWG routes the odd-numbered channels and the other AWG the even-numbered channels. Both AWGs are uniform-loss and cyclic-frequency (ULCF) AWGs with \(K\) input ports: group \(a\) uses input port \(a\) of both. Page 17 explains these elements. \(K\) small couplers lose less power in front of the EDFA than one \(N \times 1\) coupler, and this is the purpose of the design (<a href="15_edfa_ase.html">page 15</a>). These pages call it the <strong>two-stage ULCF switch</strong>.</p>
+<div class="box note"><span class="label">Source</span>
+<p>The switch comes from one paper, which this page calls the JOCN paper. The paper writes \(n\) for the number of AWG input ports. These pages write \(K\) (<code>ULCF_deg</code> in the code). Between each EDFA and the pair of AWGs, the paper has a de-interleaver. It notes that a coherent receiver allows a \(1 \times 2\) splitter in place of the de-interleaver, if the higher loss is acceptable. These pages use the \(1 \times 2\) splitter (page 17).</p>
+<ul>
+<li><span class="nt">Nagai et al., "Design and Verification of Large-Scale Optical Circuit Switch Using ULCF AWGs for Datacenter Application," J. Opt. Commun. Netw., 2018</span></li>
+</ul></div>
+<figure id="f1"><img src="assets/fig/fig_two_stage_ulcf_switch.svg" alt="Transmitters, N DC switches of size M x M, M wavelength-routing switches and receivers. WR switch 1 is drawn open: K branches, each with a coupler, an EDFA and a 1 x 2 splitter, feed a pair of AWGs. A thick line marks one connection from a transmitter at DC switch 2 through WR switch 1 to a receiver.">
+<figcaption><b>Fig. 1.</b> The two-stage ULCF switch. WR switch #1 is drawn open, with the first and the last of its <span class="nt">K</span> branches. The thick line is one connection; the thin lines are other fibers. Each <span class="nt">1 × 2</span> splitter feeds both AWGs. The inside of the WR switch is drawn after Fig. 4 of the JOCN paper, with <span class="nt">1 × 2</span> splitters in place of its de-interleavers.</figcaption></figure>
+
+<h3>How a connection is set up</h3>
+<p>Follow the thick line in Fig. 1. A transmitter at DC switch \(i\) is to be connected to the receiver at WR switch \(k\), output \(j\). Two settings make the connection.</p>
+<ol class="steps">
+<li><strong>The selector chooses the WR switch.</strong> In DC switch \(i\), the selector of this transmitter is set to output \(k\). The signal arrives at WR switch \(k\), input \(i\).</li>
+<li><strong>The wavelength chooses the receiver.</strong> Input \(i\) belongs to one of the \(K\) groups, and with it to one input port \(a\) of the AWG pair. The laser is tuned to the wavelength channel that the AWG pair sends from input port \(a\) to output \(j\). With the routing rule that these pages use (page 17, Eq. (4)), this is the channel <code>awg_channel(a, j, N)</code>.</li>
+</ol>
+<p>No other element is set for a connection. With one AWG input port (\(K = 1\)) the channel is always \(j\), as on page 11. With \(K\) input ports it also depends on the group of the DC switch.</p>
+<p>An existing connection never blocks a new one. Signals share a fiber only behind a coupler (the output coupler of a DC switch or an aggregation coupler), and all signals in one fiber enter the AWG pair at the same input port. They go to different receivers, so their channels differ, and different channels do not disturb each other in a fiber. Two signals on the same channel can meet only at different input ports of the AWG pair, and the AWG pair sends them to different outputs (page 17). A free transmitter can therefore always be connected to a free receiver, whatever connections exist. A switch with this property is <strong>strictly non-blocking</strong> (page 11). The JOCN paper states this property for the switch with one AWG input port. It introduces the AWG with several input ports as a change that does not reduce the routing flexibility. The argument above uses the routing rule of page 17 to show why.</p>
+
+<h3>How many elements</h3>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. Elements of the \(MN \times MN\) two-stage ULCF switch (Table III of the JOCN paper, written with \(K\) and with \(1 \times 2\) splitters in place of its de-interleavers). The last column is the default operating point of <code>step21_two_stage_one_point</code>.</caption>
+<thead><tr><th>Element</th><th class="num">In the whole switch</th><th class="num">Per port</th><th class="num">\(M = 8\), \(K = 12\), \(N = 96\) (768 ports)</th></tr></thead>
+<tbody>
+<tr><td>DC switch, \(M \times M\)</td><td class="num">\(N\)</td><td class="num">\(1/M\)</td><td class="num nt">96</td></tr>
+<tr><td>EDFA</td><td class="num">\(KM\)</td><td class="num">\(K/N\)</td><td class="num nt">96</td></tr>
+<tr><td>\(1 \times 2\) splitter</td><td class="num">\(KM\)</td><td class="num">\(K/N\)</td><td class="num nt">96</td></tr>
+<tr><td>Pair of \(K \times (N/2)\) ULCF AWGs</td><td class="num">\(M\)</td><td class="num">\(1/N\)</td><td class="num nt">8</td></tr>
+</tbody></table></div>
+<p>The price of the small couplers is the number of EDFAs: \(K\) for every WR switch, not one.</p>
+<p><strong>In the code.</strong> The three sizes are the variables <code>N</code> (\(N\)), <code>dcs_input_port_num</code> (\(M\)) and <code>ULCF_deg</code> (\(K\)). The scripts contain no wiring and no routing rule. They simulate the transmission of one connection, and they do not call <code>awg_channel</code>. <code>step21_two_stage_one_point</code> prints the port count in the line <code>Switch size     : 768 x 768 ports (M*N = 8*96)</code>.</p>
+</section>
+
+<section id="s2">
+<h2>2. The transmission chain, block by block</h2>
+<p>The script <code>step21_two_stage_one_point</code> simulates one <strong>operating point</strong>: one transmitter power \(P_{\mathrm{Tx}}\) (<code>PTx</code>), one size \(M\) of the DC switches and one number \(K\) of AWG input ports. It follows one connection, the <strong>target signal</strong>, from its transmitter to its receiver. Figure 2 shows this path as ten blocks. The block numbers are those of section 3 of the script (<code>% [1] Transmitters</code> to <code>% [10] Coherent receiver and BER</code>) and of the printed power table.</p>
+<p>The simulation holds one polarization of one wavelength channel as a complex field (<a href="12_units_power_budget.html">page 12</a>). The other signals of the switch are not simulated completely. They appear only where their light falls on the wavelength of the target signal: as <strong>leaks</strong> in the DC switch (block [3]) and in the AWG (block [7]). The two amplifiers add amplified spontaneous emission (ASE) noise (blocks [5] and [9]).</p>
+<figure id="f2"><img src="assets/fig/fig_link_chain_two_stage.svg" alt="Ten numbered blocks in three rows: transmitters, fan-in and fan-out, DC switch; then aggregation coupler, EDFA, 1 x 2 splitter and AWG, AWG crosstalk inside a frame for the WR switch; then fan-in and fan-out, pre-amplifier, coherent receiver and the BER. Red frames mark the crosstalk and the ASE noise that four blocks add.">
+<figcaption><b>Fig. 2.</b> The transmission chain of <code>step21_two_stage_one_point</code>. The numbers are the block numbers of the script. A red frame is a disturbance that a block adds to the target signal. The gray names are the library functions that a block calls.</figcaption></figure>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. The ten blocks of the chain at the default operating point (<span class="nt">PTx = -4 dBm</span>, <span class="nt">M = 8</span>, <span class="nt">K = 12</span>). The third column is the change of the power of the target signal and what the block adds to it.</caption>
+<thead><tr><th>Block</th><th>Element</th><th>Effect on the target signal</th><th>Parameters</th><th>Functions</th></tr></thead>
+<tbody>
+<tr><td class="nt">[1]</td><td>\(M\) transmitters at one DC switch; the middle one sends the target signal</td><td>sets the power to <span class="nt">PTx - 3 dB = -7 dBm</span> (one polarization)</td><td><code>PTx = -4</code>&nbsp;dBm, <code>mod_flag = 5</code>, <code>up = 2</code>, <code>baudrate = 24e9</code>&nbsp;Hz, <code>rolloff = 0</code>, <code>pol_flag = 1</code></td><td><code>rcosfilter</code>, <code>TL_QAM</code></td></tr>
+<tr><td class="nt">[2]</td><td>Fan-in and fan-out devices of a multicore fiber</td><td class="nt">-3 dB</td><td><code>fiber_flag = 1</code>, <code>Fan_in_loss = 1.5</code>&nbsp;dB, <code>Fan_out_loss = 1.5</code>&nbsp;dB</td><td><code>attenuation</code></td></tr>
+<tr><td class="nt">[3]</td><td>DC switch, \(M \times M\)</td><td><span class="nt">-12 dB</span>; adds \(M - 1 = 7\) leaks, each <span class="nt">36 dB</span> below the target signal</td><td><code>dcs_input_port_num = 8</code>, <code>dcs_ex_ratio = 36</code>&nbsp;dB</td><td><code>DCS_loss</code>, <code>attenuation</code></td></tr>
+<tr><td class="nt">[4]</td><td>Aggregation coupler, \((N/K) \times 1\)</td><td class="nt">-10.5 dB</td><td><code>N = 96</code>, <code>ULCF_flag = 1</code>, <code>ULCF_deg = 12</code></td><td><code>coupler_loss</code>, <code>attenuation</code></td></tr>
+<tr><td class="nt">[5]</td><td>EDFA of the WR switch</td><td><span class="nt">+40.4 dB</span>; adds ASE noise; the output limit is <span class="nt">20 - 3 - 9.03 = 7.97 dBm</span></td><td><code>edfa_sat1 = 20</code>&nbsp;dBm, <code>NF = 5</code>&nbsp;dB, <code>signal_interval = 50e9</code>&nbsp;Hz</td><td><code>amplified_by_EDFA3</code></td></tr>
+<tr><td class="nt">[6]</td><td>\(1 \times 2\) splitter and ULCF AWG</td><td><span class="nt">-12.5 dB</span> flat loss and <span class="nt">-2.2 dB</span> from the passband, whose center is <span class="nt">28.5 GHz</span> away from the carrier</td><td><code>splitter_loss = coupler_loss(2)</code>&nbsp;=&nbsp;<span class="nt">3.5 dB</span>, <code>AWG_loss = 9</code>&nbsp;dB, <code>FWHM_AWG = 66.6e9</code>&nbsp;Hz, <code>flg_NWDM = 1</code></td><td><code>ULCF_dev_freq</code>, <code>awg</code></td></tr>
+<tr><td class="nt">[7]</td><td>AWG crosstalk</td><td><span class="nt">0 dB</span>; adds \(K - 1 = 11\) leaks, each <span class="nt">32 dB</span> below the reference power <code>sigpw</code>, which is the power inside the signal band at the AWG output</td><td><code>AWG_XT = 32</code>&nbsp;dB</td><td><code>TL_QAM</code>, <code>attenuation</code></td></tr>
+<tr><td class="nt">[8]</td><td>Fan-in and fan-out devices again</td><td class="nt">-3 dB</td><td>as block [2]</td><td><code>attenuation</code></td></tr>
+<tr><td class="nt">[9]</td><td>Pre-amplifier of the receiver</td><td><span class="nt">+16.7 dB</span>; adds ASE noise; the output limit is <span class="nt">10 - 3 = 7 dBm</span></td><td><code>edfa_sat2 = 10</code>&nbsp;dBm, <code>NF2 = 4</code>&nbsp;dB, <code>signal_interval</code></td><td><code>amplified_by_EDFA3</code></td></tr>
+<tr><td class="nt">[10]</td><td>Coherent receiver</td><td>rectangular filter with the width of the symbol rate, equalizer with 17 taps, decision, count of the bit errors</td><td><code>Morder = 16</code>, <code>BER_limit = 1e-2</code></td><td><code>nyquistfilter</code>, <code>adequalizet</code>, <code>measure_BER_QAM</code></td></tr>
+</tbody></table></div>
+<p>The earlier pages explain the elements and show their code lines: <a href="13_waveform_fft_filter.html">page 13</a> the transmitter (block [1]), <a href="16_space_switch_crosstalk.html">page 16</a> the DC switch and its leaks (block [3]), <a href="15_edfa_ase.html">page 15</a> the two amplifiers (blocks [5] and [9]), <a href="17_awg_wavelength_routing.html">page 17</a> the WR switch (blocks [4], [6] and [7]) and <a href="14_coherent_rx_dsp_ber.html">page 14</a> the receiver (block [10]). The loss of the DC switch is \(4\lceil\log_2 M\rceil\) dB, and the loss of the coupler is \(3.5\lceil\log_2 (N/K)\rceil\) dB (page 12).</p>
+<p>Both amplifiers work at a fixed output power. The script chooses each gain so that the field reaches its share of the saturation output power (page 15, Eq. (4)). For the EDFA the share is <span class="nt">20 dBm</span>, minus <span class="nt">3 dB</span> for the one polarization, minus \(10\log_{10}(N/K)\) = <span class="nt">9.03 dB</span> for the 8 wavelengths that this EDFA carries. The pre-amplifier carries one wavelength, so only the <span class="nt">3 dB</span> are subtracted. This share is the output limit of the amplifier. It holds for the signal together with the ASE inside one channel spacing of <span class="nt">50 GHz</span>. Both calls of <code>amplified_by_EDFA3</code> pass <code>signal_interval</code> as their seventh argument, and the function scales the signal and the ASE down a little, so that the two together have the output limit (page 15). A loss before an amplifier therefore does not lower the power after it. It lowers the signal-to-noise ratio.</p>
+
+<h3>Settings of the earlier study</h3>
+<p>The parameter values in section 1 of the script are those of the earlier laboratory code that the script follows. The scripts call it the legacy code. Three of its settings do not come from the switch of the JOCN paper. They describe the system of the study for which that code was written; this page calls it the earlier study. Take them as given.</p>
+<ul>
+<li><strong>Signal.</strong> 32QAM at <span class="nt">24 GBd</span> in both polarizations (<code>mod_flag = 5</code>, <code>baudrate = 24e9</code>, <code>pol_flag = 1</code>). The simulation of the JOCN paper used QPSK at <span class="nt">32 GBd</span> in both polarizations.</li>
+<li><strong>Multicore fiber</strong> (<code>fiber_flag = 1</code>). A multicore fiber has several cores, and each core guides its own light. A fan-in device connects single-core fibers to the cores at one end, and a fan-out device separates them again at the other end. The script charges <span class="nt">1.5 dB</span> for each device and applies the pair twice: before the DC switch (block [2]) and after the AWG (block [8]). With <code>fiber_flag = 0</code> both blocks have <span class="nt">0 dB</span>.</li>
+<li><strong>Quasi-Nyquist WDM</strong> (<code>flg_NWDM = 1</code>). In the earlier study one slot of the wavelength grid, <span class="nt">50 GHz</span> wide, holds two signals of <span class="nt">24 GBd</span> side by side, so each carrier lies <span class="nt">12.5 GHz</span> from the center of the slot. The passband of the AWG is centered on the slot. The script therefore places the passband <span class="nt">12.5 GHz</span> from the carrier and adds the passband-center deviation of the worst AWG input port (page 17): <code>shift = 12.5e9 + dev_freq</code>, which is <span class="nt">28.5 GHz</span> for \(K = 12\). The simulated band reaches only <span class="nt">24 GHz</span> to each side of the carrier (<code>Fs = up*baudrate</code> is <span class="nt">48 GHz</span>), so the center of this passband lies outside the simulated band. This does not matter. The signal sees only the slope of the passband over the signal band, and there the mask of the AWG has the same values for every <code>up</code>. Only one of the two signals is simulated. With <code>flg_NWDM = 0</code> the script sets <code>shift = 0</code>: the passband is centered on the carrier.</li>
+</ul>
+<p><strong>In the code.</strong> The chain is the part of the script between the comment lines <code>% ---- chain begin ----</code> and <code>% ---- chain end ----</code>. The same lines stand inside the loops of <code>main_two_stage_ULCF</code>. One variable, <code>signal</code>, holds the field, and every block overwrites it. Up to block [3] it is a matrix with one input signal of the DC switch in each column. The DC switch adds the columns, and from there on <code>signal</code> is one column. After block <code>k</code> the script stores the power in <code>stage_power(k)</code>.</p>
+</section>
+
+<section id="s3">
+<h2>3. The noise and crosstalk budget</h2>
+<p>The receiver decides correctly if the signal-to-noise ratio (SNR) of the received symbols is high enough. For 32QAM, the receiver of the simulation needs about <span class="nt">17 dB</span> at the <strong>FEC limit</strong>. The FEC limit is a bit error ratio (BER) of \(10^{-2}\): up to this BER, forward error correction (FEC) removes the errors (page 14). The demo of page 14 measures <span class="nt">17.06 dB</span>. Four disturbances lower the SNR of the target signal: the ASE noise of the EDFA, the leaks of the DC switch, the leaks of the AWG and the ASE noise of the pre-amplifier. They are independent of each other, so their powers add. Dividing the sum by the power of the target signal gives</p>
+<div class="eq" id="e1"><div class="m">\[ \frac{1}{\mathrm{SNR}} = \frac{1}{\mathrm{SNR}_{\mathrm{EDFA}}} + \frac{1}{\mathrm{SXR}_{\mathrm{DC}}} + \frac{1}{\mathrm{SXR}_{\mathrm{AWG}}} + \frac{1}{\mathrm{SNR}_{\mathrm{pre}}} \]</div><span class="eqno nt">(1)</span></div>
+<p>The five ratios in Eq. (1) are plain numbers, not values in dB. Each ratio on the right side is the SNR that one disturbance alone would give. \(\mathrm{SXR}\) is the signal-to-crosstalk ratio: the power of the target signal divided by the power of all leaks of one kind (page 16). The total SNR is always below the lowest of the four ratios, so the lowest one limits the switch.</p>
+<p>Each ratio can be estimated by hand, in dB (Table 3). The first one needs the power of the channel at the input of the EDFA. Every element before the EDFA is a loss, so the losses are subtracted (page 12):</p>
+<div class="eq" id="e2"><div class="m">\[ P_{\mathrm{EDFA,in}} = P_{\mathrm{Tx}} - 3 - 4\,\lceil \log_2 M \rceil - 3.5\,\lceil \log_2 (N/K) \rceil \quad [\mathrm{dBm}] \]</div><span class="eqno nt">(2)</span></div>
+<p>The number 3 is the loss of the fan-in and fan-out devices in dB. For the default point Eq. (2) gives <span class="nt">-4 - 3 - 12 - 10.5 = -29.5 dBm</span>. The script prints <span class="nt">-32.500 dBm</span> after block [4], because it follows one polarization, which has half of the channel power.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. The four terms of Eq. (1) by hand and from the script, at the default operating point. \(\mathrm{ER}\) is the extinction ratio of the selectors (<code>dcs_ex_ratio</code>), \(\mathrm{XT}_{\mathrm{AWG}}\) the AWG crosstalk level (<code>AWG_XT</code>). \(P_{\mathrm{pre,in}}\) is the channel power at the input of the pre-amplifier.</caption>
+<thead><tr><th>Term</th><th>Rule by hand [dB]</th><th>Where it comes from</th><th class="num">By hand [dB]</th><th class="num">Script [dB]</th></tr></thead>
+<tbody>
+<tr><td>ASE of the EDFA, \(\mathrm{SNR}_{\mathrm{EDFA}}\)</td><td>\(P_{\mathrm{EDFA,in}} + 50.12\)</td><td>page 15, Eq. (3), for <span class="nt">24 GBd</span> and <code>NF = 5</code></td><td class="num nt">-29.5 + 50.12 = 20.62</td><td class="num nt">20.63</td></tr>
+<tr><td>Leaks of the DC switch, \(\mathrm{SXR}_{\mathrm{DC}}\)</td><td>\(\mathrm{ER} - 10\log_{10}(M-1)\)</td><td>page 16, Eq. (2)</td><td class="num nt">36 - 8.45 = 27.55</td><td class="num nt">27.55</td></tr>
+<tr><td>Leaks of the AWG, \(\mathrm{SXR}_{\mathrm{AWG}}\)</td><td>\(\mathrm{XT}_{\mathrm{AWG}} - 10\log_{10}(K-1)\)</td><td>page 17, Eq. (6)</td><td class="num nt">32 - 10.41 = 21.59</td><td class="num nt">21.27</td></tr>
+<tr><td>ASE of the pre-amplifier, \(\mathrm{SNR}_{\mathrm{pre}}\)</td><td>\(P_{\mathrm{pre,in}} + 51.12\)</td><td>page 15, Eq. (3), for <span class="nt">24 GBd</span> and <code>NF2 = 4</code></td><td class="num nt">-6.82 + 51.12 = 44.30</td><td class="num nt">44.08</td></tr>
+<tr><td>All together, \(\mathrm{SNR}\)</td><td>Eq. (1)</td><td></td><td class="num nt">17.59</td><td class="num nt">17.47</td></tr>
+</tbody></table></div>
+<p>The constants <span class="nt">50.12</span> and <span class="nt">51.12</span> in the two ASE rules are <span class="nt">55.12</span> minus the noise figure in dB: for \(B\) = <span class="nt">24 GHz</span>, the term \(h\nu B\) of page 15, Eq. (3), is <span class="nt">-55.12 dBm</span>. Read \(P_{\mathrm{pre,in}}\) from the power table of the script (<a href="#s4">section 4</a>): after block [8] the target signal has <span class="nt">-9.821 dBm</span> in one polarization, so the channel has <span class="nt">-6.82 dBm</span>. This is the SNR part of the output of <code>step21_two_stage_one_point</code> with its default parameters:</p>
+<pre><code>SNR contributions in the signal bandwidth [dB]
+  ASE of the EDFA              20.63
+  crosstalk of the DC switch   27.55
+  crosstalk of the AWG         21.27
+  ASE of the pre-amplifier     44.08
+  all together (budget)        17.47
+  simulation                   17.40
+  (noise gain of the equalizer behind the AWG: 0.27 dB)</code></pre>
+<p>The four terms and the line <code>all together (budget)</code> are the closed-form budget of the script: section 6 of the script evaluates Eq. (1) with formulas. The line <code>simulation</code> is the SNR that section 4 of the script measures on the received symbols. The two agree within <span class="nt">0.07 dB</span>. The rules by hand of Table 3 differ from the script by up to <span class="nt">0.3 dB</span>, mainly because of the effect in the last printed line. The passband of the AWG is not centered on the signal, so it tilts the spectrum of the signal. The equalizer of the receiver removes the tilt. In doing so it raises everything that was added after the AWG, that is the AWG leaks and the ASE of the pre-amplifier, by <span class="nt">0.27 dB</span> (page 17).</p>
+
+<h3>Which term limits the SNR</h3>
+<p>Table 4 lists the terms at six operating points. Each row is one run of <code>step21_two_stage_one_point</code> with other values of <code>PTx</code>, <code>dcs_input_port_num</code> and <code>ULCF_deg</code>.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. The terms of Eq. (1) in dB and the BER, as printed by <code>step21_two_stage_one_point</code> at six operating points. Row 2 is the default point. The term of the pre-amplifier is left out: it is <span class="nt">34.64 dB</span> in row 6 and between <span class="nt">43.9 dB</span> and <span class="nt">44.2 dB</span> in the other rows. The search of <code>main_two_stage_ULCF</code> does not reach row 5: its largest size is \(M = 32\), and its highest power is <span class="nt">10 dBm</span>.</caption>
+<thead><tr><th class="num">Row</th><th class="num">\(P_{\mathrm{Tx}}\) [dBm]</th><th class="num">\(M\)</th><th class="num">\(K\)</th><th class="num">\(\mathrm{SNR}_{\mathrm{EDFA}}\)</th><th class="num">\(\mathrm{SXR}_{\mathrm{DC}}\)</th><th class="num">\(\mathrm{SXR}_{\mathrm{AWG}}\)</th><th class="num">\(\mathrm{SNR}\)</th><th class="num">BER</th></tr></thead>
+<tbody>
+<tr><td class="num nt">1</td><td class="num nt">-10</td><td class="num nt">8</td><td class="num nt">12</td><td class="num nt">14.63</td><td class="num nt">27.55</td><td class="num nt">21.17</td><td class="num nt">13.58</td><td class="num nt">5.247e-02</td></tr>
+<tr><td class="num nt">2</td><td class="num nt">-4</td><td class="num nt">8</td><td class="num nt">12</td><td class="num nt">20.63</td><td class="num nt">27.55</td><td class="num nt">21.27</td><td class="num nt">17.47</td><td class="num nt">7.630e-03</td></tr>
+<tr><td class="num nt">3</td><td class="num nt">10</td><td class="num nt">8</td><td class="num nt">12</td><td class="num nt">34.63</td><td class="num nt">27.55</td><td class="num nt">21.31</td><td class="num nt">20.21</td><td class="num nt">4.600e-04</td></tr>
+<tr><td class="num nt">4</td><td class="num nt">7</td><td class="num nt">32</td><td class="num nt">12</td><td class="num nt">23.63</td><td class="num nt">21.09</td><td class="num nt">21.27</td><td class="num nt">17.07</td><td class="num nt">9.440e-03</td></tr>
+<tr><td class="num nt">5</td><td class="num nt">20</td><td class="num nt">64</td><td class="num nt">12</td><td class="num nt">32.63</td><td class="num nt">18.01</td><td class="num nt">21.25</td><td class="num nt">16.21</td><td class="num nt">1.618e-02</td></tr>
+<tr><td class="num nt">6</td><td class="num nt">7</td><td class="num nt">8</td><td class="num nt">1</td><td class="num nt">17.63</td><td class="num nt">27.55</td><td class="num nt">Inf</td><td class="num nt">17.13</td><td class="num nt">1.009e-02</td></tr>
+</tbody></table></div>
+<ul>
+<li><strong>Low power: the ASE of the EDFA limits.</strong> This term follows Eq. (2): it rises by 1 dB for every dB of transmitter power and falls by 1 dB for every dB of loss before the EDFA. In row 1 it is the lowest term by far, and the BER is five times the FEC limit. More power helps here.</li>
+<li><strong>High power: the leaks limit.</strong> The two crosstalk terms do not depend on the power, because a leak rises together with the target signal (page 16). From row 2 to row 3 the power rises by <span class="nt">14 dB</span>, but the total SNR rises only by <span class="nt">2.7 dB</span>. For \(M = 8\) and \(K = 12\) the two crosstalk terms together allow <span class="nt">20.4 dB</span> at most, whatever the power.</li>
+<li><strong>Large switches: this upper limit falls.</strong> The term of the DC switch depends only on \(M\). From \(M = 8\) on it falls by a little more than <span class="nt">3 dB</span> each time \(M\) doubles. At \(M = 32\) the leaks of the DC switch are as strong as the leaks of the AWG, and together they allow <span class="nt">18.2 dB</span>. For a total of <span class="nt">17.06 dB</span>, the ASE term must then reach about <span class="nt">23.5 dB</span> (row 4). At \(M = 8\) about <span class="nt">19.8 dB</span> is enough. At \(M = 64\) the two crosstalk terms allow only <span class="nt">16.3 dB</span>, less than 32QAM needs: row 5 fails with a transmitter power of <span class="nt">20 dBm</span>.</li>
+<li><strong>The AWG leaks are the price of a large \(K\).</strong> With one input port there are none (<code>Inf</code> in row 6). With 12 input ports there are 11, and their term stays near <span class="nt">21.3 dB</span> at every power and every \(M\).</li>
+<li><strong>The pre-amplifier does not limit this switch.</strong> Its term is <span class="nt">34.6 dB</span> or more in every row, far above the other terms. The power at its input hardly depends on \(P_{\mathrm{Tx}}\) and \(M\), because the EDFA in front of it works at a fixed output power. This changes on <a href="22_three_stage_conventional.html">page 22</a>, where a third-stage switch with a large loss follows the EDFA.</li>
+</ul>
+<div class="box"><span class="label">Key idea</span>
+<p>The switch has two limits. Noise limits it at low power: every dB of transmitter power, and every dB of loss that is removed before the EDFA, raises the SNR by 1 dB. Crosstalk sets an upper limit of the SNR that no transmitter power removes, and this limit falls when \(M\) or \(K\) grows.</p></div>
+</section>
+
+<section id="s4">
+<h2>4. Run one operating point</h2>
+<div class="box run"><span class="label">Run it</span>
+<p>In MATLAB, make the folder <code>matlab</code> the current folder and run <code>setup_path</code> (once per MATLAB session). Then run <code>step21_two_stage_one_point</code> as a whole file: type its name, or open it and press F5. The run takes a few seconds. It prints two tables and two lines that begin with <code>Self-check</code>, and it opens two figures.</p></div>
+<p>Open the script in the editor and read it next to Table 5.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 5. The sections of <code>step21_two_stage_one_point</code>.</caption>
+<thead><tr><th>Section</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td class="nt">1</td><td>Sets all parameters, one per line, each with its meaning and unit. Three notes explain <code>up</code>, <code>rolloff</code> and <code>ULCF_flag = 0</code>.</td></tr>
+<tr><td class="nt">2</td><td>Calculates the values that follow from the parameters: <code>Mary = 32</code> constellation points, the sampling rate <code>Fs = 48e9</code> and the transmit mask <code>Hrcos</code> (from <code>rcosfilter</code>).</td></tr>
+<tr><td class="nt">3</td><td>The chain: blocks [1] to [10] of Fig. 2. The result is the variable <code>BER</code>.</td></tr>
+<tr><td class="nt">4</td><td>Prints the operating point and the BER. If the file <code>ref_data/legacy_ber_points.csv</code> holds this operating point, it also prints the BER of the earlier laboratory code. Measures the SNR of the received symbols (<code>SNR_sim</code>).</td></tr>
+<tr><td class="nt">5</td><td>Closed-form power budget: the power after every block from formulas, for the target signal alone (<code>budget_target</code>) and for everything in the simulated band (<code>budget_total</code>).</td></tr>
+<tr><td class="nt">6</td><td>Closed-form SNR budget: the four terms of Eq. (1) and their sum (<code>SNR_budget</code>).</td></tr>
+<tr><td class="nt">7</td><td>Prints the power table and the SNR table.</td></tr>
+<tr><td class="nt">8</td><td>Self-check 1: the simulated power after every block agrees with the budget within <span class="nt">0.1 dB</span>. Self-check 2: the simulated SNR agrees with the SNR budget within <span class="nt">0.7 dB</span>.</td></tr>
+<tr><td class="nt">9</td><td>Draws the level diagram and the received symbols.</td></tr>
+</tbody></table></div>
+<p>With its default parameters the script prints the following text. The SNR table of <a href="#s3">section 3</a> stands between the power table and the two self-check lines; it is left out here.</p>
+<pre><code>Operating point : PTx = -4.0 dBm, DC switch 8 x 8, AWG with 12 inputs
+Switch size     : 768 x 768 ports (M*N = 8*96)
+BER             : 7.630e-03 (763 errors in 100000 bits), FEC limit 1e-02
+Legacy code     : 7.726e-03 at this point (150000 symbols, legacy settings); this run / legacy = 0.99
+
+Power after every block [dBm] (one polarization, inside the band Fs)
+  block               simulation      budget      budget
+                         (total)     (total)    (target)
+  [1] Tx                  -7.000      -7.000      -7.000
+  [2] Fan-in/out         -10.000     -10.000     -10.000
+  [3] DC switch          -21.991     -21.992     -22.000
+  [4] Coupler            -32.491     -32.492     -32.500
+  [5] EDFA                 7.963       7.966       7.884
+  [6] AWG                 -6.757      -6.740      -6.821
+  [7] AWG crosstalk       -6.727      -6.710      -6.821
+  [8] Fan-in/out          -9.727      -9.710      -9.821
+  [9] Pre-amp              7.000       7.000       6.888
+  ASE of EDFA             -9.683      -9.737
+  ASE of pre-amp         -34.417     -34.448
+  sigpw (block [7])       -6.794      -6.776
+
+Self-check 1 passed: power after every block = budget within 0.1 dB (largest difference 0.017 dB)
+Self-check 2 passed: simulated SNR = SNR budget within 0.7 dB (difference -0.07 dB)</code></pre>
+<ul>
+<li><strong>BER.</strong> The script counts the bit errors of the 20000 symbols that follow the training of the equalizer (page 14). With 5 bits per symbol these are 100000 bits. The BER is below the FEC limit: this operating point works. With <code>PTx = -5</code> the script prints <code>1.113e-02</code>, which is above the limit.</li>
+<li><strong>Legacy code.</strong> The earlier laboratory code gave <span class="nt">7.726e-03</span> at this operating point, and this run gives 0.99 times as much. The comments in section 4 of the script say which ratio to expect. At this operating point the mean of 10 seeds is 0.95. One run has a random error of about 4 percent, and the seed of the script gives 0.99. <a href="#s5">Section 5</a> names the reasons for a ratio below 1. At an operating point that the reference file does not hold, this line reads <code>this point is not in ref_data/legacy_ber_points.csv</code>.</li>
+<li><strong>Three power columns.</strong> <code>simulation (total)</code> is measured on the field with <code>calc_signal_power</code>, as a power meter would do: target signal, leaks and ASE inside the simulated band together. <code>budget (total)</code> is the same quantity from formulas. <code>budget (target)</code> is the target signal alone. The output limit of block [5] is <span class="nt">7.969 dBm</span>. The target signal has <span class="nt">7.884 dBm</span> of it. The leaks and the ASE inside one channel spacing of <span class="nt">50 GHz</span> take the rest (page 15). The two total columns count the ASE inside the simulated band <code>Fs</code>, which is <span class="nt">48 GHz</span> wide. They are therefore close to the output limit, but not equal to it. They change with the oversampling rate <code>up</code>, because a larger <code>up</code> widens the simulated band. The power of the target signal after block [5] and the SNR do not change with <code>up</code>.</li>
+<li><strong>The lowest point</strong> is the output of block [4], the input of the EDFA: <span class="nt">-32.5 dBm</span> in one polarization. Eq. (2) gives the same point for the whole channel: <span class="nt">-29.5 dBm</span>.</li>
+<li><strong>The last three lines</strong> are the ASE power of the two amplifiers at their outputs, inside the simulated band, and the reference power <code>sigpw</code> of the AWG leaks. <code>sigpw</code> is the power inside the signal band after the AWG (page 17).</li>
+</ul>
+<p>The file <code>ref_data/budget_two_stage_ref.csv</code> holds the budget numbers of both tables with more digits. No script reads it; open it when you want to compare.</p>
+<figure id="f3"><img src="assets/expected/step21_two_stage_one_point_1.png" alt="Level diagram with nine points: -7.0, -10.0, -22.0, -32.5, 8.0, -6.8, -6.7, -9.7 and 7.0 dBm. Markers for the simulation lie on the black line of the closed-form budget.">
+<figcaption><b>Fig. 3.</b> Expected first figure of <code>step21_two_stage_one_point</code>: the level diagram. The markers are the simulated total power after every block (<code>stage_power</code>), and the black line is the closed-form budget (<code>budget_total</code>). The power falls up to the output of the coupler, and the EDFA lifts it again.</figcaption></figure>
+<figure id="f4"><img src="assets/expected/step21_two_stage_one_point_2.png" alt="Constellation diagram of 32QAM: clouds of received symbols around 32 ideal points marked with crosses. Title: SNR = 17.4 dB, BER = 7.63e-03.">
+<figcaption><b>Fig. 4.</b> Expected second figure: the 20000 received symbols after the equalizer (dots) and the 32 ideal points of 32QAM (crosses). A dot that lies closer to a neighboring cross than to its own is decided wrongly.</figcaption></figure>
+<p>Both expected figures were saved from figure windows of <span class="nt">720 x 480</span> pixels. In a smaller window the legend of the level diagram can cover the value at the coupler. Enlarge the window then.</p>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>Both self-checks print <code>passed</code>, and your output shows the numbers above. The seed of the random numbers is fixed, so the numbers repeat. A difference in the last printed digit on another MATLAB version does not matter.</li>
+<li>You can calculate the column <code>budget (target)</code> by hand up to block [4].</li>
+<li>You can calculate the first three lines of the SNR table by hand with Table 3, and you can say which of them is the lowest.</li>
+</ul></div>
+<div class="box todo"><span class="label">Your task</span>
+<p>Change one parameter value in section 1 of the script, as its header suggests. Write down your prediction of the two tables first. Then run the whole file and compare. Set the value back before the next experiment.</p>
+<ol>
+<li>Set <code>PTx = -10</code>. Predict the line <code>ASE of the EDFA</code> and the three other lines.</li>
+<li>Set <code>dcs_input_port_num = 16</code>. Predict the power of the target signal after block [4] and the two lines <code>ASE of the EDFA</code> and <code>crosstalk of the DC switch</code>.</li>
+<li>Set <code>ULCF_deg = 8</code>. Predict the loss of the coupler, the total power after block [5] and the line <code>crosstalk of the AWG</code>.</li>
+</ol></div>
+<details><summary>Results of the three experiments</summary>
+<p>Experiment 1: the ASE term falls by 6 dB to <span class="nt">14.63 dB</span>. The other three lines hardly change (<span class="nt">27.55</span>, <span class="nt">21.17</span> and <span class="nt">43.86 dB</span>). The two small changes come from the ASE. The level of the AWG leaks is set from the power in the signal band behind the AWG (<code>sigpw</code>), and this power now contains more ASE. The ASE also takes a larger part of the fixed output power of the EDFA, so the target signal reaches the pre-amplifier with less power. The total is <span class="nt">13.58 dB</span>, and the BER is <span class="nt">5.247e-02</span>. This is row 1 of Table 4.</p>
+<p>Experiment 2: the DC switch costs 16 dB, 4 dB more. The power of the target signal after block [4] is <span class="nt">-36.500 dBm</span>, and the ASE term falls by 4 dB to <span class="nt">16.63 dB</span>. The DC switch now has 15 leaks: <span class="nt">36 - 11.76 = 24.24 dB</span>. The BER is <span class="nt">3.210e-02</span>.</p>
+<p>Experiment 3: each coupler has <span class="nt">96 / 8 = 12</span> inputs and costs 14 dB, 3.5 dB more. The ASE term falls to <span class="nt">17.13 dB</span>. Each EDFA carries 12 wavelengths, so the output limit of block [5] is <span class="nt">20 - 3 - 10.79 = 6.21 dBm</span>, and the script prints a total power of <span class="nt">6.197 dBm</span>. Only 7 AWG leaks are left: the script prints <span class="nt">23.25 dB</span>, and the rule of Table 3 gives <span class="nt">32 - 8.45 = 23.55 dB</span>. The BER is <span class="nt">2.117e-02</span>.</p>
+</details>
+</section>
+
+<section id="s5">
+<h2>5. Port count versus transmitter power</h2>
+<p>The script <code>main_two_stage_ULCF</code> answers the question of the research for this switch: how many ports can the switch have at a given transmitter power, if the BER must not exceed the FEC limit? It runs the chain of <a href="#s2">section 2</a> at many operating points.</p>
+<ul>
+<li><strong>The loops.</strong> The script takes every \(K\) of <code>ULCF_deg_ary = [1 2 4 8 12]</code> and every \(M\) of <code>list_dcs_input_port_num = [2 4 8 16 32]</code>. For each pair it looks for one transmitter power in the list <code>pin_ary</code>. The name <code>pin_ary</code> comes from the earlier laboratory code; its values are \(P_{\mathrm{Tx}}\) values.</li>
+<li><strong>The criterion.</strong> The <strong>required transmitter power</strong> of a pair \((K, M)\) is the lowest power of <code>pin_ary</code> at which the BER is at most <code>BER_limit = 1e-2</code>. The script stores it in <code>required_PTx</code>. <code>NaN</code> means that no power of <code>pin_ary</code> reaches the limit.</li>
+<li><strong>The search.</strong> For the smallest size the script tries the powers from the lowest one upward. A larger DC switch never needs less power, so the search for the next size starts at the required power of the size before. The quick run simulates 170 operating points; all combinations would be <span class="nt">5 x 5 x 31 = 775</span>. Two self-checks at the end test the assumption on the simulated BER values.</li>
+<li><strong>The port count.</strong> At a power \(P\), the port count is the largest \(MN\) whose required power is not above \(P\) (<code>data_PC</code>).</li>
+<li><strong>The same chain.</strong> The script sets the seed before every operating point. <code>step21_two_stage_one_point</code> therefore repeats any point of the search: with the same <code>PTx</code>, <code>dcs_input_port_num</code>, <code>ULCF_deg</code>, <code>datasize</code> and <code>seed</code> it prints the same BER.</li>
+</ul>
+<p>The variable <code>quick_flag</code> in section 1 selects the size of the run. With <code>quick_flag = 1</code>, as given, one operating point has 30000 symbols and the powers are <span class="nt">1 dB</span> apart (<span class="nt">-20</span> to <span class="nt">10 dBm</span>). With <code>quick_flag = 0</code> one operating point has 150000 symbols and the powers are <span class="nt">0.5 dB</span> apart, as in the earlier laboratory code.</p>
+<div class="box run"><span class="label">Run it</span>
+<p>After <code>setup_path</code>, run <code>main_two_stage_ULCF</code> as a whole file. On your supervisor's PC the quick run takes less than half a minute, and a full-size run (<code>quick_flag = 0</code>) takes about 3 minutes (<a href="04_matlab_guide.html">page 04</a>). The script prints its own time, for example <code>170 operating points in 16.2 s (0.10 s per point)</code>. The script opens one figure and writes four files into the folder <code>matlab/results</code>. Their names begin with <code>two_stage_ULCF_</code> and the time of the run: a <code>.mat</code> file with all parameters, the seed and all results, the port counts in <code>..._portcount.csv</code>, the required powers in <code>..._required_PTx.csv</code>, and the figure as a <code>.png</code> file.</p></div>
+<p>After one line for every pair \((K, M)\), the quick run prints these tables:</p>
+<pre><code>Required transmitter power [dBm] (NaN = not reached up to 10.0 dBm)
+  K \ M          2       4       8      16      32
+  1           -1.0     3.0     8.0     NaN     NaN
+  2           -4.0     0.0     4.0     9.0     NaN
+  4           -8.0    -3.0     1.0     5.0     NaN
+  8          -10.0    -6.0    -2.0     3.0     9.0
+  12         -13.0    -9.0    -4.0     1.0     7.0
+
+Required transmitter power of the legacy code [dBm] (NaN = not reached, or not in the file)
+  K \ M          2       4       8      16      32
+  1           -1.0     3.0     7.0     NaN     NaN
+  2           -4.5    -0.5     3.5     8.5     NaN
+  4           -8.0    -3.5     0.5     5.0     NaN
+  8          -10.5    -6.5    -2.0     2.5     8.5
+  12         -13.0    -9.0    -4.5     0.5     7.5
+
+Difference: this run - legacy code [dB]
+  K \ M          2       4       8      16      32
+  1           +0.0    +0.0    +1.0     NaN     NaN
+  2           +0.5    +0.5    +0.5    +0.5     NaN
+  4           +0.0    +0.5    +0.5    +0.0     NaN
+  8           +0.5    +0.5    +0.0    +0.5    +0.5
+  12          +0.0    +0.0    +0.5    +0.5    -0.5
+Expected with the legacy parameters: 0 or -0.5 dB for quick_flag = 0 (within 1 dB for quick_flag = 1).
+
+Self-check 1 passed: a larger DC switch has the higher BER at the same power (19 pairs of sizes)
+Self-check 2 passed: the BER falls when the power rises (146 power steps)
+Bookkeeping check passed: required power and port count fit together</code></pre>
+<figure id="f5"><img src="assets/expected/main_two_stage_ULCF.png" alt="Port count from 192 to 3072 on a logarithmic axis versus transmitter power from -20 to 10 dBm. Five staircase curves for K = 1, 2, 4, 8 and 12; the curve of a larger K lies further to the left. Thick dashed curves of the earlier laboratory code lie on or next to them.">
+<figcaption><b>Fig. 5.</b> Expected figure of <code>main_two_stage_ULCF</code> with <code>quick_flag = 1</code>. Thin lines with markers: this run. Thick dashed lines: the earlier laboratory code, in the color of the same <span class="nt">K</span>. The steps of the vertical axis are the five sizes <span class="nt">M = 2, 4, 8, 16, 32</span> times <span class="nt">N = 96</span>.</figcaption></figure>
+
+<h3>How to read the result</h3>
+<ul>
+<li><strong>One curve is one \(K\).</strong> A curve begins at the required power of the smallest switch (192 ports) and steps up where the next size becomes possible. The first table holds the same information: one row is one curve.</li>
+<li><strong>Along a row.</strong> Each doubling of \(M\) adds 4 dB of loss in the DC switch, and the required power rises by 4 to 5 dB. At the largest sizes it rises by more (for \(K = 8\) and \(K = 12\), 6 dB from \(M = 16\) to \(M = 32\)), because the upper limit that the crosstalk sets (<a href="#s3">section 3</a>) comes close to the SNR that 32QAM needs.</li>
+<li><strong>Down a column.</strong> A larger \(K\) reaches the same port count at a lower transmitter power: its curve lies further to the left. For 768 ports the required power falls from <span class="nt">8 dBm</span> (\(K = 1\)) to <span class="nt">-4 dBm</span> (\(K = 12\)). The reason is the smaller aggregation coupler: every coupler stage that is saved raises the power at the input of the EDFA by 3.5 dB.</li>
+<li><strong>The benefit is smaller than the saved loss.</strong> From \(K = 1\) to \(K = 12\) the coupler saves <span class="nt">14 dB</span>, but the required power falls by 12 dB. The 11 AWG leaks cost the rest. Eq. (1) shows it for \(M = 2\): for a total of <span class="nt">17.06 dB</span> the ASE term must reach about <span class="nt">19.2 dB</span> with these leaks, and about <span class="nt">17.1 dB</span> without them.</li>
+<li><strong>Along a vertical line.</strong> At <span class="nt">0 dBm</span> the switch can have 192 ports with \(K = 1\), 384 with \(K = 2\) or 4, and 768 with \(K = 8\) or 12.</li>
+<li><strong><code>NaN</code> is not "impossible".</strong> It says that the limit is not reached up to <span class="nt">10 dBm</span>, the highest power of <code>pin_ary</code>.</li>
+</ul>
+
+<h3>The reference: the earlier laboratory code</h3>
+<p>The file <code>ref_data/legacy_portcount_32QAM.csv</code> holds the port counts that the earlier laboratory code gave for 32QAM and \(N = 96\), with 150000 symbols per point and power steps of <span class="nt">0.5 dB</span>. The script turns them into required powers, prints the second and the third table above and draws them as thick dashed lines in Fig. 5.</p>
+<p>In the quick run 20 of the 21 required powers lie within <span class="nt">0.5 dB</span> of the earlier laboratory code, and one (\(K = 1\), \(M = 8\)) is <span class="nt">1 dB</span> higher. <code>NaN</code> stands at the same four places. A full-size run (<code>quick_flag = 0</code>) gave a difference of <span class="nt">0 dB</span> at 16 of the 21 places and <span class="nt">-0.5 dB</span> at the other five. Small differences are expected, because the script changes the earlier model on purpose. The header of <code>step21_two_stage_one_point</code> lists all changes. Five of them can change a BER:</p>
+<ul>
+<li><strong>Output power of the EDFA per channel.</strong> An EDFA that carries \(N/K\) wavelengths gives each channel the power \(P_{\mathrm{sat}}/(N/K)\), and the simulated polarization gets half of it. The earlier laboratory code used \(P_{\mathrm{sat}}/N\) for every \(K\) and gave all of it to the simulated polarization.</li>
+<li><strong>Output limit of the amplifiers.</strong> In the script, the signal shares the output power of an amplifier with the ASE inside one channel spacing (<code>signal_interval</code>, <span class="nt">50 GHz</span>). In the earlier laboratory code it shared the output power with all ASE inside the simulated band, so the level after an amplifier depended on the sampling rate.</li>
+<li><strong>Noise of the pre-amplifier.</strong> The script adds the ASE of one polarization to the one simulated polarization. The earlier laboratory code added the ASE of both polarizations.</li>
+<li><strong>Length of the equalizer.</strong> The script uses 17 taps (<code>Morder = 16</code>). The earlier laboratory code declared the same order, but its call used 513 taps.</li>
+<li><strong>Oversampling rate.</strong> In the script, the oversampling rate <code>up</code> (2 samples per symbol) and the number of bits per symbol <code>mod_flag</code> are two variables. The earlier laboratory code used one number for both, so its run for 32QAM had 5 samples per symbol.</li>
+</ul>
+<p>The comments in the scripts give the size of the effect. For \(K &gt; 1\) the higher output power of the EDFA lowers the BER by 2 to 7 percent. For every \(K\) the shorter equalizer lowers it by 1 to 2 percent. A point that lies close to the FEC limit can therefore move down by one step of the power grid. The output limit changes the level after an amplifier, but not the SNR that the amplifier leaves, and the oversampling rate changes the noise samples. These two changes move the BER by less than the random error of one run. The earlier run had no fixed seed, so its own values can move by one step too. In a quick run the 1-dB grid adds between 0 and <span class="nt">+0.5 dB</span>. The BER of 30000 symbols also has a random error of 3 to 4 percent, so a point close to the FEC limit can move by one more step of 1 dB, up or down. The <span class="nt">+1.0 dB</span> at \(K = 1\) and \(M = 8\) is such a case: with the seed of the script the BER at <span class="nt">7 dBm</span> is <span class="nt">1.009e-02</span>, just above the limit. The full-size run gives <span class="nt">7.0 dBm</span> there, the value of the earlier laboratory code.</p>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>The quick run prints the three lines that end the output above, and the four files are in <code>matlab/results</code>.</li>
+<li>No number of your table <code>Difference: this run - legacy code [dB]</code> is further from zero than <span class="nt">1 dB</span>, and <code>NaN</code> stands at the same places in the two tables above it.</li>
+<li>You can read the port count for a given power and a given \(K\) from your figure, and you can explain why the curve of \(K = 12\) lies to the left of the curve of \(K = 1\).</li>
+<li>You have also made a full-size run with <code>quick_flag = 0</code> and compared its difference table with the line <code>Expected with the legacy parameters</code> (<a href="03_workflow.html">page 03</a>, phase 2).</li>
+</ul></div>
+</section>
+
+<section id="s6">
+<h2>6. Assumptions and limits of the model</h2>
+<p>State these points when you report a result of the two scripts.</p>
+<ul>
+<li><strong>One signal is simulated.</strong> The chain holds one polarization of one wavelength channel. The second polarization is assumed to behave in the same way. The other 95 channels do not exist in the simulation: there is no crosstalk from neighboring channels. Of the \(1 \times 2\) splitter only the loss is modeled: a flat loss of <span class="nt">3.5 dB</span>, the loss of a coupler with two ports (page 12).</li>
+<li><strong>Every leak is a worst case.</strong> All \(M - 1\) other inputs of the DC switch carry the wavelength of the target signal, at the same power. All \(K - 1\) other input ports of the AWG carry it too. The target signal uses the AWG input port with the largest passband-center deviation. No connection pattern puts more leaks on the wavelength of the target signal.</li>
+<li><strong>The receiver is ideal.</strong> Its filter is a perfect rectangle with the width of the symbol rate. The equalizer is trained with known symbols and then frozen. The chain has no laser phase noise, no frequency difference between the signal and the local oscillator, and no limit of the electrical bandwidth. In the JOCN paper the experiment needed about 2 dB more transmitter power than the simulation of that paper, and the authors name inter-symbol interference from the electrical band limitation and loss deviations of the devices as possible causes.</li>
+<li><strong>The elements are simple rules.</strong> Selectors and couplers follow the loss rules of page 12. The AWG is a Gaussian passband with one loss value. Every EDFA has the same gain for all its wavelengths, shares its output power equally among \(N/K\) channels that are all present, and has one noise figure.</li>
+<li><strong>Several values are not from the JOCN paper.</strong> The noise figure of <span class="nt">5 dB</span> (the paper uses <span class="nt">6 dB</span>), the extinction ratio of <span class="nt">36 dB</span>, the AWG crosstalk level of <span class="nt">32 dB</span>, the passband width of <span class="nt">66.6 GHz</span> (about 65 GHz in the AWG that was built for the paper), the two values of the pre-amplifier and the three settings of <a href="#s2">section 2</a> come from the earlier laboratory code. The passband-center deviations (<code>ULCF_dev_freq</code>) are the specification values of the ULCF AWG device in the laboratory (page 17). The paper adds a power margin of 2 dB; the scripts add none. Do not compare the curves of Fig. 5 number by number with Fig. 6 of the JOCN paper.</li>
+<li><strong>A required power is known to one grid step.</strong> A BER is counted from a finite number of errors: about 1000 errors at the FEC limit in the quick run, which is a random error of about 3 percent. The search uses one seed and steps of <span class="nt">1 dB</span> or <span class="nt">0.5 dB</span>. A point near the limit can fall on either side.</li>
+<li><strong>Only the transmission is modeled.</strong> The scripts do not simulate how connections are set up or changed, and they do not check the wavelength assignment. The statements of <a href="#s1">section 1</a> about routing rest on the JOCN paper and on page 17.</li>
+</ul>
+</section>
+
+<section id="s7">
+<h2>7. Check your understanding</h2>
+<ol>
+<li>How much loss does the target signal collect before the EDFA for \(M = 8\) and \(K = 12\)? How much for \(M = 8\) and \(K = 1\)? What is the channel power at the input of the EDFA in both cases for \(P_{\mathrm{Tx}}\) = <span class="nt">-4 dBm</span>?
+<details><summary>Answer</summary>
+<p>For \(K = 12\): <span class="nt">3 + 12 + 10.5 = 25.5 dB</span> (fan-in and fan-out, DC switch, <span class="nt">8 x 1</span> coupler), so the channel has <span class="nt">-29.5 dBm</span>. For \(K = 1\): <span class="nt">3 + 12 + 24.5 = 39.5 dB</span> and <span class="nt">-43.5 dBm</span>. The script prints 3 dB less, <span class="nt">-32.500</span> and <span class="nt">-46.500 dBm</span>, because it follows one polarization.</p>
+</details></li>
+<li>\(M\) doubles from 8 to 16, and you raise \(P_{\mathrm{Tx}}\) from <span class="nt">-4 dBm</span> to <span class="nt">0 dBm</span> to compensate for the 4 dB of extra loss (\(K = 12\)). Which lines of the SNR table stay the same, and which one changes? Is the BER the same as before?
+<details><summary>Answer</summary>
+<p>The power at the input of the EDFA is <span class="nt">-29.5 dBm</span> again, so the line <code>ASE of the EDFA</code> stays at <span class="nt">20.63 dB</span>. The AWG term stays too. The DC switch now has 15 leaks in place of 7: its term falls from <span class="nt">27.55 dB</span> to <span class="nt">36 - 11.76 = 24.24 dB</span>. The total falls from <span class="nt">17.47 dB</span> to <span class="nt">17.01 dB</span>, and the BER rises from <span class="nt">7.630e-03</span> to <span class="nt">1.035e-02</span>, which is above the FEC limit. More power compensates for the loss, but not for the crosstalk.</p>
+</details></li>
+<li>In the first printed table of <a href="#s5">section 5</a>, \(K = 2\) needs 3 or 4 dB less transmitter power than \(K = 1\) at \(M\) = 2, 4 and 8. Where do these numbers come from, and what value do you expect from a run with 0.5-dB steps?
+<details><summary>Answer</summary>
+<p>With \(K = 2\) the aggregation coupler has 48 inputs and 6 stages, with \(K = 1\) it has 96 inputs and 7 stages. One stage less is 3.5 dB less loss before the EDFA (<code>coupler_loss(96) - coupler_loss(48)</code>). On a grid of 1 dB a difference of 3.5 dB appears as 3 or 4 dB. The full-size run gave 3.0, 3.5 and 3.5 dB. The one AWG leak of \(K = 2\) costs very little: the rule of Table 3 gives <span class="nt">32 dB</span> for its term.</p>
+</details></li>
+<li>Could a switch with \(M = 64\) and \(K = 12\) (6144 ports) work if the transmitter power were high enough? Use Eq. (1) and Table 3.
+<details><summary>Answer</summary>
+<p>No. The leaks of the DC switch give <span class="nt">36 - 10 log10(63) = 18.01 dB</span>, and the leaks of the AWG give <span class="nt">21.3 dB</span>. Eq. (1) with these two terms alone gives <span class="nt">16.3 dB</span>, which is less than the 17 dB that 32QAM needs. No transmitter power changes these two terms. Row 5 of Table 4 confirms it: at <span class="nt">20 dBm</span> the BER is <span class="nt">1.618e-02</span>.</p>
+</details></li>
+<li>The term of the pre-amplifier is <span class="nt">44 dB</span> at the default point. Why is it so much higher than the term of the EDFA, although both are amplifiers with a similar noise figure?
+<details><summary>Answer</summary>
+<p>The SNR that an amplifier leaves depends on the power at its input (page 15). The channel reaches the EDFA with <span class="nt">-29.5 dBm</span> and the pre-amplifier with <span class="nt">-6.82 dBm</span>, which is 22.7 dB more. The noise figure of the pre-amplifier is also 1 dB lower. The rule of Table 3 gives <span class="nt">22.7 + 1 = 23.7 dB</span> more SNR: <span class="nt">44.30 dB</span> against <span class="nt">20.62 dB</span>.</p>
+</details></li>
+<li>Read Fig. 5 or the first printed table of section 5: how many ports are possible at \(P_{\mathrm{Tx}}\) = <span class="nt">5 dBm</span> with \(K = 1\) and with \(K = 12\)?
+<details><summary>Answer</summary>
+<p>With \(K = 1\) the required powers are <span class="nt">-1</span>, <span class="nt">3</span> and <span class="nt">8 dBm</span> for \(M\) = 2, 4 and 8. At 5 dBm the largest possible size is \(M = 4\): 384 ports. With \(K = 12\) the size \(M = 16\) needs <span class="nt">1 dBm</span> and \(M = 32\) needs <span class="nt">7 dBm</span>: 1536 ports. The ULCF AWG with 12 input ports gives four times the port count at this power.</p>
+</details></li>
+</ol>
+<div class="box"><span class="label">What to carry forward</span>
+<p>You can now follow a signal through the ten blocks of the two-stage ULCF switch, calculate the power at the input of the EDFA and the terms of Eq. (1) by hand, and reproduce the curve of port count versus transmitter power. Noise limits the switch at low power, and the leaks of the DC switch and of the AWG set an upper limit of the SNR that falls when \(M\) or \(K\) grows. <a href="22_three_stage_conventional.html">Page 22</a> applies the same chain, the same two tables and the same search to the conventional three-stage switch. The WR switch of this page is the model for the middle stage of your proposal (<a href="23_three_stage_proposal.html">page 23</a>).</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="17_awg_wavelength_routing.html">&larr; <span class="nt">17</span> AWG, wavelength routing</a>
+<a class="next" href="22_three_stage_conventional.html"><span class="nt">22</span> Conventional three-stage &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

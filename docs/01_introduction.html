@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01 Title and introduction | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a class="current" href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Orientation</p>
+<h1><span class="num nt">01</span>Title and introduction</h1>
+<p class="lead">This page gives the title and the introduction of the paper that your research is aimed at. In seven paragraphs, the introduction states which problem the research addresses, what has been done so far, and what your work will add.</p>
+
+<div class="title-block"><p class="kicker">Planned paper</p><p class="paper-title">Large-Scale Three-Stage Optical Circuit Switch Using Low-Loss Wavelength Routing</p><p class="meta">OECC 2027 (target)</p></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">How to read this page</a></li>
+<li><a href="#s2">The introduction</a></li>
+<li><a href="#s3">What the paper will claim</a></li>
+<li><a href="#s4">References</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. How to read this page</h2>
+<p>Section 2 is the introduction of the paper that you are going to write. Your supervisor wrote it in Japanese. The English text on this page is a translation; treat it as a first draft that you will revise when you have your results.</p>
+<p>The seven paragraphs form one argument: the need (<a href="#p1">1</a>), the known approach (<a href="#p2">2</a>), the problems that remain (<a href="#p3">3</a>), a known technique that helps (<a href="#p4">4</a>), the proposal (<a href="#p5">5</a>), a condition that the design must keep (<a href="#p6">6</a>), and the evaluation (<a href="#p7">7</a>).</p>
+<p>Two aids follow each paragraph. The note &ldquo;In plain words&rdquo; says the same thing in simpler language and explains a few terms; it adds no new claim. The line &ldquo;Background&rdquo; links to the pages that explain the terms of that paragraph.</p>
+<p>Read this page twice.</p>
+<ol class="steps">
+<li><strong>First reading: now.</strong> Read the seven paragraphs from start to end to see where the research is going. Many terms will be new, and that is expected. Use the notes, and do not stop to study each term. The background pages come later in the reading order that the <a href="../START_HERE.html">Start here</a> page gives.</li>
+<li><strong>Second reading: after <a href="22_three_stage_conventional.html">page 22</a>.</strong> Read this page again. By then you have run the simulations of the two baseline switches, that is, the existing switches with which the proposed switch is compared: the two-stage ULCF switch and the conventional three-stage switch. You should be able to explain every sentence of Paragraphs 1 to 4, and Paragraphs 5 to 7 describe the work that is yours.</li>
+</ol>
+</section>
+
+<section id="s2">
+<h2>2. The introduction</h2>
+
+<h3 id="p1">Paragraph 1: Why datacenters need optical circuit switches</h3>
+<p>As intra-datacenter traffic grows, there is a demand for networks that interconnect a large number of servers and racks with high bandwidth and low power consumption. In networks that use multiple stages of electrical switches, optical-to-electrical and electrical-to-optical conversions are required at every stage, and the rise in power consumption that accompanies capacity growth becomes a problem. A promising solution to this problem is to introduce optical circuit switches, which forward signals entirely in the optical domain. In particular, a high-capacity optical circuit switch with a large number of ports enables a network in which racks are connected in a single hop, and thus contributes to simpler fiber interconnection and traffic control.</p>
+<div class="box note"><span class="label">In plain words</span>
+<p>In a typical datacenter today, the switches that connect the racks (cabinets of servers) are electrical. A signal is therefore converted from light to electricity and back to light at every switch, and each conversion costs power. An optical circuit switch (OCS) passes the light as it is, and one switch with enough ports (inputs and outputs) connects any rack to any other rack directly, that is, in a single hop.</p></div>
+<p><b>Background:</b> <a href="11_network_ocs_clos.html">11 Networks, OCS, Clos</a> (electrical switches in several stages, optical circuit switch, single hop).</p>
+
+<h3 id="p2">Paragraph 2: Known ways to build large switches</h3>
+<p>As a way to realize large-scale optical circuit switches, architectures that combine space switches with wavelength-routing (WR) switches have been studied. By combining path selection by wavelength with spatial parallelization, such an architecture can attain a port count beyond the scale of its individual sub-switches. However, the scale of a WR switch is bounded by the available bandwidth of light sources and optical amplifiers, and the scale of a space switch is limited mainly by the coupler loss. To relax these constraints, rearrangeably non-blocking three-stage optical circuit switches based on the Clos network have been proposed. Among them, the architecture with space switches in the first and third stages and WR switches in the middle stage can be scaled up while the loss before amplification is kept low, and it requires no change of the transmitter wavelength when the routes of existing connections are rearranged.</p>
+<div class="box note"><span class="label">In plain words</span>
+<p>A space switch connects an input port to a chosen output port; in a WR switch, the wavelength of a signal decides which output port the signal reaches. Combined, the two give more ports than either gives alone, and three stages of them, connected in the pattern called a Clos network, give still more. &ldquo;Rearrangeably non-blocking&rdquo; means that a new connection between a free input port and a free output port can always be set up, if necessary after existing connections are moved to other routes.</p></div>
+<p><b>Background:</b> <a href="11_network_ocs_clos.html">11 Networks, OCS, Clos</a> (Clos network, rearrangeably non-blocking); <a href="16_space_switch_crosstalk.html">16 Space switches, crosstalk</a> (space switch, loss of a coupler); <a href="17_awg_wavelength_routing.html">17 AWG, wavelength routing</a> (WR switch).</p>
+
+<h3 id="p3">Paragraph 3: Two limits of the three-stage switch</h3>
+<p>Even in the three-stage architecture, however, the transmission performance is limited by two factors: the loss of the aggregation coupler in the middle-stage WR switch and the crosstalk that originates from the finite extinction ratio of the space switches. In the third-stage space switch, the number of elements can be reduced, compared with the scheme that uses selectors on both the input and the output side, by replacing the output-side selectors with couplers. This simplification, however, comes with a larger coupler loss, and the effect of signals that leak in from the other inputs must also be considered. In the conventional middle-stage WR switch, the signal wavelength is determined by the output port of a single-input arrayed-waveguide grating (AWG). Under this routing rule, all signals that reach the same third-stage space switch have the same wavelength, so the leaks that occur in the third stage can become in-band crosstalk. Therefore, to combine a further increase in scale with a reduction in the number of elements, it is important to have an architecture that not only lowers the optical loss but also suppresses the interference between same-wavelength signals in the third stage.</p>
+<div class="box note"><span class="label">In plain words</span>
+<p>Two limits remain: the aggregation coupler, which merges the signals of all wavelengths into one fiber in front of the optical amplifier, loses much power, and a space switch lets a little light leak into paths where it does not belong (crosstalk). In the conventional switch, all signals that meet in one third-stage switch have the same wavelength, so a leak cannot be removed by a filter: it is in-band crosstalk. Replacing the output-side selectors (switches that pass one chosen input) of the third stage with couplers (passive parts that merge all inputs) saves hardware, but it adds loss, and the light that leaks in from the other inputs must then be taken into account.</p></div>
+<p><b>Background:</b> <a href="15_edfa_ase.html">15 EDFA and ASE</a> (why loss in front of the amplifier is costly); <a href="16_space_switch_crosstalk.html">16 Space switches, crosstalk</a> (selector, coupler, extinction ratio, in-band crosstalk); <a href="22_three_stage_conventional.html">22 Conventional three-stage</a> (the wavelength rule and the third stage).</p>
+
+<h3 id="p4">Paragraph 4: Lower aggregation loss with ULCF AWGs</h3>
+<p>As a technique to reduce the aggregation loss of the WR switch, multi-input wavelength routing based on uniform-loss and cyclic-frequency (ULCF) AWGs has been proposed. By using several input ports of the AWG, this scheme divides the conventional large aggregation coupler into several small couplers and reduces the loss that a signal undergoes before it reaches the erbium-doped fiber amplifier (EDFA). Furthermore, the interleaved configuration, which combines a de-interleaver with a pair of ULCF AWGs whose passbands are shifted relative to each other, processes the odd-numbered and the even-numbered channels in separate AWGs. This widens the channel spacing inside each AWG while preserving the wavelength spacing of the system as a whole, and thereby increases the tolerance to deviations of the passband center frequency. A previous study applied this configuration to a two-stage optical circuit switch and demonstrated its effectiveness in lowering the required transmitter power and in increasing the port count.</p>
+<div class="box note"><span class="label">In plain words</span>
+<p>An AWG is a device that sends each wavelength to its own output port, and a ULCF AWG is a type of AWG that can be used with several input ports. One large aggregation coupler then becomes several small ones, and a small coupler loses less power in front of the amplifier (EDFA). The interleaved configuration handles the odd-numbered and the even-numbered wavelength channels in two separate AWGs, so that small errors in the frequencies that each AWG passes do less harm; a previous study showed these benefits for a two-stage switch. That study separated the odd-numbered from the even-numbered channels with a de-interleaver, a filter in front of the pair of AWGs, and noted that a coherent receiver allows a 1&nbsp;×&nbsp;2 splitter (a passive part that divides the light between the two AWGs) in its place; this package uses the 1&nbsp;×&nbsp;2 splitter, for the two-stage switch and for the proposed switch.</p></div>
+<p><b>Background:</b> <a href="17_awg_wavelength_routing.html">17 AWG, wavelength routing</a> (AWG, ULCF AWG, interleaved configuration, passband-center deviation); <a href="21_two_stage_ulcf_switch.html">21 Two-stage ULCF switch</a> (the switch of the previous study).</p>
+
+<h3 id="p5">Paragraph 5: The proposal and its two effects</h3>
+<p>In this paper, we propose a three-stage optical circuit switch with interleaved ULCF AWGs in its middle stage. In addition to reducing the aggregation loss, the proposed architecture exploits the input-port-dependent wavelength routing of the ULCF AWG to suppress crosstalk in the third-stage space switches. Specifically, even signals that are destined for the same third-stage space switch use different wavelengths if they belong to different input groups of the middle-stage ULCF AWG. Hence, provided that the coherent receiver can resolve the frequency difference between the wavelengths, it may be possible to place part of the signals that leak in the third stage outside the receiver band and thereby reduce the contribution of same-wavelength crosstalk. By combining this effect with the lower loss before amplification, this work aims to use the resulting improvement in transmission performance not only to increase the port count and the throughput but also to reduce the number of elements in the third-stage space switches.</p>
+<div class="box note"><span class="label">In plain words</span>
+<p>The proposal puts interleaved ULCF AWGs into the middle stage of the three-stage switch; the first-stage switches whose signals enter the same AWG input port form an input group. Two effects are expected: the loss in front of the amplifier becomes smaller, and in a third-stage switch a leak that comes from a different input group than the signal it disturbs has a different wavelength, so it can fall outside the narrow band that the coherent receiver accepts around the wavelength to which it is tuned. The paragraph says &ldquo;it may be possible&rdquo; on purpose: showing when the second effect holds is part of your research.</p></div>
+<p><b>Background:</b> <a href="14_coherent_rx_dsp_ber.html">14 Coherent receiver, BER</a> (how a coherent receiver selects one wavelength); <a href="17_awg_wavelength_routing.html">17 AWG, wavelength routing</a> (routing that depends on the input port); <a href="23_three_stage_proposal.html">23 Proposed switch: your work</a> (the proposal as a set of tasks).</p>
+
+<h3 id="p6">Paragraph 6: Rearrangement without changing the wavelength</h3>
+<p>When input-dependent wavelength routing is introduced, it is also important to avoid wavelength changes when existing connections are rearranged. For this purpose, the mapping between the first-stage space switches and the input groups of the ULCF AWGs, and the output connections to the third-stage space switches, are made identical in all middle-stage modules. In this arrangement, the wavelength required by a connection with fixed transmitting and receiving end points does not depend on the middle-stage module through which it passes. The signal wavelength can therefore be kept unchanged when the middle-stage route is changed, and the advantage of the conventional three-stage architecture in rearrangement is preserved. However, when a change of the connection partner changes the received wavelength, frequency selection at the receiver is required; we therefore distinguish between the rerouting of existing connections and the setup of new connections.</p>
+<div class="box note"><span class="label">In plain words</span>
+<p>A rearrangement moves an existing connection to another middle-stage module (one of the WR switches of the middle stage), and this move should not change the wavelength of the connection. This holds if all middle-stage modules are wired identically, because the wavelength of a connection then depends only on its two end points, the transmitter and the receiver. Setting up a new connection is a separate case: the wavelength that arrives at a receiver can change, and the receiver must then select the new one.</p></div>
+<p><b>Background:</b> <a href="11_network_ocs_clos.html">11 Networks, OCS, Clos</a> (rearrangement, and why it should not change a wavelength); <a href="23_three_stage_proposal.html">23 Proposed switch: your work</a> (identical wiring of the middle-stage modules).</p>
+
+<h3 id="p7">Paragraph 7: What the paper will evaluate</h3>
+<p>To clarify the effectiveness of the proposed architecture, we evaluate its transmission performance, feasible port count, throughput, and required number of elements, and compare them with those of the conventional three-stage architecture and of the two-stage architecture based on ULCF AWGs. Because the crosstalk reduction depends on the connection requests and on the assignment of the input groups, we consider not only the condition in which the wavelengths are dispersed but also the condition in which traffic from one input group is concentrated on a specific output group. We also distinguish the leaks in the third-stage space switches from the crosstalk of the ULCF AWG itself, and we examine the gain obtained from the smaller aggregation couplers together with the hardware burden, which includes a larger number of EDFAs. In this way, we clarify the effect of combining low-loss wavelength routing with the connection flexibility of the three-stage architecture, together with the conditions under which this effect holds, and we discuss design guidelines for achieving a large scale and simpler space switches at the same time.</p>
+<div class="box note"><span class="label">In plain words</span>
+<p>The paper evaluates the proposed switch against the two baseline switches: the conventional three-stage switch and the two-stage ULCF switch. It compares transmission performance (measured by the bit error ratio of a connection), feasible port count, throughput (port count times the bit rate of one port) and the hardware count (the number of elements per port), and it counts the larger number of EDFAs as a cost. It does so for two traffic conditions, which the other pages call dispersed and concentrated, because the crosstalk reduction depends on which connections are requested and on how the input groups are assigned.</p></div>
+<p><b>Background:</b> <a href="02_research_overview.html">02 Research overview</a> (the three switches and what is evaluated); <a href="03_workflow.html">03 Workflow</a> (the order of the work).</p>
+</section>
+
+<section id="s3">
+<h2>3. What the paper will claim</h2>
+<p>Paragraphs 5 to 7 lead to three claims that the paper intends to make. None of them has been shown yet for the proposed switch. A claim stays in the paper only if your results support it. Each claim corresponds to an evaluation that <a href="#p7">Paragraph 7</a> announces.</p>
+<ol>
+<li><strong>Less loss before amplification.</strong> Dividing the aggregation coupler into smaller couplers lowers the transmitter power that a given port count requires.
+<ul>
+<li>Evaluation in Paragraph 7: the transmission performance, the feasible port count and the throughput of the proposed switch, compared with the conventional three-stage switch and the two-stage ULCF switch.</li>
+<li>What must be shown: the port count versus the transmitter power for the three switches, all computed with one common parameter set, and a hand calculation of the losses and powers (a power budget) that explains the differences between the curves.</li>
+</ul></li>
+<li><strong>Less in-band crosstalk in the third stage.</strong> Because the wavelength depends on the input group, some of the leaks in a third-stage space switch fall outside the receiver band.
+<ul>
+<li>Evaluation in Paragraph 7: both the condition in which the wavelengths are dispersed and the condition in which the traffic is concentrated, with the leaks in the third-stage space switches kept apart from the crosstalk of the ULCF AWG itself.</li>
+<li>What must be shown: the wavelength of every connection; for both traffic conditions, the number of leaks that have the wavelength of the target signal (the signal whose bit errors are counted); the required transmitter power in both conditions; and the condition under which the coherent receiver rejects a leak on another wavelength.</li>
+</ul></li>
+<li><strong>A simpler third stage, at the price of more EDFAs.</strong> The improvement in transmission performance can be used to replace the output-side selectors of the third stage with couplers, and the larger number of EDFAs in the middle stage is counted as the cost.
+<ul>
+<li>Evaluation in Paragraph 7: the required number of elements, the gain from the smaller aggregation couplers together with the hardware burden, and the design guidelines.</li>
+<li>What must be shown: the hardware count (the number of elements per port) of the three switches; the required transmitter power with both types of third stage (selectors or couplers on the output side); and the conditions under which the advantage disappears.</li>
+</ul></li>
+</ol>
+<p><a href="02_research_overview.html">Page 02</a> lists these evaluations and names the file from which each one starts. <a href="03_workflow.html">Page 03</a> divides the work into phases and gives each phase a completion condition.</p>
+<div class="box check"><span class="label">Done when</span>
+<p>After the second reading, you can do the following without looking at the page:</p>
+<ul>
+<li>Name the two factors that limit the conventional three-stage switch, and say where in the switch each one arises.</li>
+<li>State the two effects that the proposal combines, and name the device that produces both.</li>
+<li>List the three switches that are compared, the four quantities that are evaluated and the two traffic conditions.</li>
+<li>Explain why all middle-stage modules are wired identically.</li>
+</ul>
+<p>After the first reading, one thing is enough: for every term that you could not explain, you know which page explains it.</p></div>
+</section>
+
+<section id="s4">
+<h2>4. References</h2>
+<p>The research builds on two prior papers. Read both. The PDFs are available from your supervisor. The scripts call the two papers <span class="nt">JLT 2025</span> and <span class="nt">JOCN 2018</span>.</p>
+<ol>
+<li><span class="nt">T. Mitsuya, R. Higuchi, T. Kuno, T. Ochiai, H. Yuasa, Y. Mori, and H. Hasegawa, &ldquo;Three-Stage Optical Circuit Switch Architectures for Intra-Datacenter Networking,&rdquo; J. Lightw. Technol., vol. 43, no. 2, pp. 400&ndash;407, Jan. 2025, doi: 10.1109/JLT.2024.3465208.</span><br>Read it for the conventional three-stage switch of Paragraphs 2 and 3. <a href="22_three_stage_conventional.html">Page 22</a> simulates its Schemes A1 and A2, the two types of third stage that Paragraph 3 describes, and compares the result with its Table V.</li>
+<li><span class="nt">H. Nagai, Y. Mori, H. Hasegawa, and K. Sato, &ldquo;Design and Verification of Large-Scale Optical Circuit Switch Using ULCF AWGs for Datacenter Application,&rdquo; J. Opt. Commun. Netw., 2018.</span><br>Read it for the ULCF AWG and the two-stage switch of Paragraph 4. <a href="21_two_stage_ulcf_switch.html">Page 21</a> explains this switch and its simulation.</li>
+</ol>
+<h3>Further reading</h3>
+<p>The following five items come from the reference lists of the two prior papers. You do not need them to start. The line under each item says for which topic the prior papers cite it; read the item when you want to go deeper into that topic.</p>
+<ul>
+<li><span class="nt">C. Clos, &ldquo;A study of non-blocking switching networks,&rdquo; Bell System Tech. J., vol. 32, no. 2, pp. 406&ndash;424, Mar. 1953.</span><br><span class="nt">JLT 2025</span> cites it for the Clos network, the three-stage network on which the switches of Paragraph 2 are based.</li>
+<li><span class="nt">K.-I. Sato, &ldquo;Realization and application of large-scale fast optical circuit switch for data center networking,&rdquo; J. Lightw. Technol., vol. 36, no. 7, pp. 1411&ndash;1419, Apr. 2018.</span><br><span class="nt">JLT 2025</span> cites it for the switch that combines WR switches with space switches, and for the single-hop network of Paragraph 1.</li>
+<li><span class="nt">Y. Mori and K. Sato, &ldquo;High-port-count optical circuit switches for intra-datacenter networks [Invited Tutorial],&rdquo; J. Opt. Commun. Netw., vol. 13, no. 8, pp. D43&ndash;D52, Aug. 2021.</span><br><span class="nt">JLT 2025</span> cites it among the studies of networks that use optical circuit switches. As its title says, it is an invited tutorial on high-port-count optical circuit switches, so try it when you want a wider view than the two prior papers give.</li>
+<li><span class="nt">K. Okamoto, T. Hasegawa, O. Ishida, A. Himeno, and Y. Ohmori, &ldquo;32 x 32 arrayed-waveguide grating multiplexer with uniform loss and cyclic frequency characteristics,&rdquo; IEEE Electron. Lett., vol. 33, pp. 1865&ndash;1866, 1997.</span><br><span class="nt">JOCN 2018</span> cites it as the source of the ULCF AWG.</li>
+<li><span class="nt">K. Ueda, Y. Mori, H. Hasegawa, K. Sato, and T. Watanabe, &ldquo;Novel large-port-count optical-switch architecture for optical interconnection in datacenter,&rdquo; ECOC 2014, We.3.5.1, 2014.</span><br><span class="nt">JOCN 2018</span> cites it for the earlier two-stage switch with single-input AWGs, which is the switch that <span class="nt">JOCN 2018</span> improves.</li>
+</ul>
+</section>
+<footer class="pager">
+<a class="prev" href="../START_HERE.html">&larr; <span class="nt">00</span> Start here</a>
+<a class="next" href="02_research_overview.html"><span class="nt">02</span> Research overview &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

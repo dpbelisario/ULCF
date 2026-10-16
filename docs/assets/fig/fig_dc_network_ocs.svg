@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="590" viewBox="0 0 1100 590">
+<defs>
+  <marker id="ar_opt" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="12" refX="13" refY="6" orient="auto"><path d="M0,0 L15,6 L0,12 z" fill="#C0392B"/></marker>
+  <marker id="ar_ele" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="12" refX="13" refY="6" orient="auto"><path d="M0,0 L15,6 L0,12 z" fill="#1F4E79"/></marker>
+  <marker id="ar_gry" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="12" refX="13" refY="6" orient="auto"><path d="M0,0 L15,6 L0,12 z" fill="#7F8C8D"/></marker>
+  <marker id="ar_amb" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="12" refX="13" refY="6" orient="auto"><path d="M0,0 L15,6 L0,12 z" fill="#B7791F"/></marker>
+</defs>
+<rect x="0" y="0" width="1100" height="590" fill="white"/>
+<text x="280" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="middle" fill="#222222" font-weight="bold">(a) Several stages of electrical switches</text>
+<line x1="205" y1="345" x2="182" y2="261" stroke="#E3B2AC" stroke-width="1.8"/>
+<line x1="355" y1="345" x2="378" y2="261" stroke="#E3B2AC" stroke-width="1.8"/>
+<line x1="80" y1="345" x2="102" y2="264" stroke="#C0392B" stroke-width="3.4" marker-end="url(#ar_opt)"/>
+<line x1="142" y1="205" x2="235" y2="144" stroke="#C0392B" stroke-width="3.4" marker-end="url(#ar_opt)"/>
+<line x1="325" y1="141" x2="418" y2="202" stroke="#C0392B" stroke-width="3.4" marker-end="url(#ar_opt)"/>
+<line x1="458" y1="261" x2="480" y2="342" stroke="#C0392B" stroke-width="3.4" marker-end="url(#ar_opt)"/>
+<rect x="195" y="85" width="170" height="56" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="280" y="109" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">Core switch</text>
+<text x="280" y="130" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1F4E79">O-E-O conversion</text>
+<rect x="57" y="205" width="170" height="56" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="142" y="229" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">Aggregation switch</text>
+<text x="142" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1F4E79">O-E-O conversion</text>
+<rect x="333" y="205" width="170" height="56" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="418" y="229" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">Aggregation switch</text>
+<text x="418" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1F4E79">O-E-O conversion</text>
+<rect x="30" y="345" width="100" height="120" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="30" y="345" width="100" height="42" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="80" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">ToR switch</text>
+<text x="80" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Rack 1</text>
+<text x="80" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">servers</text>
+<rect x="155" y="345" width="100" height="120" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="155" y="345" width="100" height="42" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="205" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">ToR switch</text>
+<text x="205" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Rack 2</text>
+<text x="205" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">servers</text>
+<rect x="305" y="345" width="100" height="120" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="305" y="345" width="100" height="42" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="355" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">ToR switch</text>
+<text x="355" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Rack 3</text>
+<text x="355" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">servers</text>
+<rect x="430" y="345" width="100" height="120" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="430" y="345" width="100" height="42" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="480" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">ToR switch</text>
+<text x="480" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Rack 4</text>
+<text x="480" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">servers</text>
+<text x="280" y="502" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">3 electrical switches between the two ToR switches:</text>
+<text x="280" y="523" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">3 optical-electrical-optical (O-E-O) conversions</text>
+<line x1="550" y1="60" x2="550" y2="530" stroke="#C3CAD0" stroke-width="1.2" stroke-dasharray="5,5"/>
+<text x="820" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="middle" fill="#222222" font-weight="bold">(b) One large optical circuit switch</text>
+<line x1="745" y1="345" x2="780" y2="250" stroke="#E3B2AC" stroke-width="1.8"/>
+<line x1="895" y1="345" x2="860" y2="250" stroke="#E3B2AC" stroke-width="1.8"/>
+<rect x="640" y="140" width="360" height="110" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="820" y="175" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="middle" fill="#222222" font-weight="bold">Optical circuit switch (OCS)</text>
+<text x="820" y="198" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">MN x MN ports, no O-E-O conversion</text>
+<path d="M620,345 L690,250 C690,210 950,210 950,250 L1020,343" fill="none" stroke="#C0392B" stroke-width="3.4" stroke-linejoin="round" marker-end="url(#ar_opt)"/>
+<rect x="570" y="345" width="100" height="120" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="570" y="345" width="100" height="42" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="620" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">ToR switch</text>
+<text x="620" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Rack 1</text>
+<text x="620" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">servers</text>
+<rect x="695" y="345" width="100" height="120" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="695" y="345" width="100" height="42" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="745" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">ToR switch</text>
+<text x="745" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Rack 2</text>
+<text x="745" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">servers</text>
+<rect x="845" y="345" width="100" height="120" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="845" y="345" width="100" height="42" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="895" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">ToR switch</text>
+<text x="895" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Rack 3</text>
+<text x="895" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">servers</text>
+<rect x="970" y="345" width="100" height="120" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<rect x="970" y="345" width="100" height="42" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="1020" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222" font-weight="bold">ToR switch</text>
+<text x="1020" y="418" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222222">Rack 4</text>
+<text x="1020" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">servers</text>
+<text x="820" y="502" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">Single hop: the signal stays optical</text>
+<text x="820" y="523" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">from ToR switch to ToR switch</text>
+<line x1="40" y1="562" x2="84" y2="562" stroke="#C0392B" stroke-width="3.4"/>
+<text x="92" y="567" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#222222">Path of one signal from rack 1 to rack 4</text>
+<line x1="420" y1="562" x2="464" y2="562" stroke="#E3B2AC" stroke-width="1.8"/>
+<text x="472" y="567" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#222222">Optical fiber link</text>
+<text x="640" y="567" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#7F8C8D">ToR = top of rack</text>
+</svg>

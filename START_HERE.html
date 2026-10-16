@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>00 Start here | Clos-ULCF starter</title>
+<link rel="stylesheet" href="docs/assets/site.css">
+<script src="docs/assets/mathjax_config.js"></script>
+<script defer src="docs/assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a class="current" href="START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="docs/01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="docs/02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="docs/03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="docs/04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="docs/11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="docs/12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="docs/13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="docs/14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="docs/15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="docs/16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="docs/17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="docs/21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="docs/22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="docs/23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="docs/91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Start</p>
+<h1><span class="num nt">00</span>Start here</h1>
+<p class="lead">This is the first page of your research package. It tells you what the package contains, how to set it up in MATLAB, and in which order to read the pages.</p>
+
+<div class="title-block"><p class="kicker">Your research theme</p><p class="paper-title">Large-Scale Three-Stage Optical Circuit Switch Using Low-Loss Wavelength Routing</p><p class="meta">Target conference: OECC 2027</p></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">What this package is</a></li>
+<li><a href="#s2">Set up in three steps</a></li>
+<li><a href="#s3">Reading order</a></li>
+<li><a href="#s4">What is given and what is yours</a></li>
+<li><a href="#s5">Working rules</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. What this package is</h2>
+<p>The title above is the working title of the paper that you will write. You are not expected to understand it yet: the pages of this package explain every term in it. The package holds three kinds of material.</p>
+<ul>
+<li><span class="tag read">read</span> <strong>Pages to read</strong>: 15 HTML pages in <code>docs/</code>, in addition to this one. They explain the research theme, the background knowledge, and the three switches that the research compares.</li>
+<li><span class="tag given">given</span> <strong>Code to run</strong>: complete MATLAB code in <code>matlab/</code> that passes its own tests. It consists of a library (a folder of functions that the scripts call), six demo scripts for the background pages, and the simulations of two baseline switches. A baseline is an existing design with which a new design is compared.</li>
+<li><span class="tag yours">yours</span> <strong>Code to build</strong>: three task files in <code>matlab/work/</code> for the proposed switch, which is the new design. Each file states a task and holds no solution. Writing this code is the main part of your research.</li>
+</ul>
+<figure id="f1"><img src="docs/assets/fig/fig_package_map.svg" alt="Map of the package: pages to read, given code to run, and your own code to build">
+<figcaption><b>Fig. 1.</b> The folders of the package. An arrow means "then": read the pages on the left, then turn to the code on the right. Your own code comes last, after the two baseline switches.</figcaption></figure>
+<p>You do not read all pages first and run all code afterwards. Go through Fig. 1 row by row: read the pages of a row and work with the code of the same row before you go on to the next row. <a href="#s3">Section 3</a> gives the exact order.</p>
+</section>
+
+<section id="s2">
+<h2>2. Set up in three steps</h2>
+<p>You need MATLAB R2020b or later. You need no toolbox: the code uses base MATLAB only. The package was tested with MATLAB R2025a on Windows.</p>
+<ol class="steps">
+<li><strong>Unzip the package.</strong> Unzip the file that you received. Find the folder that contains <code>START_HERE.html</code>, <code>docs</code> and <code>matlab</code>. Put this folder in a place whose path contains no spaces and only ASCII characters: English letters, digits, <code>_</code> and <code>-</code>. The examples on this page use <code>C:\research\clos_ulcf</code>. With a space in the path, the command <code>cd</code> of step 2 fails. The limit to ASCII characters is a precaution against problems with folder names. Do not move or rename anything inside the folder. Open <code>START_HERE.html</code> from this folder in a web browser. The pages work without an internet connection.</li>
+<li><strong>Set the MATLAB path.</strong> The search path is the list of folders in which MATLAB looks for functions and scripts. Start MATLAB, make the folder <code>matlab</code> of the package the current folder, and run <code>setup_path</code>.
+<pre><code>&gt;&gt; cd C:\research\clos_ulcf\matlab
+&gt;&gt; setup_path
+MATLAB version : 25.1.0.2973910 (R2025a) Update 1 (this package needs R2020b or later)
+Package folder : C:\research\clos_ulcf\matlab
+Path is set (lib, demos, main, work, tests).</code></pre>
+The first two output lines show your MATLAB version and the place of your folder <code>matlab</code>, so they differ on your PC. The path setting is not saved. Run <code>setup_path</code> again every time you start MATLAB.</li>
+<li><strong>Test the library.</strong> Run <code>run_all_tests</code>. It checks every function of the library, takes less than a minute and prints about 50 lines. Two figure windows open for a moment and close again; this is part of the test. Below, <code>...</code> stands for lines that are left out.
+<pre><code>&gt;&gt; run_all_tests
+Check 1 passed: attenuation
+Check 2 passed: calc_signal_power
+...
+test_lib_power_loss: all passed
+...
+test_lib_filters_qam: all passed
+...
+test_lib_edfa: all passed
+All tests passed.</code></pre>
+The last line must be <code>All tests passed.</code> If a check fails, MATLAB stops at this check and prints the reason in red. In that case do not go on. Look at the troubleshooting table in <a href="docs/04_matlab_guide.html#s7">section 7 of page 04</a>. If that does not help, send the complete red text to your supervisor.</li>
+</ol>
+</section>
+
+<section id="s3">
+<h2>3. Reading order</h2>
+<p>Read the pages in the order of their numbers. They form three groups. The glossary on <a href="docs/91_glossary.html">page 91</a> lists the technical terms with their Japanese words and their names in the code. Keep it open in a second browser tab.</p>
+
+<h3>First: orientation</h3>
+<div class="cards">
+<a class="card" href="docs/01_introduction.html"><span class="k nt">01</span><span class="t">Title and introduction</span><span class="d">The introduction of the paper that you will write, paragraph by paragraph, with a note in plain words after each paragraph.</span></a>
+<a class="card" href="docs/02_research_overview.html"><span class="k nt">02</span><span class="t">Research overview</span><span class="d">The three switches in one figure, the notation, and what the research will evaluate.</span></a>
+<a class="card" href="docs/03_workflow.html"><span class="k nt">03</span><span class="t">Workflow: what to do from here</span><span class="d">The phases of the project from set-up to the paper, each with a goal and a completion condition. You make the schedule.</span></a>
+<a class="card" href="docs/04_matlab_guide.html"><span class="k nt">04</span><span class="t">MATLAB guide</span><span class="d">The conventions of the code, how to read a library function, every given file at a glance, and troubleshooting.</span></a>
+</div>
+<div class="box note"><span class="label">Expect this</span>
+<p>Page 01 will not be fully clear when you read it for the first time. This is expected: it is the introduction of a research paper, and it uses terms that pages 11 to 22 explain. Read it now to see where the work is going. Read it again after page 22.</p></div>
+
+<h3>Second: background</h3>
+<p>Each of pages 12 to 17 has a demo script in <code>matlab/demos/</code>. Page 11 has none. Every background page has a section "Check your understanding" with questions. Read the page, run its demo, and answer the questions before you go on.</p>
+<div class="cards">
+<a class="card" href="docs/11_network_ocs_clos.html"><span class="k nt">11</span><span class="t">Datacenter networks, optical circuit switches and Clos networks</span><span class="d">Why a datacenter needs an optical switch with many ports, and how a network of three stages provides them.</span></a>
+<a class="card" href="docs/12_units_power_budget.html"><span class="k nt">12</span><span class="t">Units and power budget</span><span class="d">Powers in dBm, losses in dB, and how the losses of a switch add up. Demo: <code>demo12_units_power_budget</code></span></a>
+<a class="card" href="docs/13_waveform_fft_filter.html"><span class="k nt">13</span><span class="t">Waveforms, FFT and filters</span><span class="d">From one sample per symbol to a waveform, and filtering in the frequency domain. Demo: <code>demo13_waveform_fft_filter</code></span></a>
+<a class="card" href="docs/14_coherent_rx_dsp_ber.html"><span class="k nt">14</span><span class="t">Coherent receiver, DSP and BER</span><span class="d">How the receiver selects one wavelength, recovers the symbols and counts the bit errors. Demo: <code>demo14_coherent_rx_dsp_ber</code></span></a>
+<a class="card" href="docs/15_edfa_ase.html"><span class="k nt">15</span><span class="t">EDFA and ASE noise</span><span class="d">The erbium-doped fiber amplifier (EDFA) and the amplified spontaneous emission (ASE) noise that it adds; why a loss in front of the amplifier costs the most. Demo: <code>demo15_edfa_ase</code></span></a>
+<a class="card" href="docs/16_space_switch_crosstalk.html"><span class="k nt">16</span><span class="t">Space switches and crosstalk</span><span class="d">Selectors and couplers, and crosstalk: unwanted light that leaks through a switch. Demo: <code>demo16_space_switch_crosstalk</code></span></a>
+<a class="card" href="docs/17_awg_wavelength_routing.html"><span class="k nt">17</span><span class="t">AWG and wavelength routing</span><span class="d">The arrayed-waveguide grating (AWG), which sends each wavelength to its own output port, and the uniform-loss and cyclic-frequency (ULCF) AWG with several input ports. Demo: <code>demo17_awg_wavelength_routing</code></span></a>
+</div>
+
+<h3>Third: research</h3>
+<p>Pages 21 and 22 each describe one baseline switch together with the scripts in <code>matlab/main/</code> that simulate it. Page 23 states your three tasks.</p>
+<div class="cards">
+<a class="card" href="docs/21_two_stage_ulcf_switch.html"><span class="k nt">21</span><span class="t">Two-stage ULCF switch (prior work)</span><span class="d">The first baseline, block by block. Scripts: <code>step21_two_stage_one_point</code>, <code>main_two_stage_ULCF</code></span></a>
+<a class="card" href="docs/22_three_stage_conventional.html"><span class="k nt">22</span><span class="t">Conventional three-stage switch</span><span class="d">The second baseline and its weak point. Scripts: <code>step22_three_stage_one_point</code>, <code>main_three_stage_conventional</code></span></a>
+<a class="card" href="docs/23_three_stage_proposal.html"><span class="k nt">23</span><span class="t">Proposed three-stage switch: your work</span><span class="d">The idea of the proposed switch, the open questions and your three tasks. Files: <code>work1_wavelength_rule</code>, <code>work2_three_stage_proposed</code>, <code>work3_comparison</code></span></a>
+</div>
+</section>
+
+<section id="s4">
+<h2>4. What is given and what is yours</h2>
+<p>Table 1 lists every folder of the package. One rule is behind it: the given files stay as they are, and everything that you write goes into <code>matlab/work/</code>.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. The folders of the package and what you may do with them.</caption>
+<thead><tr><th>Folder or file</th><th>Content</th><th>Status</th><th>May you edit it?</th></tr></thead>
+<tbody>
+<tr><td><code>START_HERE.html</code>, <code>docs/</code></td><td>This page and 15 further pages</td><td><span class="tag read">read</span></td><td>No. Read them.</td></tr>
+<tr><td><code>matlab/setup_path.m</code></td><td>Script that sets the MATLAB path</td><td><span class="tag given">given</span></td><td>No. Run it in every MATLAB session.</td></tr>
+<tr><td><code>matlab/lib/</code></td><td>The library: 23 functions for the transmitter, filters, power and loss, amplifier, AWG, receiver and plots</td><td><span class="tag given">given</span></td><td>No. Read the functions and call them.</td></tr>
+<tr><td><code>matlab/tests/</code></td><td><code>run_all_tests</code> and three test scripts for the library</td><td><span class="tag given">given</span></td><td>No. Run them.</td></tr>
+<tr><td><code>matlab/demos/</code></td><td>Six demo scripts, one for each of pages 12 to 17</td><td><span class="tag given">given</span></td><td>Only to try a value (see the note below).</td></tr>
+<tr><td><code>matlab/main/</code></td><td>Four scripts for the two baseline switches. Each switch has a step script (<code>step...</code>), which simulates one setting, and a main script (<code>main_...</code>), which repeats this simulation for many settings.</td><td><span class="tag given">given</span></td><td>Only to try a value (see the note below).</td></tr>
+<tr><td><code>matlab/ref_data/</code></td><td>Four CSV files with reference values for the two baseline switches</td><td><span class="tag given">given</span></td><td>No.</td></tr>
+<tr><td><code>matlab/work/</code></td><td>Three task files: <code>work1_wavelength_rule.m</code>, <code>work2_three_stage_proposed.m</code>, <code>work3_comparison.m</code></td><td><span class="tag yours">yours</span></td><td>Yes. This folder is yours. Add as many files as you need.</td></tr>
+<tr><td><code>matlab/results/</code></td><td>Output files of the two main scripts (<code>.mat</code>, <code>.csv</code>, <code>.png</code>). Each file name carries the time of the run. A main script creates the folder if it does not exist.</td><td>created by runs</td><td>No. Never change a file here by hand.</td></tr>
+</tbody></table></div>
+<div class="box note"><span class="label">Copy before you change</span>
+<p>There are two kinds of change in a demo script or in a script of <code>matlab/main/</code>.</p>
+<ul>
+<li><strong>You try a value.</strong> The pages and the script headers ask you to change a parameter value in section 1 of a script and to run the script again. Do this in the given file, and set the value back afterwards.</li>
+<li><strong>Every other change.</strong> Save a copy of the script in <code>matlab/work/</code> under a new name, for example <code>my_step21.m</code>, and change the copy. The new name is necessary: <code>matlab/demos/</code> and <code>matlab/main/</code> come before <code>matlab/work/</code> on the search path, so MATLAB can run the original in place of a copy with the same name.</li>
+</ul>
+<p>If you are not sure that a given file is still the original, take it from the zip file again.</p></div>
+</section>
+
+<section id="s5">
+<h2>5. Working rules</h2>
+<p>These five rules keep your results reproducible. Reproducible means that you, or another person, can obtain the same result again later.</p>
+<ul>
+<li><strong>Keep <code>run_all_tests</code> passing.</strong> Run it on the first day, and again whenever you suspect that a given file has changed. A result that was produced while a test fails is not valid. Every test script starts with <code>clear; close all</code>, so <code>run_all_tests</code> deletes your variables and closes your figures.</li>
+<li><strong>Never edit a number by hand.</strong> Every number in a table or a figure is the output of a script. If a number is wrong, correct the script and run it again.</li>
+<li><strong>Every figure comes from a saved result file.</strong> This holds for every figure that you show to another person. The result file stores the parameters and the seed together with the result. The seed is the number that you give to <code>rng</code>. It fixes the random numbers, so that a run can be repeated exactly. The two main scripts already work this way: each run saves a <code>.mat</code> file with all parameters, the seed and all results. Do the same in your own scripts.</li>
+<li><strong>Write down what you changed and why.</strong> Keep a notebook. For every run that matters, note the date, the script, the change, the reason and the name of the result file.</li>
+<li><strong>When a result surprises you, check a limit case before you believe it.</strong> A limit case is a setting for which you know the answer in advance. One example: without noise, the bit error ratio must be 0. Page 23 lists checks of this kind for your own code.</li>
+</ul>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li><code>run_all_tests</code> ends with <code>All tests passed.</code> on your PC.</li>
+<li>You can say which folder is yours, and when you must copy a given script before you change it.</li>
+<li>You can state the five working rules.</li>
+</ul>
+<p>Then go on to <a href="docs/01_introduction.html">page 01</a>.</p></div>
+</section>
+<footer class="pager">
+<a class="next" href="docs/01_introduction.html"><span class="nt">01</span> Introduction &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

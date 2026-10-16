@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02 Research overview | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a class="current" href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Orientation</p>
+<h1><span class="num nt">02</span>Research overview</h1>
+<p class="lead">This page gives the overview of the research. It states the research question, shows the three switches that the paper compares in one figure, defines the symbols, and lists what will be evaluated and from which file each evaluation starts. The later pages give the details.</p>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">The question and the three switches</a></li>
+<li><a href="#s2">The three architectures in one figure</a></li>
+<li><a href="#s3">Notation, port count and throughput</a></li>
+<li><a href="#s4">What limits each switch</a></li>
+<li><a href="#s5">What will be evaluated</a></li>
+<li><a href="#s6">The experiment in outline</a></li>
+<li><a href="#s7">Where to go next</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. The question and the three switches</h2>
+<p>An <strong>optical circuit switch</strong> connects each of its input ports to one output port. The signal stays light all the way: the switch never converts it to an electrical signal. The size of the switch is its <strong>port count</strong>: the number of input ports, which is also the number of output ports. A large switch is built from smaller switches, the <strong>sub-switches</strong>. They are arranged in <strong>stages</strong>: every signal passes one sub-switch of each stage, one after the other.</p>
+<p>A connection <em>works</em> when the receiver can correct its bit errors. Forward error correction (FEC) is a code that removes the bit errors as long as the bit error ratio (BER) before the correction is at most a limit, the FEC limit. In this project the FEC limit is \(10^{-2}\) (<code>BER_limit = 1e-2</code>).</p>
+<div class="box"><span class="label">The question</span>
+<p>When the middle stage of a three-stage optical circuit switch uses the low-loss wavelength routing of ULCF AWGs, how far can the port count and the throughput grow, how simple can the third stage become, and under which traffic conditions does this gain hold?</p></div>
+<p>This page explains every term of this sentence: the stages and the ULCF AWG in section 2, the port count and the throughput in section 3, the simple third stage in section 4, and the traffic conditions in section 5.</p>
+<p>The planned paper answers the question by comparing three switches. Two of them are published work, and this package holds finished code for them. The third one is your work. Table 1 names the three switches. Section 2 explains the terms that the table uses.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. The three switches that the paper compares.</caption>
+<thead><tr><th>Switch</th><th>Name and idea</th><th>Source</th><th>Status</th><th>Page</th></tr></thead>
+<tbody>
+<tr><td>(a)</td><td><strong>Two-stage ULCF switch.</strong> Space switches, then wavelength-routing (WR) switches in which the one large aggregation coupler is split into \(K\) small couplers.</td><td><span class="nt">Nagai et al., J. Opt. Commun. Netw., 2018</span></td><td><span class="tag given">given</span></td><td><a href="21_two_stage_ulcf_switch.html">21</a></td></tr>
+<tr><td>(b)</td><td><strong>Conventional three-stage switch.</strong> Space switches, WR switches, space switches. Every WR switch has one large aggregation coupler.</td><td><span class="nt">Mitsuya et al., J. Lightw. Technol., 2025</span> (its Scheme A)</td><td><span class="tag given">given</span></td><td><a href="22_three_stage_conventional.html">22</a></td></tr>
+<tr><td>(c)</td><td><strong>Proposed three-stage switch.</strong> The three stages of (b), with the WR switches of (a) in the middle stage.</td><td>The planned paper</td><td><span class="tag yours">yours</span></td><td><a href="23_three_stage_proposal.html">23</a></td></tr>
+</tbody></table></div>
+<p>The pages and the code call the paper of Nagai et al. the JOCN paper (JOCN 2018) and the paper of Mitsuya et al. the JLT paper (JLT 2025). The full references are on page <a href="01_introduction.html">01</a>.</p>
+</section>
+
+<section id="s2">
+<h2>2. The three architectures in one figure</h2>
+<p>The three switches are built from the same few elements. Table 2 says in one or two sentences what each element does. The background pages explain them in detail.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. The elements of Fig. 1.</caption>
+<thead><tr><th>Element</th><th>What it does</th><th>Page</th></tr></thead>
+<tbody>
+<tr><td>Transmitter (Tx)</td><td>Sends one signal. Its laser is tunable: it can be set to any of the \(N\) wavelength channels. A wavelength channel is one of the optical frequencies that the switch uses; the two papers place 96 of them at intervals of 50 GHz.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td>Selector, \(1 \times M\)</td><td>A switch that connects its single port to one of \(M\) ports. Its loss is low. A port that is switched off still passes a little light; the extinction ratio (ER) says how much weaker this light is than the signal.</td><td><a href="16_space_switch_crosstalk.html">16</a></td></tr>
+<tr><td>Coupler, \(M \times 1\)</td><td>A passive element that adds the light of all its inputs into one output. Its loss is high. It needs no control, and it cannot block anything.</td><td><a href="16_space_switch_crosstalk.html">16</a></td></tr>
+<tr><td>Space switch, \(M \times M\)</td><td>A selector at every input and a selector or a coupler at every output. It connects any input to any output, whatever the wavelength. With couplers at the outputs it is called a delivery-and-coupling (DC) switch.</td><td><a href="16_space_switch_crosstalk.html">16</a></td></tr>
+<tr><td>EDFA</td><td>An erbium-doped fiber amplifier. It restores the optical power, and it adds noise.</td><td><a href="15_edfa_ase.html">15</a></td></tr>
+<tr><td>AWG</td><td>An arrayed-waveguide grating. It separates wavelengths: light that enters its input port leaves at the output port that belongs to its wavelength channel.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td>ULCF AWG</td><td>An AWG that can be used with several input ports (ULCF = uniform loss and cyclic frequency). The wavelength channel that reaches a given output port depends on the input port through which the signal enters.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td>\(1 \times 2\) splitter</td><td>Divides the light at its input between its two outputs: each output carries all the signals. In Fig. 1 it feeds the two ULCF AWGs of a pair. The JOCN paper has a de-interleaver at this place; page 17 explains the difference.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td>Wavelength-routing (WR) switch, \(N \times N\)</td><td>A coupler that collects the input signals (the aggregation coupler), an EDFA and an AWG. The transmitter chooses the output port by choosing its wavelength.</td><td><a href="17_awg_wavelength_routing.html">17</a></td></tr>
+<tr><td>Receiver (Rx)</td><td>A coherent receiver. It detects the one wavelength channel that its own laser, the local oscillator (LO), selects.</td><td><a href="14_coherent_rx_dsp_ber.html">14</a></td></tr>
+</tbody></table></div>
+<figure id="f1"><img src="assets/fig/fig_three_architectures.svg" alt="Block diagrams of the two-stage ULCF switch, the conventional three-stage switch and the proposed three-stage switch">
+<figcaption><b>Fig. 1.</b> The three switches of the comparison, drawn with the same symbols. The red line follows one signal from its transmitter (Tx) to its receiver (Rx); the gray lines are the other ports. The parts of (c) that are marked in amber are new: the middle stage of (b) is replaced by the WR switches of (a), and the first-stage switches are divided into input groups. Panel (a) is redrawn after Fig. 4 of Nagai et al., with <span class="nt">1 × 2</span> splitters in place of its de-interleavers; panel (b) is redrawn after Fig. 4(a) of Mitsuya et al.</figcaption></figure>
+<p>In Fig. 1, \(N\) is the number of wavelength channels, \(M\) is the size of a space switch, and \(K\) is the number of AWG input ports that are used (section 3). The signal that the red line follows is the <strong>target signal</strong>; the comments in the code call it the target. Read each panel from left to right and look for four things: the path of the target signal, what sets its wavelength, the loss before the EDFA, and the places where crosstalk enters.</p>
+<p><strong>Crosstalk</strong> is light of other signals that reaches the receiver together with the target signal. One such unwanted contribution is called a leak. A leak on the wavelength of the target signal is <strong>in-band crosstalk</strong>: no filter can remove it. A leak on another wavelength is <strong>out-of-band crosstalk</strong>.</p>
+
+<h3>(a) Two-stage ULCF switch</h3>
+<ul>
+<li><strong>Path.</strong> The transmitter is connected to one input of a DC switch. The selector at this input sends the target signal to one of the \(M\) outputs of the DC switch, and each output is wired to one of the \(M\) WR switches. In the WR switch a coupler adds the target signal to the signals of other DC switches, an EDFA amplifies them together, and a \(1 \times 2\) splitter sends them to both AWGs of a pair of ULCF AWGs. The pair routes every signal to the output port that belongs to its wavelength; one AWG has the odd-numbered output ports of the WR switch, the other AWG has the even-numbered ones. One receiver is connected to each output port.</li>
+<li><strong>Wavelength.</strong> The receiver sits at a fixed output port of the AWG. Which wavelength channel reaches this port depends on the input port of the AWG, that is, on the coupler through which the signal enters. The transmitter tunes its laser to this channel (function <code>awg_channel</code>, page <a href="17_awg_wavelength_routing.html">17</a>).</li>
+<li><strong>Loss before the EDFA.</strong> The DC switch (one selector and one coupler) and the aggregation coupler. Each of the two ULCF AWGs has \(K\) input ports, so the \(N\) inputs of the WR switch are divided among \(K\) couplers of size \((N/K) \times 1\); one coupler of size \(N \times 1\) is not needed. A smaller coupler has less loss. This is the “low-loss wavelength routing” of the paper title. Its price is \(K\) EDFAs for every WR switch.</li>
+<li><strong>Crosstalk.</strong> It enters at two places. In the DC switch the selectors of the other \(M-1\) inputs leak into the coupler at the output of the target signal. In the ULCF AWG a signal of the same wavelength that enters another input port leaks to the output port of the target signal: up to \(K-1\) leaks.</li>
+</ul>
+
+<h3>(b) Conventional three-stage switch</h3>
+<ul>
+<li><strong>Path.</strong> A first-stage space switch (a selector at the input, a selector at the output) sends the target signal to one of the \(M\) WR switches of the middle stage. There one \(N \times 1\) aggregation coupler collects the signals of all \(N\) first-stage switches, one EDFA amplifies them, and an AWG with a single input separates them. Output \(j\) of every WR switch is wired to third-stage space switch \(j\), and this switch connects the target signal to its receiver.</li>
+<li><strong>Wavelength.</strong> The AWG has one input, so its output port \(j\) passes only wavelength channel \(j\). Every signal that goes to third-stage switch \(j\) therefore has wavelength \(j\), whichever first-stage switch it comes from and whichever WR switch carries it.</li>
+<li><strong>Loss before the EDFA.</strong> The two selectors of the first-stage switch and the \(N \times 1\) aggregation coupler. The coupler is by far the larger part (section 4).</li>
+<li><strong>Crosstalk.</strong> In the first-stage switch a leak has to pass two selectors that are switched off: the selector at its own input and the selector at the output of the target signal. The \(M\) inputs of third-stage switch \(j\) come from the \(M\) WR switches, one from output \(j\) of each, so each of them carries wavelength \(j\) only. Every leak there is therefore in band. With selectors at the outputs (Scheme A1) a leak again passes two selectors that are switched off. With couplers at the outputs (Scheme A2) the switch needs fewer elements, but only one selector blocks a leak.</li>
+</ul>
+
+<h3>(c) Proposed three-stage switch</h3>
+<ul>
+<li><strong>Path.</strong> The first and third stages are those of (b). The middle stage is built like the WR switch of (a). The \(N\) first-stage switches are divided into \(K\) <strong>input groups</strong>. In every WR switch, each group has its own \((N/K) \times 1\) coupler, EDFA and \(1 \times 2\) splitter, and its signals enter one input port of each of the two ULCF AWGs.</li>
+<li><strong>Wavelength.</strong> The wavelength channel now depends on two things: the third-stage switch (the output port of the AWG) and the input group of the first-stage switch (the input port of the AWG). All WR switches of the middle stage use the same division into input groups. The aim of this rule is that the wavelength of a connection does not depend on the WR switch that carries it. Finding the wavelength rule and checking this property is your first task (page <a href="23_three_stage_proposal.html">23</a>).</li>
+<li><strong>Loss before the EDFA.</strong> The two selectors of the first-stage switch and one small coupler, as in (a).</li>
+<li><strong>Crosstalk.</strong> The ULCF AWG adds its own leaks, as in (a). The new point is the third stage: signals from different input groups reach the same third-stage switch on different wavelengths. A leak on another wavelength is out of band, and a coherent receiver can reject it when the frequency difference is large enough (page <a href="14_coherent_rx_dsp_ber.html">14</a>). How many leaks stay in band, and what the switch gains from this, is the core of your research.</li>
+</ul>
+</section>
+
+<section id="s3">
+<h2>3. Notation, port count and throughput</h2>
+<p>Every page uses the symbols of Table 3, and the code uses the variable names in the third column. The size of a space switch is not stored in a variable named <code>M</code>. The two-stage scripts keep the name <code>dcs_input_port_num</code> of the earlier laboratory code. The three-stage scripts write <code>sw_size</code>, because the laboratory code already uses the letter <code>M</code> for the order of the equalizer. In the last column, “two-stage” means <code>step21_two_stage_one_point</code> and <code>main_two_stage_ULCF</code>, and “three-stage” means <code>step22_three_stage_one_point</code> and <code>main_three_stage_conventional</code>.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. Notation of all pages, with the values in the given scripts.</caption>
+<thead><tr><th>Symbol</th><th>Meaning</th><th>Code variable</th><th>Value in the given scripts</th></tr></thead>
+<tbody>
+<tr><td>\(N\)</td><td>Number of wavelength channels = size of a WR switch = number of first-stage (and third-stage) space switches</td><td><code>N</code></td><td class="nt">96</td></tr>
+<tr><td>\(M\)</td><td>Size of a space switch (\(M \times M\)) = number of WR switches</td><td><code>dcs_input_port_num</code>, <code>sw_size</code></td><td>two-stage: <span class="nt">2, 4, 8, 16, 32</span><br>three-stage: <span class="nt">16, 32, 64, 128</span></td></tr>
+<tr><td>\(K\)</td><td>Number of input ports of the ULCF AWG that are used = number of aggregation couplers and EDFAs per WR switch (the JOCN paper writes \(n\))</td><td><code>ULCF_deg</code></td><td class="nt">1, 2, 4, 8, 12</td></tr>
+<tr><td>\(MN\)</td><td>Port count of the whole switch</td><td class="nt">–</td><td>two-stage: <span class="nt">192 … 3072</span><br>three-stage: <span class="nt">1536 … 12288</span></td></tr>
+<tr><td>\(P_{\mathrm{Tx}}\)</td><td>Transmitter power, both polarizations together [dBm]</td><td><code>PTx</code>, list <code>pin_ary</code></td><td>two-stage: <span class="nt">-20 … 10 dBm</span><br>three-stage: <span class="nt">-10 … 10 dBm</span></td></tr>
+<tr><td>\(B\)</td><td>Symbol rate (baud rate) [Hz]; 1 GBd (gigabaud) is \(10^{9}\) symbols per second</td><td><code>baudrate</code></td><td>two-stage: <span class="nt">24 GBd</span><br>three-stage: <span class="nt">32 GBd</span></td></tr>
+<tr><td>\(F_s\)</td><td>Sampling rate of the simulation = <code>up</code> × <code>baudrate</code> [Hz]; <code>up</code> is the oversampling rate (samples per symbol), and the two-stage and the three-stage scripts set <code>up = 2</code></td><td><code>Fs</code></td><td>two-stage: <span class="nt">48 GHz</span><br>three-stage: <span class="nt">64 GHz</span></td></tr>
+<tr><td>\(k\)</td><td>Bits per symbol (2 QPSK, 4 16QAM, 5 32QAM, 6 64QAM)</td><td><code>mod_flag</code></td><td>two-stage: <span class="nt">5</span><br>three-stage: <span class="nt">4</span></td></tr>
+<tr><td>\(G,\ F\)</td><td>Gain and noise figure of an amplifier (linear); the code holds the noise figure in dB</td><td><code>NF</code>, <code>NF2</code></td><td><code>NF</code>: <span class="nt">5 dB</span> (two-stage), <span class="nt">6 dB</span> (three-stage)<br><code>NF2</code>: <span class="nt">4 dB</span></td></tr>
+<tr><td>\(P_{\mathrm{sat}}\)</td><td>Saturation (total) output power of an EDFA [dBm]</td><td><code>edfa_sat1</code>, <code>edfa_sat2</code></td><td class="nt">20 dBm, 10 dBm</td></tr>
+<tr><td>\(\mathrm{ER}\)</td><td>Extinction ratio of a selector [dB]</td><td><code>dcs_ex_ratio</code>, <code>sel_ex_ratio</code></td><td>two-stage: <span class="nt">36 dB</span><br>three-stage: <span class="nt">35 dB</span></td></tr>
+<tr><td>\(\mathrm{XT}_{\mathrm{AWG}}\)</td><td>AWG crosstalk level [dB]: one leak from another input port of the ULCF AWG is this far below the signal at the same output port</td><td><code>AWG_XT</code></td><td>two-stage: <span class="nt">32 dB</span></td></tr>
+<tr><td>\(h\nu\)</td><td>Photon energy at 1550 nm</td><td><code>h*f</code> in <code>amplified_by_EDFA3</code></td><td class="nt">1.28e-19 J</td></tr>
+</tbody></table></div>
+<div class="box note"><span class="label">Note</span>
+<p>Three demos set a larger oversampling rate than the scripts of Table 3. <code>demo13_waveform_fft_filter</code> sets <code>up = 4</code>, so that its plot shows the shape of the waveform between the symbols. <code>demo14_coherent_rx_dsp_ber</code> and <code>demo16_space_switch_crosstalk</code> set <code>up = 5</code>, because their simulated band, which is \(F_s\) wide, must also hold a signal on the next wavelength channel, 50 GHz away. The two-stage and the three-stage scripts need no such room: every signal there is on the wavelength of the target signal (<code>step21_two_stage_one_point</code> explains this in its note on <code>up</code>).</p></div>
+<p>For this page you need only \(N\), \(M\) and \(K\). The background pages define the other symbols; come back to this table when you meet them.</p>
+
+<h3>Port count and throughput</h3>
+<p>The port count is \(MN\): there are \(N\) first-stage switches with \(M\) input ports each. The <strong>throughput</strong> is the port count times the bit rate of one port. For example, with \(N = 96\) and \(M = 128\) the switch has <span class="nt">96 × 128 = 12288</span> ports. At <span class="nt">200 Gbit/s</span> per port its throughput is <span class="nt">12288 × 200 Gbit/s = 2457.6 Tbit/s</span>.</p>
+<p>The value <span class="nt">200 Gbit/s</span> is the bit rate of one port in the JLT paper. Its signal is polarization-multiplexed 16QAM at <span class="nt">32 GBd</span>: the two polarizations of the light carry two independent signals (page <a href="14_coherent_rx_dsp_ber.html">14</a>), and each symbol carries \(k = 4\) bits. Such a signal carries <span class="nt">2 × 4 × 32 GBd = 256 Gbit/s</span>. The paper counts <span class="nt">200 Gbit/s</span> of this as the net capacity of a port. The other <span class="nt">56 Gbit/s</span> is overhead that carries no user data, for example the check bits of the FEC; the paper does not list it.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. Port count and throughput for \(N = 96\) and 200 Gbit/s per port.</caption>
+<thead><tr><th class="num">\(M\)</th><th class="num">Port count \(MN\)</th><th class="num">Throughput [Tbit/s]</th></tr></thead>
+<tbody>
+<tr><td class="num nt">16</td><td class="num nt">1536</td><td class="num nt">307.2</td></tr>
+<tr><td class="num nt">32</td><td class="num nt">3072</td><td class="num nt">614.4</td></tr>
+<tr><td class="num nt">64</td><td class="num nt">6144</td><td class="num nt">1228.8</td></tr>
+<tr><td class="num nt">128</td><td class="num nt">12288</td><td class="num nt">2457.6</td></tr>
+</tbody></table></div>
+<p>These four sizes are the target port counts of the JLT paper, and <code>main_three_stage_conventional</code> searches them (<code>list_sw_size = [16 32 64 128]</code>). The two-stage scripts use another signal: 32QAM, that is \(k = 5\), at <span class="nt">24 GBd</span>. Which bit rate per port the comparison uses is a part of the common parameter set that you choose (section 5).</p>
+</section>
+
+<section id="s4">
+<h2>4. What limits each switch</h2>
+<p>Two effects limit the size of a switch, and a third quantity is its price.</p>
+<ul>
+<li><strong>Loss before the EDFA.</strong> An EDFA adds noise, and the signal-to-noise ratio (SNR) after it is set by the signal power at its input (page <a href="15_edfa_ase.html">15</a>). As long as this noise limits the connection, every decibel that is lost before the EDFA must be paid with one decibel of transmitter power.</li>
+<li><strong>In-band crosstalk.</strong> It disturbs the signal like noise, but it grows together with the signal. More transmitter power does not help: crosstalk puts a ceiling on the SNR.</li>
+<li><strong>Hardware count.</strong> A \(1 \times M\) selector is a tree of \(M-1\) switch elements; the JLT paper calls them \(1 \times 2\) selectors. The JLT paper counts these \(1 \times 2\) switch elements and the EDFAs that a switch needs, and the JOCN paper counts the DC switches, the EDFAs, the \(1 \times 2\) splitters (de-interleavers in that paper) and the AWGs. Both divide the numbers by the port count.</li>
+</ul>
+<p>Table 5 gives the numbers for \(M = 64\) and \(N = 96\), that is, for 6144 ports. A loss is given in decibels (dB), and a power in dBm, that is, in decibels relative to 1 mW. The losses of the elements that a signal passes one after the other add up. The loss of one element follows the rules of page <a href="12_units_power_budget.html">12</a>: a selector costs <span class="nt">0.5 dB</span> and a coupler <span class="nt">3.5 dB</span> for every factor of two in its number of ports, rounded up (functions <code>selector_loss</code>, <code>coupler_loss</code> and <code>DCS_loss</code>). A size of 64 is 6 factors of two, a size of 96 counts as 7, and a size of 8 is 3. With these functions the loss before the EDFA is one line of MATLAB for each switch:</p>
+<pre><code>DCS_loss(64) + coupler_loss(96)           % (a), K = 1 : 24 + 24.5 = 48.5 dB
+DCS_loss(64) + coupler_loss(96/12)        % (a), K = 12: 24 + 10.5 = 34.5 dB
+2*selector_loss(64) + coupler_loss(96)    % (b)        :  6 + 24.5 = 30.5 dB</code></pre>
+<div class="tablewrap"><table class="data">
+<caption>Table 5. The limits of the three switches for \(M = 64\), \(N = 96\). Rows: (a) two-stage ULCF switch, (b) conventional three-stage switch with a third stage of Scheme A1 or A2, (c) proposed three-stage switch. Hardware counts after Table IV of Mitsuya et al. and Table III of Nagai et al.</caption>
+<thead><tr><th>Switch</th><th>Loss before the EDFA</th><th>Third-stage crosstalk</th><th>Hardware count per port</th></tr></thead>
+<tbody>
+<tr><td>(a)</td><td>DC switch and aggregation coupler.<br>\(K = 1\): <span class="nt">48.5 dB</span><br>\(K = 12\): <span class="nt">34.5 dB</span></td><td>None: there is no third stage. Leaks arise in the DC switch and in the ULCF AWG (section&nbsp;2).</td><td>\(1 \times 2\) switch elements: \(M-1 = 63\)<br>EDFAs: \(K/N\), that is <span class="nt">1/96</span> for \(K = 1\) and <span class="nt">12/96</span> for \(K = 12\)</td></tr>
+<tr><td>(b) A1</td><td>Two selectors and aggregation coupler.<br><span class="nt">30.5 dB</span></td><td>63 leaks, all in band. Each one is \(2\,\mathrm{ER}\) = <span class="nt">70 dB</span> below the target signal. Signal-to-crosstalk ratio: <span class="nt">52.0&nbsp;dB</span></td><td>\(1 \times 2\) switch elements: \(4(M-1) = 252\)<br>EDFAs: \(1/N\) = <span class="nt">1/96</span></td></tr>
+<tr><td>(b) A2</td><td>As Scheme A1.<br><span class="nt">30.5 dB</span></td><td>63 leaks, all in band. Each one is \(\mathrm{ER}\) = <span class="nt">35 dB</span> below the target signal. Signal-to-crosstalk ratio: <span class="nt">17.0&nbsp;dB</span></td><td>\(1 \times 2\) switch elements: \(3(M-1) = 189\)<br>EDFAs: \(1/N\) = <span class="nt">1/96</span></td></tr>
+<tr><td>(c)</td><td>The first stage is unchanged. The one <span class="nt">96 × 1</span> coupler becomes \(K\) couplers of size \((96/K) \times 1\), so the loss is smaller. To be evaluated by you.</td><td>The third-stage switch is unchanged, so one leak is as strong as in Scheme A1 or A2. The leaks no longer all have the wavelength of the target signal: this depends on the input groups they come from. To be evaluated by you.</td><td>The space switches are unchanged. Every WR switch has \(K\) EDFAs, \(K\) \(1 \times 2\) splitters and a pair of ULCF AWGs where (b) has one EDFA and one AWG. To be evaluated by you.</td></tr>
+</tbody></table></div>
+<p>The <strong>signal-to-crosstalk ratio</strong> is the power of the target signal divided by the power of all leaks together. For \(M-1\) leaks of equal power, each \(\mathrm{ER}\) below the target signal, it is</p>
+<div class="eq" id="e1"><div class="m">\[ \mathrm{ER} - 10\log_{10}(M-1) = 35 - 10\log_{10}63 = 17.0\ \mathrm{dB} \]</div><span class="eqno nt">(1)</span></div>
+<p>for Scheme A2. For Scheme A1 the same formula with \(2\,\mathrm{ER}\) gives <span class="nt">52.0 dB</span>. Page <a href="16_space_switch_crosstalk.html">16</a> derives it.</p>
+<p>Three things can be read from Table 5.</p>
+<ul>
+<li>At the same port count the three-stage switch loses <span class="nt">18 dB</span> less before the EDFA than the two-stage switch with \(K = 1\). The reason is the output side of the first switch: a selector (<span class="nt">3 dB</span>) in the three-stage switch, a coupler (<span class="nt">21 dB</span>) in the DC switch. The JLT paper reports the consequence: with its 200-Gbit/s signal and a transmitter power of at most <span class="nt">5&nbsp;dBm</span>, its two-stage switch with one large coupler cannot have more than 1000 ports.</li>
+<li>In the conventional three-stage switch the aggregation coupler causes most of the loss before the EDFA: <span class="nt">24.5 dB</span> of <span class="nt">30.5 dB</span>.</li>
+<li>Scheme A2 saves a quarter of the selectors, but its third-stage crosstalk is close to what the receiver tolerates. The crosstalk alone limits the SNR to <span class="nt">17.0 dB</span>, and the receiver of the simulation needs an SNR of <span class="nt">14.0 dB</span> at the FEC limit for 16QAM (header of <code>main_three_stage_conventional.m</code>). The coupler of Scheme A2 also raises the loss of the third-stage switch from <span class="nt">6 dB</span> to <span class="nt">24 dB</span>. This loss is after the EDFA, where it lowers the SNR far less than the same loss before the EDFA (page <a href="15_edfa_ase.html">15</a>).</li>
+</ul>
+<div class="box"><span class="label">Key idea</span>
+<p>The proposed switch addresses both limits of the conventional three-stage switch at the same time. Smaller couplers reduce the loss before the EDFA. Different wavelengths at a third-stage switch can reduce the in-band crosstalk, which is the limit of the simple third stage of Scheme A2. The price is a larger number of EDFAs.</p></div>
+<div class="box note"><span class="label">Note</span>
+<p>Row (a) of Table 5 is a calculation for the port count of the other rows: <code>main_two_stage_ULCF</code> searches DC switches only up to \(M = 32\). The given two-stage scripts also add <span class="nt">3 dB</span> before the DC switch for the fan-in and fan-out devices of a multicore fiber (<code>fiber_flag = 1</code>). This is a setting of the earlier study (<a href="21_two_stage_ulcf_switch.html">page 21</a> explains the multicore fiber), and Table 5 leaves it out. Section 5 comes back to such differences.</p></div>
+</section>
+
+<section id="s5">
+<h2>5. What will be evaluated</h2>
+<p>The paper evaluates four quantities for the three switches (paragraph 7 of the <a href="01_introduction.html">introduction</a>).</p>
+<ul>
+<li><strong>Transmission performance:</strong> the BER and the SNR of one connection at one operating point, that is, for one transmitter power and one switch size.</li>
+<li><strong>Feasible port count:</strong> the largest port count \(MN\) whose BER stays at or below the FEC limit, as a function of the transmitter power.</li>
+<li><strong>Throughput:</strong> the port count times the bit rate of one port.</li>
+<li><strong>Hardware count:</strong> the numbers of selectors, couplers, EDFAs, AWGs and \(1 \times 2\) splitters per port.</li>
+</ul>
+
+<h3>Two traffic conditions</h3>
+<p>The crosstalk of the proposed switch depends on where the signals that pass one third-stage switch come from. The paper therefore evaluates the proposed switch under two traffic conditions.</p>
+<ul>
+<li><strong>Dispersed:</strong> the signals come from many input groups, so their wavelengths differ.</li>
+<li><strong>Concentrated:</strong> the signals come from one input group, so they have the same wavelength again.</li>
+</ul>
+<p>These two descriptions are rough on purpose: making them exact is a part of <code>work1_wavelength_rule</code>. The work files list conditions that your result must meet. One of them is that concentrated traffic removes the crosstalk advantage of the proposed switch. The two given switches need no traffic condition: their scripts put every leak on the wavelength of the target signal, which is the worst case. For the third stage of the conventional switch this is always the case.</p>
+
+<h3>The file from which each evaluation starts</h3>
+<p>Table 6 lists the starting files. All files are in the folder <code>matlab</code>: the given ones in <code>main</code>, yours in <code>work</code>.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 6. The starting file of each evaluation for the switches (a), (b) and (c), and the traffic conditions under which the proposed switch (c) is evaluated.</caption>
+<thead><tr><th>Evaluation</th><th>Starting file</th><th>Traffic conditions for (c)</th></tr></thead>
+<tbody>
+<tr><td>Transmission performance</td><td>(a)&nbsp;<code>step21_two_stage_one_point</code>&nbsp;<span class="tag given">given</span><br>(b)&nbsp;<code>step22_three_stage_one_point</code>&nbsp;<span class="tag given">given</span><br>(c)&nbsp;<code>work2_three_stage_proposed</code>&nbsp;<span class="tag yours">yours</span></td><td>Dispersed and concentrated</td></tr>
+<tr><td>Feasible port count</td><td>(a)&nbsp;<code>main_two_stage_ULCF</code>&nbsp;<span class="tag given">given</span><br>(b)&nbsp;<code>main_three_stage_conventional</code>&nbsp;<span class="tag given">given</span><br>(c)&nbsp;<code>work2_three_stage_proposed</code>&nbsp;<span class="tag yours">yours</span></td><td>Dispersed and concentrated</td></tr>
+<tr><td>Throughput</td><td>(a), (b), (c)&nbsp;<code>work3_comparison</code>&nbsp;<span class="tag yours">yours</span></td><td>As the port count</td></tr>
+<tr><td>Hardware count</td><td>(a), (b), (c)&nbsp;<code>work3_comparison</code>&nbsp;<span class="tag yours">yours</span></td><td>No influence</td></tr>
+</tbody></table></div>
+<p>The proposed switch needs one step before these four: the wavelength of every connection and the number of in-band leaks in a third-stage switch. This is <code>work1_wavelength_rule</code>. It uses whole numbers only, and its result is an input of <code>work2_three_stage_proposed</code>.</p>
+
+<h3>Three points that keep the comparison fair</h3>
+<ul>
+<li><strong>Two kinds of crosstalk.</strong> The leaks of the third-stage switch and the crosstalk of the ULCF AWG itself have different causes and different levels. Keep them apart in the simulation and in the results.</li>
+<li><strong>Gain against cost.</strong> The smaller couplers give a gain in transmitter power. The larger number of EDFAs is a cost. The paper shows both.</li>
+<li><strong>One common parameter set.</strong> The two given switches use the settings of two different earlier studies: compare section 1 of <code>step21_two_stage_one_point</code> with section 1 of <code>step22_three_stage_one_point</code>. A comparison of the three switches needs one parameter set. You choose it and give the reasons (page <a href="23_three_stage_proposal.html">23</a>).</li>
+</ul>
+</section>
+
+<section id="s6">
+<h2>6. The experiment in outline</h2>
+<p>The simulation is not the last step. Later in the project a part of the switch is built on the optical bench. A signal is sent through it, the received waveform is captured, and the BER is computed afterwards on a computer (offline), with the same kind of processing as in the simulation. Both earlier papers also verified their simulations with an experiment on a part of the switch: one path built with real devices, plus further signals that act as crosstalk.</p>
+<p>The simulation tells which configurations are worth building: which \(M\), which \(K\), which type of third stage, and at which transmitter power. This package holds no code for the experiment. What is built and what is measured is planned with your supervisor (page <a href="03_workflow.html">03</a>).</p>
+</section>
+
+<section id="s7">
+<h2>7. Where to go next</h2>
+<div class="box check"><span class="label">Done when</span>
+<p>You can do the following without looking at this page.</p>
+<ul>
+<li>Sketch the three switches of Fig. 1 and follow one signal from Tx to Rx in each of them.</li>
+<li>Say what sets the wavelength of a connection in (a), in (b) and in (c).</li>
+<li>Compute the port count and the throughput from \(M\) and \(N\), and the loss before the EDFA of (a) and (b) from \(M\), \(N\) and \(K\).</li>
+<li>Explain in two sentences why the third-stage leaks of (b) are in band, and what (c) changes.</li>
+<li>Name the four evaluations, the two traffic conditions, and the file from which each evaluation starts.</li>
+</ul></div>
+<div class="cards">
+<a class="card" href="03_workflow.html"><span class="k">Next page</span><span class="t">03 Workflow</span><span class="d">The phases of the project, each with a goal and a completion condition.</span></a>
+<a class="card" href="04_matlab_guide.html"><span class="k">Then</span><span class="t">04 MATLAB guide</span><span class="d">How the code is organized and how to run it.</span></a>
+<a class="card" href="11_network_ocs_clos.html"><span class="k">Background</span><span class="t">11 to 17</span><span class="d">The background for the elements of Table 2. Pages 12 to 17 each come with a demo script.</span></a>
+<a class="card" href="21_two_stage_ulcf_switch.html"><span class="k">Switch (a)</span><span class="t">21 Two-stage ULCF switch</span><span class="d">The model and the code of the first given switch.</span></a>
+<a class="card" href="22_three_stage_conventional.html"><span class="k">Switch (b)</span><span class="t">22 Conventional three-stage switch</span><span class="d">The model and the code of the second given switch.</span></a>
+<a class="card" href="23_three_stage_proposal.html"><span class="k">Switch (c)</span><span class="t">23 Proposed switch</span><span class="d">Your work: the open questions and the three tasks.</span></a>
+</div>
+</section>
+<footer class="pager">
+<a class="prev" href="01_introduction.html">&larr; <span class="nt">01</span> Introduction</a>
+<a class="next" href="03_workflow.html"><span class="nt">03</span> Workflow &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

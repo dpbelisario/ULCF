@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>22 Conventional three-stage switch | Clos-ULCF starter</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/mathjax_config.js"></script>
+<script defer src="assets/mathjax/tex-svg-full.js"></script>
+</head>
+<body>
+<header class="topbar">
+<a class="brand nt" href="../START_HERE.html">Clos-ULCF starter</a>
+<span class="sub">Large-scale three-stage optical circuit switch using low-loss wavelength routing</span>
+</header>
+<div class="layout">
+<nav class="sidebar" aria-label="Pages">
+<h2>Start</h2>
+<ul>
+<li><a href="../START_HERE.html"><span class="n nt">00</span><span>Start here</span></a></li>
+</ul>
+<h2>Orientation</h2>
+<ul>
+<li><a href="01_introduction.html"><span class="n nt">01</span><span>Introduction</span></a></li>
+<li><a href="02_research_overview.html"><span class="n nt">02</span><span>Research overview</span></a></li>
+<li><a href="03_workflow.html"><span class="n nt">03</span><span>Workflow</span></a></li>
+<li><a href="04_matlab_guide.html"><span class="n nt">04</span><span>MATLAB guide</span></a></li>
+</ul>
+<h2>Background</h2>
+<ul>
+<li><a href="11_network_ocs_clos.html"><span class="n nt">11</span><span>Networks, OCS, Clos</span></a></li>
+<li><a href="12_units_power_budget.html"><span class="n nt">12</span><span>Units, power budget</span></a></li>
+<li><a href="13_waveform_fft_filter.html"><span class="n nt">13</span><span>Waveforms, FFT, filters</span></a></li>
+<li><a href="14_coherent_rx_dsp_ber.html"><span class="n nt">14</span><span>Coherent receiver, BER</span></a></li>
+<li><a href="15_edfa_ase.html"><span class="n nt">15</span><span>EDFA and ASE</span></a></li>
+<li><a href="16_space_switch_crosstalk.html"><span class="n nt">16</span><span>Space switches, crosstalk</span></a></li>
+<li><a href="17_awg_wavelength_routing.html"><span class="n nt">17</span><span>AWG, wavelength routing</span></a></li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><a href="21_two_stage_ulcf_switch.html"><span class="n nt">21</span><span>Two-stage ULCF switch</span></a></li>
+<li><a class="current" href="22_three_stage_conventional.html"><span class="n nt">22</span><span>Conventional three-stage</span></a></li>
+<li><a href="23_three_stage_proposal.html"><span class="n nt">23</span><span>Proposed switch: your work</span></a></li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="91_glossary.html"><span class="n nt">91</span><span>Glossary</span></a></li>
+</ul>
+</nav>
+<main>
+<p class="crumb">Research</p>
+<h1><span class="num nt">22</span>Conventional three-stage switch</h1>
+<p class="lead">The conventional three-stage switch is the second of the two given switches of this project, and it is the switch that your own work will modify. This page explains how the switch is wired, which wavelength a connection uses, how the two given scripts simulate it, and how closely the simulation reproduces the published result. It also shows the weak point that the proposal addresses: every leak inside a third-stage switch has the wavelength of the signal that it disturbs.</p>
+
+<div class="pair"><span><b>Scripts:</b> <code>matlab/main/step22_three_stage_one_point.m</code>, <code>matlab/main/main_three_stage_conventional.m</code></span><span><b>Library:</b> <code>TL_QAM</code>, <code>selector_loss</code>, <code>coupler_loss</code>, <code>amplified_by_EDFA3</code>, <code>awg</code>, <code>nyquistfilter</code>, <code>adequalizet</code>, <code>measure_BER_QAM</code>, <code>plot_level_diagram</code></span></div>
+
+<nav class="toc"><p>On this page</p>
+<ol>
+<li><a href="#s1">Why three stages, and which scheme</a></li>
+<li><a href="#s2">Structure and wiring</a></li>
+<li><a href="#s3">The wavelength rule and its weak point</a></li>
+<li><a href="#s4">Scheme A1 and Scheme A2</a></li>
+<li><a href="#s5">The simulation model, block by block</a></li>
+<li><a href="#s6">The noise and crosstalk budget</a></li>
+<li><a href="#s7">Run the two scripts</a></li>
+<li><a href="#s8">Port count and the published reference</a></li>
+<li><a href="#s9">Assumptions and limits of the model</a></li>
+<li><a href="#s10">Check your understanding</a></li>
+</ol>
+</nav>
+
+<section id="s1">
+<h2>1. Why three stages, and which scheme</h2>
+<p>The two-stage switch of <a href="21_two_stage_ulcf_switch.html">page 21</a> has \(MN\) ports. \(N\) is the number of wavelength channels, and it cannot grow much beyond 100. \(M\) is the size of the space switches, and in the two-stage switch it is limited by loss: the space switch lies before the optical amplifier and costs <span class="nt">4 dB</span> each time \(M\) doubles. The JLT paper (see the box below) allows a transmitter power of at most <span class="nt">5 dBm</span> and reports that no two-stage switch for a 200-Gbit/s signal then has more than 1000 ports (<a href="11_network_ocs_clos.html">page 11</a>).</p>
+<p>The three-stage switch adds a third stage. It is a Clos network with \(N\) switches in the first stage, \(M\) switches in the middle stage and \(N\) switches in the third stage (page 11). Each stage can consist of space switches or of wavelength-routing (WR) switches. A <strong>space switch</strong> connects each of its inputs to any of its outputs, whatever the wavelength of the signal is. In a <strong>WR switch</strong> the wavelength of a signal decides the output port. The JLT paper examines the eight possible combinations and calls them Schemes A to H.</p>
+<p>The paper first compares the schemes by the time that a rearrangement needs. The network is rearrangeably non-blocking: to admit a new connection, an existing connection sometimes has to move to another middle-stage switch. This move is a <strong>rearrangement</strong> (page 11). In Scheme A, the order space / WR / space, a rearrangement switches selectors in the first stage and in the third stage and nothing in the middle stage (Table II of the paper). A <strong>selector</strong> is the \(1 \times M\) switch from which a space switch is built, and it switches in less than <span class="nt">10 µs</span>. Schemes that must change the wavelength of a laser for a rearrangement need more than <span class="nt">100 µs</span>. The paper therefore continues with the schemes that need selectors only (A, C and G), and for each of the four port counts of its Table V it finds a version of Scheme A reasonable. Scheme A is the <strong>conventional three-stage switch</strong> of this project.</p>
+<div class="box note"><span class="label">Source</span>
+<p>The architecture, the two versions of the third stage, the simulation conditions and the reference result of this page come from one paper. This page calls it the JLT paper.</p>
+<ul>
+<li><span class="nt">Mitsuya et al., "Three-Stage Optical Circuit Switch Architectures for Intra-Datacenter Networking," J. Lightw. Technol., vol. 43, no. 2, pp. 400-407, 2025 (doi 10.1109/JLT.2024.3465208)</span></li>
+</ul></div>
+</section>
+
+<section id="s2">
+<h2>2. Structure and wiring</h2>
+<p>Table 1 lists the three stages, and Fig. 1 shows how they are connected.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 1. The three stages of the conventional three-stage switch.</caption>
+<thead><tr><th>Stage</th><th>Switch</th><th class="num">Number</th><th class="num">Size</th><th>Made of</th></tr></thead>
+<tbody>
+<tr><td>First stage</td><td>space switch</td><td class="num">\(N\)</td><td class="num">\(M \times M\)</td><td>\(1 \times M\) selectors at the inputs, \(M \times 1\) selectors at the outputs</td></tr>
+<tr><td>Middle stage</td><td>WR switch</td><td class="num">\(M\)</td><td class="num">\(N \times N\)</td><td>\(N \times 1\) aggregation coupler, EDFA, \(1 \times N\) AWG</td></tr>
+<tr><td>Third stage</td><td>space switch</td><td class="num">\(N\)</td><td class="num">\(M \times M\)</td><td>\(1 \times M\) selectors at the inputs, \(M \times 1\) selectors or couplers at the outputs</td></tr>
+</tbody></table></div>
+<p>The third stage exists in two versions, with selectors or with couplers at the outputs (<a href="#s4">section 4</a>). Every first-stage switch has \(M\) transmitters at its inputs, and every third-stage switch has \(M\) receivers at its outputs. The switch therefore has \(MN\) ports. In the scripts \(N\) is <code>N = 96</code> and \(M\) is <code>sw_size</code>. The sizes \(M\) = 16, 32, 64 and 128 give 1536, 3072, 6144 and 12288 ports.</p>
+<p>A WR switch has three parts (<a href="17_awg_wavelength_routing.html">page 17</a>). The <strong>aggregation coupler</strong> is a passive element that adds the light of its \(N\) inputs into one fiber. The <strong>EDFA</strong> (erbium-doped fiber amplifier) is the optical amplifier that restores the power (<a href="15_edfa_ase.html">page 15</a>). The <strong>AWG</strong> (arrayed-waveguide grating) separates the wavelength channels: its output \(j\) passes only wavelength channel \(j\). A <strong>wavelength channel</strong> is one of the \(N\) laser frequencies of the switch; neighboring channels are <span class="nt">50 GHz</span> apart.</p>
+<p>Between two stages, every switch has exactly one fiber to every switch of the next stage:</p>
+<ul>
+<li>First-stage switch \(i\): its output \(k\) goes to WR switch \(k\), where it is input \(i\).</li>
+<li>WR switch \(k\): its output \(j\) goes to third-stage switch \(j\), where it is input \(k\).</li>
+</ul>
+<p>Here \(i\) and \(j\) run from 1 to \(N\), and \(k\) runs from 1 to \(M\).</p>
+<figure id="f1"><img src="assets/fig/fig_three_stage_conventional.svg" alt="Three columns of switches: N first-stage space switches with transmitters, M wavelength-routing switches (coupler, EDFA, AWG) and N third-stage space switches with receivers. Every switch has one fiber to every switch of the next stage. One connection is drawn as a thick line. Under each third-stage switch a label says that all its inputs carry the same wavelength.">
+<figcaption><b>Fig. 1.</b> The conventional three-stage switch (after Fig. 4(a) of the JLT paper). Three switches of every stage are drawn. The pale lines are the fibers between the stages, and the thick line is the example connection of the text. The labels <span class="nt">λ1</span>, <span class="nt">λ2</span> and <span class="nt">λN</span> stand for the wavelength channels with the numbers <span class="nt">1</span>, <span class="nt">2</span> and <span class="nt">N</span>. In a WR switch, the circle marked <span class="nt">N×1</span> is the aggregation coupler, and the triangle is the EDFA. The label under a third-stage switch gives the wavelength at all its inputs (<a href="#s3">section 3</a>).</figcaption></figure>
+
+<h3>How a connection is set up</h3>
+<p>A connection joins one transmitter to one receiver. Take a transmitter at first-stage switch \(i\), input \(a\), and a receiver at third-stage switch \(j\), output \(b\). The controller of the switch first chooses the WR switch that the connection will pass, WR switch \(k\). This WR switch must have two free fibers: the fiber from first-stage switch \(i\) and the fiber to third-stage switch \(j\). Every fiber between two stages carries one signal at a time. Three settings then make the connection:</p>
+<ol class="steps">
+<li>First-stage switch \(i\) connects its input \(a\) to its output \(k\).</li>
+<li>The laser of the transmitter is tuned to wavelength channel \(j\). In WR switch \(k\) the signal passes the aggregation coupler and the EDFA together with the signals from the other first-stage switches, which are on other channels. The AWG then sends it to output \(j\).</li>
+<li>Third-stage switch \(j\) connects its input \(k\) to its output \(b\).</li>
+</ol>
+<p>The WR switch itself has nothing to set. The thick line of Fig. 1 is the connection with \(i = 1\), \(a = 1\), \(k = 2\), \(j = N\) and \(b = M\). The first transmitter of first-stage switch 1 sends on channel \(N\). The switch passes the signal to its output 2, and the fiber leads to input 1 of WR switch 2. The AWG sends the signal to its output \(N\), and the fiber leads to input 2 of third-stage switch \(N\). This switch passes the signal to its output \(M\), where the receiver is.</p>
+</section>
+
+<section id="s3">
+<h2>3. The wavelength rule and its weak point</h2>
+<p>In step 2 the transmitter had no choice of wavelength. Output \(j\) of an AWG passes only channel \(j\), and output \(j\) of every WR switch is wired to third-stage switch \(j\). Take a connection that goes from first-stage switch \(i\) through WR switch \(k\) to third-stage switch \(j\), and let \(c\) be the number of its wavelength channel. Then</p>
+<div class="eq" id="e1"><div class="m">\[ c(i,\,k,\,j) = j \]</div><span class="eqno nt">(1)</span></div>
+<p>The wavelength of a connection is the number of its third-stage switch. It depends neither on the first-stage switch nor on the WR switch. This is the <strong>wavelength rule</strong> of the conventional switch.</p>
+<p><strong>In the code.</strong> The library function <code>awg_channel(in_port, out_port, N)</code> returns the channel that an AWG passes from one input port to one output port (page 17). The AWG of the conventional switch has a single input port, and <code>awg_channel(1, j, N)</code> returns <code>j</code>. The two scripts of this page do not call the function, because they simulate one channel only. You will need it in <code>matlab/work/work1_wavelength_rule.m</code>.</p>
+<p>The rule has three consequences.</p>
+<ul>
+<li><strong>A rearrangement never changes a wavelength.</strong> \(c\) does not depend on \(k\). When a connection moves to another WR switch, the first-stage switch and the third-stage switch change their settings, and the laser keeps its wavelength. This is why Scheme A needs selectors only (<a href="#s1">section 1</a>).</li>
+<li><strong>A receiver always receives the same wavelength.</strong> Third-stage switch \(j\) has \(M\) receivers, and all of them receive channel \(j\). The JLT paper notes that the coherent receivers of this scheme only need to handle one frequency.</li>
+<li><strong>All signals that meet in a third-stage switch have the same wavelength.</strong> Third-stage switch \(j\) has \(M\) inputs. Input \(k\) comes from WR switch \(k\), from output \(j\) of its AWG. Every one of these \(M\) fibers carries channel \(j\).</li>
+</ul>
+
+<h3>Why the third consequence is a weak point</h3>
+<p>A selector does not switch off completely. A port that is switched off, an off port for short, still passes a small part of the light. The <strong>extinction ratio</strong> \(\mathrm{ER}\) says how much weaker this light is than the light at the selected port: <span class="nt">35 dB</span> in the JLT paper (<code>sel_ex_ratio = 35</code>). Light that reaches an output through an off port is a <strong>leak</strong>, and the signal that you follow is the <strong>target signal</strong> (<a href="16_space_switch_crosstalk.html">page 16</a>).</p>
+<p>Look at third-stage switch \(j\) while it passes the target signal from input \(k\) to output \(b\). Its other \(M-1\) inputs carry \(M-1\) other signals to other outputs, and a small part of each of them leaks to output \(b\). All these leaks are on channel \(j\), like the target signal. Their spectra lie on top of the spectrum of the target signal, so no filter in the receiver can remove them. Such leaks are <strong>in-band crosstalk</strong>, and they act like noise (page 16).</p>
+<p>The first stage is different. The \(M\) inputs of a first-stage switch come from \(M\) transmitters, and by Eq. (1) their destinations set their wavelengths. Two of these signals have the same wavelength only if they go to the same third-stage switch. The AWG sends a leak on another channel to another output, away from the receiver of the target signal. For the first stage the scripts assume the worst case: all leaks are on the channel of the target signal. For the third stage this is not a worst case. It is true whenever the other inputs of the switch are in use.</p>
+<div class="box"><span class="label">Key idea</span>
+<p>In the conventional three-stage switch, third-stage switch \(j\) receives wavelength channel \(j\) at all its inputs, so every leak inside it is in band. The wiring rule that keeps the wavelength fixed during a rearrangement is the cause. <a href="23_three_stage_proposal.html">Page 23</a> starts from this point: the proposal changes which wavelengths meet in a third-stage switch.</p></div>
+</section>
+
+<section id="s4">
+<h2>4. Scheme A1 and Scheme A2</h2>
+<p>A signal passes two space switches. The first-stage switch lies before the EDFA, where every dB of loss costs one dB of SNR (page 15). It has selectors on both sides, because a selector has little loss. The third-stage switch lies after the EDFA. The JLT paper states that its loss has little effect on the SNR, and it therefore considers two versions of the third-stage switch (<a href="16_space_switch_crosstalk.html">page 16</a> shows the inside of both):</p>
+<ul>
+<li><strong>Scheme A1:</strong> selector + selector, as in the first stage.</li>
+<li><strong>Scheme A2:</strong> selector + coupler. An \(M \times 1\) coupler replaces the \(M \times 1\) selector at every output. A <strong>coupler</strong> is passive and needs no control, but it has more loss than a selector, and it cannot block a leak.</li>
+</ul>
+<div class="tablewrap"><table class="data">
+<caption>Table 2. The two versions of the third stage. \(\mathrm{ER}\) is the extinction ratio of a selector, 35 dB.</caption>
+<thead><tr><th></th><th>Scheme A1</th><th>Scheme A2</th></tr></thead>
+<tbody>
+<tr><th>Third-stage switch</th><td>selector + selector</td><td>selector + coupler</td></tr>
+<tr><th>Value of <code>stage3_coupler_flag</code></th><td class="nt">0</td><td class="nt">1</td></tr>
+<tr><th>\(1 \times 2\) switch elements per port (Table IV of the JLT paper)</th><td>\(4(M-1)\)</td><td>\(3(M-1)\)</td></tr>
+<tr><th>EDFAs per port (Table IV)</th><td>\(1/N\)</td><td>\(1/N\)</td></tr>
+<tr><th>Loss of the third-stage switch [dB]</th><td>\(2 \times 0.5\,\lceil \log_2 M \rceil\)</td><td>\((0.5 + 3.5)\,\lceil \log_2 M \rceil\)</td></tr>
+<tr><th>Off ports that a leak passes in the third-stage switch</th><td class="nt">2</td><td class="nt">1</td></tr>
+<tr><th>One leak is weaker than the target signal by</th><td>\(2\,\mathrm{ER}\) = <span class="nt">70 dB</span></td><td>\(\mathrm{ER}\) = <span class="nt">35 dB</span></td></tr>
+</tbody></table></div>
+<p>The hardware count follows from the path of a signal. A \(1 \times M\) selector is a tree of \(M-1\) switch elements of size \(1 \times 2\). A signal passes four selectors in Scheme A1, two in each space switch, and three selectors in Scheme A2. Every WR switch has one EDFA: \(M\) EDFAs serve \(MN\) ports, which is \(1/N\) EDFA per port, about 0.01 for \(N = 96\).</p>
+<p>The <strong>signal-to-crosstalk ratio</strong> (SXR) is the power of the target signal divided by the power of all leaks together. The \(M-1\) leaks of a space switch are independent signals, so their powers add (page 16). For the third-stage switch this gives</p>
+<div class="eq" id="e2"><div class="m">\[ \mathrm{SXR}_{\mathrm{A1}} = 2\,\mathrm{ER} - 10\log_{10}(M-1), \qquad \mathrm{SXR}_{\mathrm{A2}} = \mathrm{ER} - 10\log_{10}(M-1) \quad [\mathrm{dB}] \]</div><span class="eqno nt">(2)</span></div>
+<div class="tablewrap"><table class="data">
+<caption>Table 3. The two schemes in numbers for \(N = 96\) and \(\mathrm{ER}\) = 35 dB. The hardware counts are also listed in Table V of the JLT paper and in the column <code>selectors_per_port</code> of <code>matlab/ref_data/jlt2025_three_stage_ref.csv</code>.</caption>
+<thead><tr><th></th><th class="num">\(M = 16\)</th><th class="num">\(M = 32\)</th><th class="num">\(M = 64\)</th><th class="num">\(M = 128\)</th></tr></thead>
+<tbody>
+<tr><th>Ports, \(MN\)</th><td class="num nt">1536</td><td class="num nt">3072</td><td class="num nt">6144</td><td class="num nt">12288</td></tr>
+<tr><th>Switch elements per port, Scheme A1</th><td class="num nt">60</td><td class="num nt">124</td><td class="num nt">252</td><td class="num nt">508</td></tr>
+<tr><th>Switch elements per port, Scheme A2</th><td class="num nt">45</td><td class="num nt">93</td><td class="num nt">189</td><td class="num nt">381</td></tr>
+<tr><th>Loss of the third-stage switch, Scheme A1</th><td class="num nt">4 dB</td><td class="num nt">5 dB</td><td class="num nt">6 dB</td><td class="num nt">7 dB</td></tr>
+<tr><th>Loss of the third-stage switch, Scheme A2</th><td class="num nt">16 dB</td><td class="num nt">20 dB</td><td class="num nt">24 dB</td><td class="num nt">28 dB</td></tr>
+<tr><th>SXR of the third-stage switch, Scheme A1</th><td class="num nt">58.24 dB</td><td class="num nt">55.09 dB</td><td class="num nt">52.01 dB</td><td class="num nt">48.96 dB</td></tr>
+<tr><th>SXR of the third-stage switch, Scheme A2</th><td class="num nt">23.24 dB</td><td class="num nt">20.09 dB</td><td class="num nt">17.01 dB</td><td class="num nt">13.96 dB</td></tr>
+</tbody></table></div>
+<p>Table 3 shows what Scheme A2 gains and what it costs.</p>
+<ul>
+<li><strong>Hardware.</strong> Scheme A2 saves \(M-1\) switch elements per port, a quarter of the elements of Scheme A1. At \(M = 64\) these are 63 elements per port, or <span class="nt">63 × 6144 = 387072</span> elements in the whole switch.</li>
+<li><strong>Loss.</strong> At \(M = 64\) the third-stage switch of Scheme A2 costs <span class="nt">24 dB</span> in place of <span class="nt">6 dB</span>. This loss lies after the EDFA, but the receiver has an amplifier of its own, and <a href="#s6">section 6</a> shows that the extra <span class="nt">18 dB</span> lower the SNR there.</li>
+<li><strong>Crosstalk.</strong> The SXR of Scheme A2 is <span class="nt">35 dB</span> lower. The signal of this page is 16QAM, and 16QAM needs an SNR of <span class="nt">13.90 dB</span> at the FEC limit. The <strong>FEC limit</strong> is a bit error ratio (BER) of \(10^{-2}\): up to this BER the forward error correction (FEC) removes the errors, and the connection works (<a href="14_coherent_rx_dsp_ber.html">page 14</a>). At \(M = 64\) the leaks alone limit the SNR to <span class="nt">17.0 dB</span>. At \(M = 128\) they limit it to <span class="nt">13.96 dB</span>, and nothing is left for the noise of the amplifiers. A higher transmitter power does not change the SXR, because it raises the target signal and the leaks by the same amount.</li>
+</ul>
+</section>
+
+<section id="s5">
+<h2>5. The simulation model, block by block</h2>
+<p><code>step22_three_stage_one_point</code> sends one target signal along the path of Fig. 1 and counts its bit errors. One run is one <strong>operating point</strong>: one transmitter power, one size of the space switches and one type of the third stage. Three lines in section 1 of the script set it:</p>
+<pre><code>PTx = 4;  % transmitter power of one channel, both polarizations together [dBm]
+sw_size = 64;  % size M of the M x M space switches (64*96 = 6144 ports)
+stage3_coupler_flag = 1;  % stage 3: 0 = selectors (Scheme A1), 1 = couplers (Scheme A2)</code></pre>
+<p>\(P_{\mathrm{Tx}}\) (<code>PTx</code>) is the power of one wavelength channel at the transmitter, both polarizations together. The default operating point is the largest Scheme A2 switch that Table V of the JLT paper lists as feasible: 6144 ports at <span class="nt">4 dBm</span>.</p>
+<p>The signal passes ten blocks (Fig. 2). The numbers [1] to [10] are the block numbers in section 3 of the script, and <code>step21_two_stage_one_point</code> uses the same numbers (<a href="21_two_stage_ulcf_switch.html">page 21</a>).</p>
+<figure id="f2"><img src="assets/fig/fig_link_chain_three_stage.svg" alt="Chain of ten numbered blocks: transmitter, fan-in and fan-out (not used), first-stage switch, aggregation coupler, EDFA, AWG, third-stage switch, fan-in and fan-out (not used), pre-amplifier and coherent receiver. Crosstalk enters at the two space switches, and ASE noise enters at the two amplifiers.">
+<figcaption><b>Fig. 2.</b> The transmission chain of <code>step22_three_stage_one_point</code>. Solid arrows: the target signal. Dashed arrows: what a block adds to it. Dashed boxes: blocks that have no effect in this switch. The gray names are the library functions and parameters of the code.</figcaption></figure>
+<p>What the script simulates:</p>
+<ul>
+<li>The field is one polarization of one wavelength channel. The channel carries two signals, one in each polarization, and the simulated signal has half of the channel power: <code>pin = PTx - 3*pol_flag</code> (<a href="14_coherent_rx_dsp_ber.html">page 14</a>).</li>
+<li>Other signals appear only as leaks, in blocks [3] and [7]. Each leak is a 16QAM signal with its own random data, made by a new call of <code>TL_QAM</code> (page 16 shows the code lines).</li>
+<li>The noise is the amplified spontaneous emission (ASE) of the two amplifiers, in blocks [5] and [9] (page 15).</li>
+<li>The neighboring wavelength channels, the fiber and the phase noise of the lasers are not simulated (header of the script).</li>
+</ul>
+<div class="tablewrap"><table class="data">
+<caption>Table 4. The blocks of the chain at the default operating point (\(P_{\mathrm{Tx}}\) = 4 dBm, \(M = 64\), Scheme A2).</caption>
+<thead><tr><th>Block</th><th>Element</th><th>Loss or gain</th><th>What it adds</th><th>Functions</th></tr></thead>
+<tbody>
+<tr><td class="nt">[1]</td><td>Transmitter: 16QAM at <span class="nt">32 GBd</span> with a rectangular spectrum (<a href="13_waveform_fft_filter.html">page 13</a>)</td><td>sets the power to <code>pin</code> = <span class="nt">1 dBm</span></td><td>nothing</td><td><code>rcosfilter</code>, <code>TL_QAM</code></td></tr>
+<tr><td class="nt">[2]</td><td>Fan-in and fan-out of a multicore fiber (page 21)</td><td>not used: <span class="nt">0 dB</span></td><td>nothing</td><td><code>attenuation</code></td></tr>
+<tr><td class="nt">[3]</td><td>First-stage switch, selector + selector</td><td>loss <span class="nt">6 dB</span></td><td>63 leaks, each <span class="nt">70 dB</span> below the target signal</td><td><code>selector_loss</code>, <code>TL_QAM</code>, <code>attenuation</code></td></tr>
+<tr><td class="nt">[4]</td><td>Aggregation coupler, <span class="nt">96&nbsp;×&nbsp;1</span></td><td>loss <span class="nt">24.5 dB</span></td><td>nothing</td><td><code>coupler_loss</code>, <code>attenuation</code></td></tr>
+<tr><td class="nt">[5]</td><td>EDFA of the WR switch</td><td>gain; the signal plus the ASE inside <span class="nt">50 GHz</span> is set to <span class="nt">-2.82 dBm</span></td><td>ASE, noise figure <span class="nt">6 dB</span></td><td><code>amplified_by_EDFA3</code></td></tr>
+<tr><td class="nt">[6]</td><td>AWG, <span class="nt">1&nbsp;×&nbsp;96</span></td><td>loss <span class="nt">6 dB</span>, and <span class="nt">0.40 dB</span> more from the shape of the passband</td><td>nothing: the AWG has one input port</td><td><code>awg</code></td></tr>
+<tr><td class="nt">[7]</td><td>Third-stage switch</td><td>loss <span class="nt">24 dB</span> (Scheme A1: <span class="nt">6 dB</span>)</td><td>63 leaks, each <span class="nt">35 dB</span> below the target signal (Scheme A1: <span class="nt">70 dB</span>)</td><td><code>selector_loss</code>, <code>coupler_loss</code>, <code>nyquistfilter</code>, <code>apply_filter</code>, <code>TL_QAM</code>, <code>attenuation</code></td></tr>
+<tr><td class="nt">[8]</td><td>Fan-in and fan-out again</td><td>not used: <span class="nt">0 dB</span></td><td>nothing</td><td><code>attenuation</code></td></tr>
+<tr><td class="nt">[9]</td><td>Pre-amplifier: a second EDFA directly in front of the receiver</td><td>gain; the signal plus the ASE inside <span class="nt">50 GHz</span> is set to <span class="nt">7 dBm</span></td><td>ASE, noise figure <span class="nt">4 dB</span></td><td><code>amplified_by_EDFA3</code></td></tr>
+<tr><td class="nt">[10]</td><td>Coherent receiver (page 14)</td><td>rectangular filter as wide as the signal, equalizer, decision, bit-error count</td><td>nothing</td><td><code>nyquistfilter</code>, <code>apply_filter</code>, <code>adequalizet</code>, <code>measure_BER_QAM</code></td></tr>
+</tbody></table></div>
+<p>Table 5 lists the parameters of section 1 of the script and the source of their values. The comments of the script mark the source: "paper" is section IV of the JLT paper, and "lab" is a value of the laboratory code that the paper does not give.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 5. The parameters of the model and the source of their values.</caption>
+<thead><tr><th>Parameter</th><th>Meaning</th><th>Block</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td><code>mod_flag = 4</code>, <code>baudrate = 32e9</code>, <code>pol_flag = 1</code></td><td>16QAM, <span class="nt">32 GBd</span>, two polarizations: the 200-Gbit/s signal of the paper</td><td class="nt">[1]</td><td>paper</td></tr>
+<tr><td><code>fiber_flag = 0</code></td><td>single-core fiber: no fan-in and no fan-out</td><td class="nt">[2], [8]</td><td>paper</td></tr>
+<tr><td><code>sel_ex_ratio = 35</code></td><td>extinction ratio of one selector [dB]</td><td class="nt">[3], [7]</td><td>paper</td></tr>
+<tr><td><code>N = 96</code></td><td>number of wavelength channels, on the 50-GHz grid</td><td class="nt">[4], [5]</td><td>paper</td></tr>
+<tr><td><code>signal_interval = 50e9</code></td><td>channel spacing [Hz]; the output limit of both amplifiers counts the ASE inside this bandwidth</td><td class="nt">[5], [9]</td><td>paper</td></tr>
+<tr><td><code>edfa_sat1 = 20</code>, <code>NF = 6</code></td><td>saturation output power [dBm] and noise figure [dB] of the EDFA</td><td class="nt">[5]</td><td>paper</td></tr>
+<tr><td><code>AWG_loss = 6</code></td><td>loss of the AWG at the center of its passband [dB]</td><td class="nt">[6]</td><td>paper</td></tr>
+<tr><td><code>FWHM_AWG = 50e9</code>, <code>AWG_XT = 32</code></td><td>3-dB width [Hz] and floor [dB] of the Gaussian passband of the AWG</td><td class="nt">[6]</td><td>lab</td></tr>
+<tr><td><code>edfa_sat2 = 10</code>, <code>NF2 = 4</code></td><td>saturation output power [dBm] and noise figure [dB] of the pre-amplifier</td><td class="nt">[9]</td><td>lab</td></tr>
+<tr><td><code>BER_limit = 1e-2</code></td><td>FEC limit</td><td class="nt">[10]</td><td>no mark; the paper uses the same limit</td></tr>
+<tr><td><code>up = 2</code>, <code>rolloff = 0</code>, <code>Morder = 16</code>, <code>datasize = 3e4</code>, <code>seed = 1</code>, <code>xt_wave_max = Inf</code></td><td>settings of the simulation: oversampling rate (the number of samples per symbol), roll-off factor, order of the equalizer, number of symbols, seed of the random numbers, leak waveforms per switch</td><td class="nt">[1]-[10]</td><td>no mark</td></tr>
+</tbody></table></div>
+<p>The loss rules are those of the paper too: <span class="nt">0.5 dB</span> per stage of a selector, <span class="nt">3.5 dB</span> per stage of a coupler and <span class="nt">24.5 dB</span> for the aggregation coupler. They are inside <code>selector_loss</code> and <code>coupler_loss</code>. Two things are not in the paper. First, the shape of the AWG passband: the script uses a Gaussian curve with a 3-dB width of <span class="nt">50 GHz</span>, centered on the signal. The curve reaches its floor <code>AWG_XT</code> only outside the simulated band, so the floor has no effect here. Second, the receiver: the paper does not describe the receiver of its simulation, and block [10] is the ideal receiver of page 14.</p>
+
+<h3>The power after every block</h3>
+<p>The script stores the power after block [<code>k</code>] in <code>stage_power(k)</code>. It prints these values next to a closed-form budget: the same powers calculated with formulas, without random numbers (sections 5 and 7 of the script). With the default parameters the script prints:</p>
+<pre><code>Operating point : PTx = 4.0 dBm, space switches 64 x 64, Scheme A2
+Switch size     : 6144 x 6144 ports (M*N = 64*96)
+BER             : 8.700e-03 (696 errors in 80000 bits), FEC limit 1e-02
+
+Power after every block [dBm] (one polarization, inside the band Fs)
+  block               simulation      budget      budget
+                         (total)     (total)    (target)
+  [1] Tx                   1.000       1.000       1.000
+  [2] Fan-in/out           1.000       1.000       1.000
+  [3] Switch 1            -5.000      -5.000      -5.000
+  [4] Coupler            -29.500     -29.500     -29.500
+  [5] EDFA                -2.813      -2.809      -2.872
+  [6] AWG                 -9.221      -9.218      -9.268
+  [7] Switch 3           -33.141     -33.133     -33.268
+  [8] Fan-in/out         -33.141     -33.133     -33.268
+  [9] Pre-amp              7.020       7.020       6.794
+  ASE of EDFA            -21.233     -21.245
+  ASE of pre-amp          -9.846      -9.810
+  sigpw (block [7])       -9.240      -9.236</code></pre>
+<p>All powers are those of the simulated polarization inside the simulated band \(F_s\) = <code>up*baudrate</code> = <span class="nt">64 GHz</span>. The column <code>simulation (total)</code> is measured with <code>calc_signal_power</code> and contains everything in the field: target signal, leaks and ASE. The column <code>budget (target)</code> is the target signal alone. The last three rows are not blocks. They give the ASE power at the output of each amplifier and <code>sigpw</code>, the power inside the signal band after the AWG. The script measures <code>sigpw</code> through <code>Hband</code>, a rectangular mask that is as wide as the signal band. Block [7] uses <code>sigpw</code> as the power of one signal at an input of the third-stage switch, before the off ports weaken it. In the printed tables, <code>Switch 1</code> and <code>Switch 3</code> are the first-stage and the third-stage switch. You can calculate the rows by hand (<a href="12_units_power_budget.html">page 12</a>):</p>
+<ul>
+<li>[1] <span class="nt">4 - 3 = 1 dBm</span>.</li>
+<li>[3] The signal passes two selectors with six stages each: <span class="nt">2 × 0.5 × 6 = 6 dB</span>. The power is <span class="nt">-5 dBm</span>.</li>
+<li>[4] The aggregation coupler costs <span class="nt">24.5 dB</span>. The power at the EDFA input is <span class="nt">-29.5 dBm</span>, and the loss before the EDFA is <span class="nt">6 + 24.5 = 30.5 dB</span>.</li>
+<li>[5] The saturation output power fixes the output of the EDFA. 96 channels and two polarizations share <span class="nt">20 dBm</span>: <span class="nt">20 - 19.82 - 3 = -2.82 dBm</span> (page 15). This is the output limit. It holds for the signal plus the ASE inside one channel spacing, <span class="nt">50 GHz</span> (<code>signal_interval</code>). The target signal alone has <span class="nt">-2.87 dBm</span>. The printed total is <span class="nt">-2.81 dBm</span>, a little above the limit, because the simulated band of <span class="nt">64 GHz</span> holds more ASE than <span class="nt">50 GHz</span>.</li>
+<li>[6] The AWG removes <span class="nt">6 dB</span>, and its Gaussian passband removes <span class="nt">0.40 dB</span> more at the edges of the signal spectrum: <span class="nt">-9.27 dBm</span> for the target signal.</li>
+<li>[7] The third-stage switch of Scheme A2 costs <span class="nt">3 + 21 = 24 dB</span>: <span class="nt">-33.27 dBm</span> for the target signal. The total is <span class="nt">0.13 dB</span> higher, because it also contains the 63 leaks and the ASE of the EDFA.</li>
+<li>[9] The output limit of the pre-amplifier follows from the same rule: <span class="nt">10 - 3 = 7 dBm</span>. The printed total is <span class="nt">7.02 dBm</span>, because it contains the ASE of the whole simulated band.</li>
+</ul>
+<p>The power is low at two places: at the EDFA input and at the input of the pre-amplifier. In Scheme A2 the second place is the lower one, <span class="nt">-33.1 dBm</span> against <span class="nt">-29.5 dBm</span>. Figure 3 in <a href="#s7">section 7</a> shows this table as a level diagram, the plot of the power after every block (page 12).</p>
+</section>
+
+<section id="s6">
+<h2>6. The noise and crosstalk budget</h2>
+<p>Four disturbances reach the receiver together with the target signal: the ASE of the EDFA, the leaks of the first-stage switch, the leaks of the third-stage switch and the ASE of the pre-amplifier. They are independent of each other, so their powers add. Divide each power by the power of the target signal, both inside the bandwidth of the signal. The sum of the four ratios is the inverse of the SNR:</p>
+<div class="eq" id="e3"><div class="m">\[ \frac{1}{\mathrm{SNR}} = \frac{1}{\mathrm{SNR}_{\mathrm{EDFA}}} + \frac{1}{\mathrm{SXR}_{1}} + \frac{1}{\mathrm{SXR}_{3}} + \frac{1}{\mathrm{SNR}_{\mathrm{pre}}} \]</div><span class="eqno nt">(3)</span></div>
+<p>The ratios in Eq. (3) are linear numbers, not values in dB. Section 6 of the script calls the four terms <code>nsr_ase1</code>, <code>nsr_xt_sw1</code>, <code>nsr_xt_sw3</code> and <code>nsr_ase2</code>. In dB, every ratio follows from a rule of an earlier page:</p>
+<div class="eq" id="e4"><div class="m">\[ \begin{aligned} \mathrm{SNR}_{\mathrm{EDFA}} &amp;= P_{\mathrm{EDFA,in}} + 53.87 - \mathrm{NF}, \qquad P_{\mathrm{EDFA,in}} = P_{\mathrm{Tx}} - 2 \times 0.5\,\lceil \log_2 M \rceil - 3.5\,\lceil \log_2 N \rceil \\ \mathrm{SXR}_{1} &amp;= 2\,\mathrm{ER} - 10\log_{10}(M-1) \\ \mathrm{SXR}_{3} &amp;= n\,\mathrm{ER} - 10\log_{10}(M-1), \qquad n = 2 \ (\mathrm{A1}), \quad n = 1 \ (\mathrm{A2}) \\ \mathrm{SNR}_{\mathrm{pre}} &amp;= P_{\mathrm{pre,in}} + 53.87 - \mathrm{NF}_2 \end{aligned} \]</div><span class="eqno nt">(4)</span></div>
+<p>\(P_{\mathrm{EDFA,in}}\) and \(P_{\mathrm{pre,in}}\) are the powers of the channel at the inputs of the two amplifiers in dBm, both polarizations together. The constant 53.87 belongs to the symbol rate of <span class="nt">32 GBd</span>, and \(\mathrm{NF}\) and \(\mathrm{NF}_2\) are the noise figures <code>NF</code> and <code>NF2</code> in dB (page 15). The line for \(\mathrm{SXR}_{3}\) is Eq. (2): \(n\) is the number of off ports that a leak passes in the third-stage switch.</p>
+<p>The script evaluates the four terms with the complete formulas of its section 6 and prints them in dB. After the power table of <a href="#s5">section 5</a> it prints:</p>
+<pre><code>SNR contributions in the signal bandwidth [dB]
+  ASE of the EDFA                   21.38
+  crosstalk of the stage-1 switch   52.01
+  crosstalk of the stage-3 switch   16.94
+  ASE of the pre-amplifier          19.58
+  all together (budget)             14.15
+  simulation                        14.19
+  (noise gain of the equalizer behind the AWG: 0.03 dB)
+BER of Gaussian noise with the SNR of the budget: 8.494e-03
+
+Self-check 1 passed: power after every block = budget within 0.1 dB (largest difference 0.008 dB)
+Self-check 2 passed: simulated SNR = SNR budget within 0.7 dB (difference +0.05 dB)</code></pre>
+<p>Check the lines by hand.</p>
+<ul>
+<li><strong>ASE of the EDFA.</strong> The channel reaches the EDFA with <span class="nt">4 - 6 - 24.5 = -26.5 dBm</span>, and <span class="nt">-26.5 + 53.87 - 6 = 21.37 dB</span>.</li>
+<li><strong>Crosstalk of the stage-1 switch.</strong> <span class="nt">70 - 10 log10(63) = 70 - 17.99 = 52.01 dB</span>.</li>
+<li><strong>Crosstalk of the stage-3 switch.</strong> <span class="nt">35 - 17.99 = 17.01 dB</span>. The script prints <span class="nt">0.07 dB</span> less. It counts two small effects in addition: every leak brings the noise of its own path with it, and the equalizer raises the leaks slightly (page 16).</li>
+<li><strong>ASE of the pre-amplifier.</strong> The target signal reaches the pre-amplifier with <span class="nt">-33.27 dBm</span> in one polarization (row [8] of the power table). The channel has <span class="nt">-30.27 dBm</span>, and <span class="nt">-30.27 + 53.87 - 4 = 19.60 dB</span>.</li>
+<li><strong>All together.</strong> \(10^{-2.138} + 10^{-5.201} + 10^{-1.694} + 10^{-1.958} = 0.0385\), which is <span class="nt">14.14 dB</span>. The script prints <span class="nt">14.15 dB</span>, because it adds the four terms before it rounds them.</li>
+</ul>
+<p>The hand values of the two amplifier lines differ from the printed lines by <span class="nt">0.01 dB</span> and <span class="nt">0.02 dB</span>. Two details of the script explain this. A factor of two in power is <span class="nt">3.01 dB</span>, not <span class="nt">3 dB</span>. And the equalizer raises a disturbance that is added after the AWG by <span class="nt">0.03 dB</span>: this is the printed line <code>noise gain of the equalizer behind the AWG</code>.</p>
+<p>The line <code>simulation</code> is the SNR that the script measures from the received symbols (section 4 of the script). Self-check 2 compares it with the budget, and self-check 1 compares the simulated powers with the power budget. The line <code>BER of Gaussian noise with the SNR of the budget</code> is the BER that the formula of page 14 gives for <span class="nt">14.15 dB</span>. The simulated BER is expected a few percent above it (comment in section 6 of the script): here <span class="nt">8.700e-03</span> against <span class="nt">8.494e-03</span>. For the same reason the receiver of the simulation needs about <span class="nt">14.0 dB</span> for a BER of \(10^{-2}\), a little more than the <span class="nt">13.90 dB</span> of the formula (header of <code>main_three_stage_conventional</code>, and page 14). The default operating point has <span class="nt">14.19 dB</span>: its BER of <span class="nt">8.700e-03</span> is just below the limit.</p>
+<p>Now set <code>stage3_coupler_flag = 0</code> (Scheme A1) and run the script again. The BER line reads <code>0.000e+00 (0 errors in 80000 bits)</code>, and the SNR table becomes:</p>
+<pre><code>SNR contributions in the signal bandwidth [dB]
+  ASE of the EDFA                   21.38
+  crosstalk of the stage-1 switch   52.01
+  crosstalk of the stage-3 switch   51.94
+  ASE of the pre-amplifier          37.59
+  all together (budget)             21.27
+  simulation                        21.32
+  (noise gain of the equalizer behind the AWG: 0.03 dB)
+BER of Gaussian noise with the SNR of the budget: 8.394e-08</code></pre>
+<p>Two lines have changed. The leaks of the third stage are now <span class="nt">70 dB</span> below the target signal, and the pre-amplifier receives <span class="nt">18 dB</span> more power. Both terms are now far above the <span class="nt">21.38 dB</span> of the EDFA, and the total is almost the SNR of the EDFA alone.</p>
+
+<h3>Which term limits which scheme</h3>
+<p>Table 6 collects the SNR table of the script for every size of the space switches. Each row is one run at the required transmitter power of that size, that is, the lowest power of the quick search of <a href="#s8">section 8</a> that meets the FEC limit.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 6. The four terms of Eq. (3) and their sum in dB, as <code>step22_three_stage_one_point</code> prints them at the required transmitter power of the quick search (1-dB steps). The columns are the lines <code>ASE of the EDFA</code>, <code>crosstalk of the stage-1 switch</code>, <code>crosstalk of the stage-3 switch</code>, <code>ASE of the pre-amplifier</code> and <code>all together (budget)</code>. Bold: the lowest term of the row. Last row: Scheme A2 with \(M = 128\) does not meet the FEC limit at any power; the row shows the highest power of the search.</caption>
+<thead><tr><th>Scheme</th><th class="num">\(M\)</th><th class="num">\(P_{\mathrm{Tx}}\) [dBm]</th><th class="num">\(\mathrm{SNR}_{\mathrm{EDFA}}\)</th><th class="num">\(\mathrm{SXR}_{1}\)</th><th class="num">\(\mathrm{SXR}_{3}\)</th><th class="num">\(\mathrm{SNR}_{\mathrm{pre}}\)</th><th class="num">\(\mathrm{SNR}\)</th><th class="num">BER</th></tr></thead>
+<tbody>
+<tr><td class="nt">A1</td><td class="num nt">16</td><td class="num nt">-5</td><td class="num nt"><strong>14.38</strong></td><td class="num nt">58.24</td><td class="num nt">58.05</td><td class="num nt">39.41</td><td class="num nt">14.37</td><td class="num nt">7.763e-03</td></tr>
+<tr><td class="nt">A1</td><td class="num nt">32</td><td class="num nt">-4</td><td class="num nt"><strong>14.38</strong></td><td class="num nt">55.09</td><td class="num nt">54.90</td><td class="num nt">38.40</td><td class="num nt">14.36</td><td class="num nt">7.275e-03</td></tr>
+<tr><td class="nt">A1</td><td class="num nt">64</td><td class="num nt">-3</td><td class="num nt"><strong>14.38</strong></td><td class="num nt">52.01</td><td class="num nt">51.82</td><td class="num nt">37.40</td><td class="num nt">14.36</td><td class="num nt">7.387e-03</td></tr>
+<tr><td class="nt">A1</td><td class="num nt">128</td><td class="num nt">-2</td><td class="num nt"><strong>14.38</strong></td><td class="num nt">48.96</td><td class="num nt">48.78</td><td class="num nt">36.40</td><td class="num nt">14.35</td><td class="num nt">7.763e-03</td></tr>
+<tr><td class="nt">A2</td><td class="num nt">16</td><td class="num nt">-4</td><td class="num nt"><strong>15.38</strong></td><td class="num nt">58.24</td><td class="num nt">23.08</td><td class="num nt">27.44</td><td class="num nt">14.48</td><td class="num nt">7.038e-03</td></tr>
+<tr><td class="nt">A2</td><td class="num nt">32</td><td class="num nt">-2</td><td class="num nt"><strong>16.38</strong></td><td class="num nt">55.09</td><td class="num nt">19.96</td><td class="num nt">23.48</td><td class="num nt">14.25</td><td class="num nt">8.488e-03</td></tr>
+<tr><td class="nt">A2</td><td class="num nt">64</td><td class="num nt">4</td><td class="num nt">21.38</td><td class="num nt">52.01</td><td class="num nt"><strong>16.94</strong></td><td class="num nt">19.58</td><td class="num nt">14.15</td><td class="num nt">8.700e-03</td></tr>
+<tr><td class="nt">A2</td><td class="num nt">128</td><td class="num nt">10</td><td class="num nt">26.39</td><td class="num nt">48.96</td><td class="num nt"><strong>13.92</strong></td><td class="num nt">15.62</td><td class="num nt">11.53</td><td class="num nt">3.644e-02</td></tr>
+</tbody></table></div>
+<ul>
+<li><strong>Scheme A1 has one limit: the ASE of the EDFA.</strong> At every required power this term is <span class="nt">14.38 dB</span>, and the three other terms are more than <span class="nt">20 dB</span> higher. Each time \(M\) doubles, the two selectors of the first-stage switch add <span class="nt">2 × 0.5 = 1 dB</span> before the EDFA, and <span class="nt">1 dB</span> more transmitter power compensates for it.</li>
+<li><strong>Scheme A2 has three limits.</strong> At \(M = 16\) the EDFA still gives the lowest term. Each time \(M\) doubles, the crosstalk term of the third stage falls by about <span class="nt">3 dB</span> (twice as many leaks), and the term of the pre-amplifier falls by about <span class="nt">4 dB</span> (one more stage in the third-stage switch). At \(M = 64\) both are below the term of the EDFA.</li>
+<li><strong>Two of the three limits do not react to the transmitter power.</strong> The SXR does not contain the power (Eq. (2)). The input power of the pre-amplifier does not follow the transmitter power either, because the saturation output power fixes the output of the EDFA. At \(M = 64\) these two terms together give <span class="nt">15.06 dB</span>, only <span class="nt">1 dB</span> above the <span class="nt">14.0 dB</span> that the receiver needs. By Eq. (3) the EDFA term must then be about <span class="nt">20.7 dB</span> (\(10^{-1.400} - 10^{-1.506} = 0.0086\)), and by Eq. (4) this needs about <span class="nt">3.3 dBm</span> of transmitter power. This is why the required power of Scheme A2 rises by about <span class="nt">6 dB</span> from \(M = 32\) to \(M = 64\). At \(M = 128\) the two terms together give <span class="nt">11.68 dB</span>. No transmitter power can reach <span class="nt">14.0 dB</span>.</li>
+</ul>
+<div class="box"><span class="label">Key idea</span>
+<p>In Scheme A1 the power at the EDFA input decides everything, and <span class="nt">1 dB</span> more transmitter power allows a switch of twice the size. In Scheme A2 the in-band crosstalk of the third stage and the noise of the pre-amplifier set an upper limit for the SNR that no transmitter power can raise. At \(M = 128\) this upper limit is below what 16QAM needs.</p></div>
+</section>
+
+<section id="s7">
+<h2>7. Run the two scripts</h2>
+<div class="box run"><span class="label">Run it</span>
+<p>In MATLAB, make the folder <code>matlab</code> the current folder and run <code>setup_path</code> (once per MATLAB session). Run both scripts as whole files: press F5 in the editor or type the name of the script. Do not run single sections.</p></div>
+<ol class="steps">
+<li>Run <code>step22_three_stage_one_point</code>. It needs a few seconds. Compare the printed tables with sections 5 and 6 of this page. Every printed digit should agree, because the script fixes the random numbers (<code>seed = 1</code>). Both self-checks must print <code>passed</code>. The script opens two figures (Fig. 3 and Fig. 4).</li>
+<li>Change one parameter of the operating point, predict how the two tables change, and run again (the task box below).</li>
+<li>Run <code>main_three_stage_conventional</code>. Its first parameter is <code>quick_flag = 1</code>, a quick run of less than one minute. It prints the search and a summary, opens Fig. 5 and writes four files into <code>matlab/results</code> (<a href="#s8">section 8</a>).</li>
+<li>When the quick run works, set <code>quick_flag = 0</code> for the full size and run it once more. This run needs a few minutes.</li>
+</ol>
+<figure id="f3"><img src="assets/expected/step22_three_stage_one_point_1.png" alt="Level diagram with nine points: 1.0, 1.0, -5.0, -29.5, -2.8, -9.2, -33.1, -33.1 and 7.0 dBm after the blocks Tx, Fan-in/out, Switch 1, Coupler, EDFA, AWG, Switch 3, Fan-in/out and Pre-amp. A black line lies on the markers.">
+<figcaption><b>Fig. 3.</b> Expected figure 1 of <code>step22_three_stage_one_point</code>: the level diagram of the default operating point. Markers: the simulated total power after every block. Black line: the closed-form budget. The two low points are the EDFA input (<span class="nt">-29.5 dBm</span>) and the input of the pre-amplifier (<span class="nt">-33.1 dBm</span>).</figcaption></figure>
+<figure id="f4"><img src="assets/expected/step22_three_stage_one_point_2.png" alt="Constellation diagram of 16QAM: sixteen clouds of received symbols around the sixteen ideal points, which are marked with black crosses. Neighboring clouds touch.">
+<figcaption><b>Fig. 4.</b> Expected figure 2 of <code>step22_three_stage_one_point</code>: the received symbols after the equalizer and the 16 ideal points. The title of the figure gives the simulated SNR and the BER. At <span class="nt">14.2 dB</span> neighboring clouds touch: the operating point is close to the FEC limit.</figcaption></figure>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>Your two tables agree with the tables of sections 5 and 6, both self-checks print <code>passed</code>, and your figures look like Fig. 3 and Fig. 4.</li>
+<li>You can calculate the rows [1], [3] and [4] of the power table by hand, and you can explain why the rows [5] and [9] are close to <span class="nt">-2.82 dBm</span> and <span class="nt">7 dBm</span>.</li>
+<li>You can calculate the four lines of the SNR table by hand, with the power table for the input of the pre-amplifier.</li>
+<li>You can say which term limits Scheme A1 and which terms limit Scheme A2.</li>
+</ul></div>
+<div class="box todo"><span class="label">Your task</span>
+<p>Change the lines of section 1 of <code>step22_three_stage_one_point</code> as stated. Write down your prediction of the SNR table first, then run the script and compare. Set the values back before the next experiment.</p>
+<ol>
+<li><code>PTx = 0</code> (Scheme A2, \(M = 64\)). Which lines of the SNR table change, and by how much?</li>
+<li><code>sw_size = 128</code> and <code>PTx = 10</code> (Scheme A2). Is the BER below the FEC limit? Which lines explain the result?</li>
+<li><code>stage3_coupler_flag = 0</code>, <code>sw_size = 128</code> and <code>PTx = -2</code> (Scheme A1). Predict the line <code>ASE of the EDFA</code>. Then try <code>PTx = -3</code>.</li>
+</ol></div>
+<details><summary>What you should see</summary>
+<p>1. The line of the EDFA falls by <span class="nt">4 dB</span> to <span class="nt">17.38 dB</span>. The other lines hardly change: <span class="nt">52.01</span>, <span class="nt">16.90</span> and <span class="nt">19.51 dB</span>. The budget gives <span class="nt">13.02 dB</span>, the simulation <span class="nt">13.07 dB</span>, and the BER is <span class="nt">1.723e-02</span>, above the limit.</p>
+<p>2. No. The EDFA line rises to <span class="nt">26.39 dB</span>, but the crosstalk of the stage-3 switch is <span class="nt">13.92 dB</span> and the ASE of the pre-amplifier is <span class="nt">15.62 dB</span>. The budget gives <span class="nt">11.53 dB</span>, and the BER is <span class="nt">3.644e-02</span>. This is the last row of Table 6.</p>
+<p>3. The channel reaches the EDFA with <span class="nt">-2 - 7 - 24.5 = -33.5 dBm</span>, and Eq. (4) gives <span class="nt">-33.5 + 53.87 - 6 = 14.37 dB</span>. The script prints <span class="nt">14.38 dB</span> and a BER of <span class="nt">7.763e-03</span>. With <code>PTx = -3</code> the SNR of the EDFA is <span class="nt">1 dB</span> lower, and the BER is <span class="nt">1.456e-02</span>, above the limit.</p>
+</details>
+</section>
+
+<section id="s8">
+<h2>8. Port count and the published reference</h2>
+<p><code>main_three_stage_conventional</code> repeats the chain of <code>step22_three_stage_one_point</code> for many operating points. It answers the question of Fig. 6 and Table V of the JLT paper: how many ports can the switch have at a given transmitter power, if the BER must stay at or below the FEC limit?</p>
+<ul>
+<li><strong>Search.</strong> For both types of the third stage (<code>list_stage3_coupler_flag = [0 1]</code>) and for every size (<code>list_sw_size = [16 32 64 128]</code>) the script looks for the lowest transmitter power of the list <code>pin_ary</code> with a BER of at most <code>BER_limit</code>. This power is <code>required_PTx</code>. The name <code>pin_ary</code> comes from the earlier laboratory code; its values are \(P_{\mathrm{Tx}}\) values.</li>
+<li><strong>Port count.</strong> The port count at a power \(P\) is the largest \(MN\) whose required power is at most \(P\).</li>
+<li><strong>Shortcut.</strong> The script visits the sizes from small to large. A larger switch never needs less power, so its search starts at the required power of the size before. Self-checks 1 and 2 of the script test this assumption with the simulated BER values.</li>
+<li><strong>Same chain, same numbers.</strong> The lines between <code>% ---- chain begin ----</code> and <code>% ---- chain end ----</code> are the chain of <code>step22_three_stage_one_point</code>, line by line, and the seed is set before every operating point. The step script therefore repeats any point of the search with the same BER. The rows of Table 6 were made in this way.</li>
+<li><strong>Two sizes of run.</strong> <code>quick_flag = 1</code>: 30000 symbols per point and powers from <span class="nt">-10 dBm</span> to <span class="nt">10 dBm</span> in steps of <span class="nt">1 dB</span>. <code>quick_flag = 0</code>: 150000 symbols per point and steps of <span class="nt">0.5 dB</span>.</li>
+<li><strong>Result files.</strong> Every run writes four new files into <code>matlab/results</code>. Their names begin with <code>three_stage_conventional_</code> and the date and time of the run. The <code>.mat</code> file holds all parameters, the seed and all results. The file <code>_portcount.csv</code> holds the port count for every power, the file <code>_required_PTx.csv</code> the required powers, and the <code>.png</code> file the figure.</li>
+</ul>
+<p>The quick run begins with these lines:</p>
+<pre><code>Search: 30000 symbols per point, 21 powers from -10.0 to 10.0 dBm
+    A1, M =  16, PTx = -10.0 dBm: BER = 7.585e-02
+    A1, M =  16, PTx =  -9.0 dBm: BER = 5.597e-02
+    A1, M =  16, PTx =  -8.0 dBm: BER = 3.925e-02
+    A1, M =  16, PTx =  -7.0 dBm: BER = 2.515e-02
+    A1, M =  16, PTx =  -6.0 dBm: BER = 1.457e-02
+    A1, M =  16, PTx =  -5.0 dBm: BER = 7.763e-03
+  Scheme A1, M =  16 ( 1536 ports): required PTx =  -5.0 dBm
+    A1, M =  32, PTx =  -5.0 dBm: BER = 1.443e-02
+    A1, M =  32, PTx =  -4.0 dBm: BER = 7.275e-03
+  Scheme A1, M =  32 ( 3072 ports): required PTx =  -4.0 dBm</code></pre>
+<p>The search for \(M = 32\) starts at <span class="nt">-5 dBm</span>, where the search for \(M = 16\) ended. After the last operating point the script prints this summary. The time depends on the PC. <code>NaN</code> ("not a number") is the MATLAB value for a missing number. Here it marks a size that does not reach the FEC limit: up to <span class="nt">10 dBm</span> in this run, and up to <span class="nt">5 dBm</span> in the paper.</p>
+<pre><code>36 operating points in 11.0 s (0.31 s per point)
+
+Required transmitter power [dBm] (NaN = not reached up to 10.0 dBm)
+  scheme      M   ports   this run   JLT 2025  difference
+  A1         16    1536       -5.0       -4.5        -0.5
+  A1         32    3072       -4.0       -3.5        -0.5
+  A1         64    6144       -3.0       -2.5        -0.5
+  A1        128   12288       -2.0       -1.5        -0.5
+  A2         16    1536       -4.0       -4.0        +0.0
+  A2         32    3072       -2.0       -2.0        +0.0
+  A2         64    6144        4.0        4.0        +0.0
+  A2        128   12288        NaN        NaN         NaN
+(JLT 2025 = Table V of the paper; NaN there = infeasible, above 5 dBm)
+
+Self-check 1 passed: a larger space switch has the higher BER at the same power (6 pairs of sizes)
+Self-check 2 passed: the BER falls when the power rises (28 power steps)
+Bookkeeping check passed: required power and port count fit together</code></pre>
+<figure id="f5"><img src="assets/expected/main_three_stage_conventional.png" alt="Port count from 1536 to 12288 on a logarithmic axis versus transmitter power from -10 to 10 dBm. The curve of Scheme A1 climbs to 12288 ports between -5 and -2 dBm. The curve of Scheme A2 reaches 1536 ports at -4 dBm, 3072 ports at -2 dBm and 6144 ports at 4 dBm. Seven crosses mark the values of the JLT paper next to the steps.">
+<figcaption><b>Fig. 5.</b> Expected figure of <code>main_three_stage_conventional</code> with <code>quick_flag = 1</code>. Lines with circles: the port count of this run for Scheme A1 and Scheme A2. Crosses: Table V of the JLT paper, the lowest transmitter power at which the paper reaches each port count. Scheme A2 has no cross at 12288 ports, because the paper lists this switch as infeasible.</figcaption></figure>
+<p>Read a curve from left to right: at each step the transmitter power is high enough for the next size. The curve of Scheme A1 climbs one size per dB, and it reaches 12288 ports at <span class="nt">-2 dBm</span>. The curve of Scheme A2 needs <span class="nt">6 dB</span> more for the step to 6144 ports and never reaches 12288 ports. This is the behavior that <a href="#s6">section 6</a> explained. For a transmitter power of <span class="nt">0 dBm</span> the JLT paper reports 12288 ports for Scheme A1 and 3072 ports for Scheme A2, and the quick run gives the same two numbers.</p>
+
+<h3>How closely the model reproduces Table V</h3>
+<p>The reference values are in the file <code>matlab/ref_data/jlt2025_three_stage_ref.csv</code>. Table 7 compares them with the quick run and with the full-size run.</p>
+<div class="tablewrap"><table class="data">
+<caption>Table 7. Required transmitter power [dBm]: Table V of the JLT paper, the quick run (1-dB steps) and the full-size run (0.5-dB steps) of <code>main_three_stage_conventional</code>. The last column is the full-size run minus the paper in dB.</caption>
+<thead><tr><th>Scheme</th><th class="num">\(M\)</th><th class="num">Ports</th><th class="num">JLT paper</th><th class="num">Quick run</th><th class="num">Full-size run</th><th class="num">Difference</th></tr></thead>
+<tbody>
+<tr><td class="nt">A1</td><td class="num nt">16</td><td class="num nt">1536</td><td class="num nt">-4.5</td><td class="num nt">-5.0</td><td class="num nt">-5.0</td><td class="num nt">-0.5</td></tr>
+<tr><td class="nt">A1</td><td class="num nt">32</td><td class="num nt">3072</td><td class="num nt">-3.5</td><td class="num nt">-4.0</td><td class="num nt">-4.0</td><td class="num nt">-0.5</td></tr>
+<tr><td class="nt">A1</td><td class="num nt">64</td><td class="num nt">6144</td><td class="num nt">-2.5</td><td class="num nt">-3.0</td><td class="num nt">-3.0</td><td class="num nt">-0.5</td></tr>
+<tr><td class="nt">A1</td><td class="num nt">128</td><td class="num nt">12288</td><td class="num nt">-1.5</td><td class="num nt">-2.0</td><td class="num nt">-2.0</td><td class="num nt">-0.5</td></tr>
+<tr><td class="nt">A2</td><td class="num nt">16</td><td class="num nt">1536</td><td class="num nt">-4.0</td><td class="num nt">-4.0</td><td class="num nt">-4.5</td><td class="num nt">-0.5</td></tr>
+<tr><td class="nt">A2</td><td class="num nt">32</td><td class="num nt">3072</td><td class="num nt">-2.0</td><td class="num nt">-2.0</td><td class="num nt">-2.0</td><td class="num nt">0.0</td></tr>
+<tr><td class="nt">A2</td><td class="num nt">64</td><td class="num nt">6144</td><td class="num nt">4.0</td><td class="num nt">4.0</td><td class="num nt">3.5</td><td class="num nt">-0.5</td></tr>
+<tr><td class="nt">A2</td><td class="num nt">128</td><td class="num nt">12288</td><td>infeasible (above <span class="nt">5 dBm</span>)</td><td>not reached up to <span class="nt">10 dBm</span></td><td>not reached up to <span class="nt">10 dBm</span></td><td class="num nt">-</td></tr>
+</tbody></table></div>
+<p>The model reproduces every entry of Table V within one step of a grid of <span class="nt">0.5 dB</span>, and no parameter was tuned to get closer (header of the script). The full-size run needs <span class="nt">0.5 dB</span> less power than the paper at six entries and the same power at one. At \(M = 128\) Scheme A2 fails in the model as in the paper.</p>
+<p>The quick run agrees with the paper exactly for Scheme A2. This is an effect of its steps of <span class="nt">1 dB</span>, not a better agreement: the quick run cannot find <span class="nt">-4.5 dBm</span> or <span class="nt">3.5 dBm</span>. Use the full-size run when you compare numbers.</p>
+<p>What is known about the difference, from the header of the script and from single operating points that were run again for this page:</p>
+<ul>
+<li>The paper does not give the receiver model, the noise figure of the pre-amplifier (here <code>NF2 = 4</code>) and the width of the AWG passband (here <span class="nt">50 GHz</span>).</li>
+<li>Scheme A1 is limited by the ASE of the EDFA only, so <code>NF2</code> and <code>FWHM_AWG</code> do not change its numbers. Its difference is the same <span class="nt">0.5 dB</span> at all four sizes. Both the paper and the model need <span class="nt">1 dB</span> more power each time \(M\) doubles.</li>
+<li>Scheme A2 at \(M = 64\) is very sensitive, because the crosstalk of the third stage alone limits the SNR to <span class="nt">17 dB</span>. With <code>FWHM_AWG = 40e9</code> the required power is <span class="nt">4.0 dBm</span>. With <code>NF2 = 5</code> the BER is <span class="nt">1.035e-02</span> at <span class="nt">4.5 dBm</span>, still above the limit, and the required power is <span class="nt">5.0 dBm</span>. With <code>NF2 = 6</code> the BER is <span class="nt">1.018e-02</span> even at <span class="nt">8.5 dBm</span>, and it falls below the limit only at <span class="nt">9.0 dBm</span> (150000 symbols each).</li>
+<li>The value <span class="nt">3.5 dBm</span> of the full-size run rests on a small margin. The BER is <span class="nt">1.039e-02</span> at <span class="nt">3.0 dBm</span> and <span class="nt">9.595e-03</span> at <span class="nt">3.5 dBm</span>, 4 percent above and 4 percent below the limit, and it falls by only 7 percent per <span class="nt">0.5 dB</span>. The random error of one BER value is about 1.5 percent here. Runs with <code>seed = 2</code> and <code>seed = 5</code> and runs with <code>up = 4</code> and <code>up = 8</code> gave the same result: a BER above the limit at <span class="nt">3.0 dBm</span> and below it at <span class="nt">3.5 dBm</span>. One run with <code>up = 8</code> and <code>xt_wave_max = 16</code> together had a BER of <span class="nt">9.995e-03</span> at <span class="nt">3.0 dBm</span>, just below the limit. At this size the model therefore needs less power than the <span class="nt">4.0 dBm</span> of the paper: <span class="nt">0.5 dB</span> less in all these runs but the last one, and <span class="nt">1 dB</span> less in the last one.</li>
+</ul>
+<div class="box warn"><span class="label">Common mistake</span>
+<p>Do not read a required power as an exact number. It is the first point of a grid at which a counted BER falls below the limit. Near the limit of Scheme A2 a change of 4 percent in the BER moves the result by one grid step. Report the grid and the number of symbols together with every required power.</p></div>
+<div class="box check"><span class="label">Done when</span>
+<ul>
+<li>Your quick run prints the summary that is shown above, apart from the time, and your figure looks like Fig. 5.</li>
+<li>Your full-size run gives the column "Full-size run" of Table 7.</li>
+<li>You can explain why the curve of Scheme A1 climbs one size per dB and why the curve of Scheme A2 stops at 6144 ports.</li>
+</ul></div>
+</section>
+
+<section id="s9">
+<h2>9. Assumptions and limits of the model</h2>
+<p>The agreement with Table V does not make the model exact. These are its assumptions.</p>
+<ul>
+<li><strong>One channel, one polarization.</strong> The 95 other wavelength channels are not simulated. Crosstalk from other wavelengths, the fiber and the phase noise of the lasers are left out.</li>
+<li><strong>Full load and worst case.</strong> All \(M-1\) other inputs of a space switch carry a signal with the power of the target signal. In the first stage all of them are assumed to have the wavelength of the target signal. The EDFA output is shared by all 96 channels.</li>
+<li><strong>Leaks are independent signals.</strong> Each leak is a 16QAM signal with its own data, and the powers of the leaks add. A \(1 \times M\) selector has the extinction ratio of <span class="nt">35 dB</span> for every \(M\).</li>
+<li><strong>Loss rules.</strong> A selector costs <span class="nt">0.5 dB</span> and a coupler <span class="nt">3.5 dB</span> per stage, with the number of stages rounded up. The <span class="nt">96 × 1</span> aggregation coupler costs <span class="nt">24.5 dB</span>, like a <span class="nt">128 × 1</span> coupler (page 12).</li>
+<li><strong>Amplifiers.</strong> The output power of an amplifier is fixed by its saturation output power, and the channels share it equally. The share of one channel holds its signal and the ASE inside one channel spacing of <span class="nt">50 GHz</span>. The values of the pre-amplifier are lab values.</li>
+<li><strong>AWG.</strong> The passband is a Gaussian curve of <span class="nt">50 GHz</span> width, centered on the signal. This is a lab value. The AWG adds no crosstalk.</li>
+<li><strong>Ideal receiver.</strong> The receive filter is an ideal rectangle, and the equalizer is trained with known symbols. No real filter is a perfect rectangle (page 14). The JLT paper does not describe the receiver of its simulation.</li>
+<li><strong>Statistics.</strong> The quick settings compare 80000 bits per point: about 800 bit errors at the FEC limit, a random error of about 3.5 percent of the BER (page 14).</li>
+<li><strong>Oversampling rate.</strong> The scripts use <code>up = 2</code>, a simulated band of <span class="nt">64 GHz</span>. This is enough here, because every signal of the chain is on the wavelength of the target signal. The SNR budget does not depend on <code>up</code>: the output limit of an amplifier counts the ASE inside <span class="nt">50 GHz</span>, not the ASE inside the simulated band. At the default operating point the budget is <span class="nt">14.15 dB</span> for <code>up</code> = 2, 4 and 8, and the BER is <span class="nt">8.700e-03</span>, <span class="nt">8.800e-03</span> and <span class="nt">8.462e-03</span>, equal within the random error. The total powers of the power table do change with <code>up</code>, because they contain the ASE of the whole simulated band. A signal on another wavelength channel needs a larger <code>up</code> (note on <code>up</code> in the script).</li>
+</ul>
+<p>The header of <code>main_three_stage_conventional</code> names one option for speed. With <code>xt_wave_max = 16</code> a space switch makes at most 16 leak waveforms, and their total power stays that of all \(M-1\) leaks. The header states that the full-size search then finds the same required powers and is about 2.5 times faster. A check for this page gave the same eight results as the full-size run of Table 7.</p>
+</section>
+
+<section id="s10">
+<h2>10. Check your understanding</h2>
+<ol>
+<li>How much loss does a signal collect before the EDFA for \(M = 64\) and \(N = 96\)? Compare with a two-stage switch of the same size.
+<details><summary>Answer</summary>
+<p>Two selectors with six stages and the aggregation coupler: <span class="nt">2 × 0.5 × 6 + 24.5 = 30.5 dB</span>. The space switch of the two-stage switch has couplers at its outputs and costs <span class="nt">4 × 6 = 24 dB</span>, so the total is <span class="nt">48.5 dB</span> (page 11). The three-stage switch has <span class="nt">18 dB</span> less loss before the EDFA. In MATLAB: <code>2*selector_loss(64) + coupler_loss(96)</code>.</p>
+</details></li>
+<li>A transmitter at first-stage switch 7 is connected to a receiver at third-stage switch 40 through WR switch 3. Which wavelength channel does it use, and which ports of the three switches does the signal pass? What changes when the connection is rearranged to WR switch 9?
+<details><summary>Answer</summary>
+<p>By Eq. (1) the channel is 40. The signal leaves first-stage switch 7 at output 3, enters WR switch 3 at input 7, leaves it at output 40 and enters third-stage switch 40 at input 3. After the rearrangement it uses output 9 of first-stage switch 7, input 7 and output 40 of WR switch 9, and input 9 of third-stage switch 40. The channel is still 40: only selectors switch.</p>
+</details></li>
+<li>At \(M = 64\), how many \(1 \times 2\) switch elements per port does Scheme A2 save? What are its two costs at this size?
+<details><summary>Answer</summary>
+<p><span class="nt">252 - 189 = 63</span> elements per port (Table 3). The costs are <span class="nt">18 dB</span> more loss in the third-stage switch (<span class="nt">24 dB</span> in place of <span class="nt">6 dB</span>) and an SXR that is <span class="nt">35 dB</span> lower (<span class="nt">17.01 dB</span> in place of <span class="nt">52.01 dB</span>).</p>
+</details></li>
+<li>Why is Scheme A2 infeasible at \(M = 128\), whatever the transmitter power is?
+<details><summary>Answer</summary>
+<p>The third-stage switch has 127 in-band leaks, each <span class="nt">35 dB</span> below the target signal: <span class="nt">35 - 10 log10(127) = 13.96 dB</span>. This alone is not more than the <span class="nt">14.0 dB</span> that the receiver needs. In addition the third-stage switch costs <span class="nt">28 dB</span>, and the term of the pre-amplifier falls to <span class="nt">15.6 dB</span>. Neither term depends on the transmitter power. Together they give <span class="nt">11.7 dB</span>, and the script finds a BER of <span class="nt">3.6e-02</span> even at <span class="nt">10 dBm</span>.</p>
+</details></li>
+<li>Calculate the required transmitter power of Scheme A1 for \(M = 128\) from Eq. (4). Assume that only the ASE of the EDFA counts and that the receiver needs <span class="nt">14.0 dB</span>.
+<details><summary>Answer</summary>
+<p>The EDFA input must have <span class="nt">14.0 - 53.87 + 6 = -33.87 dBm</span>. The loss before the EDFA is <span class="nt">7 + 24.5 = 31.5 dB</span>, so \(P_{\mathrm{Tx}}\) = <span class="nt">-33.87 + 31.5 = -2.37 dBm</span>. The next power of the grid is <span class="nt">-2.0 dBm</span>, the value that both runs find (Table 7).</p>
+</details></li>
+<li>At the default operating point, which amplifier adds more noise to the signal? Explain the difference of the two SNR lines with the two input powers and the two noise figures.
+<details><summary>Answer</summary>
+<p>The pre-amplifier: <span class="nt">19.58 dB</span> against <span class="nt">21.38 dB</span>. The channel reaches the EDFA with <span class="nt">-26.5 dBm</span> and the pre-amplifier with <span class="nt">-30.27 dBm</span>, which is <span class="nt">3.77 dB</span> less. The noise figure of the pre-amplifier is <span class="nt">2 dB</span> lower, so <span class="nt">1.77 dB</span> remain: <span class="nt">21.37 - 1.77 = 19.60 dB</span>.</p>
+</details></li>
+</ol>
+<div class="box"><span class="label">What you have now, and what is missing</span>
+<p>You now have two working baselines: the two-stage ULCF switch of page 21 and the conventional three-stage switch of this page. For both you can run one operating point, check its power and SNR tables by hand, and reproduce the port count of the earlier work. The conventional three-stage switch has two limits that come from its structure: the <span class="nt">24.5 dB</span> of the aggregation coupler before the EDFA, and the in-band leaks of the third stage, which make the cheaper Scheme A2 fail above \(M = 64\). What is missing is a switch that addresses both. This is the proposal, and it is your work: <a href="23_three_stage_proposal.html">page 23</a>.</p></div>
+</section>
+<footer class="pager">
+<a class="prev" href="21_two_stage_ulcf_switch.html">&larr; <span class="nt">21</span> Two-stage ULCF switch</a>
+<a class="next" href="23_three_stage_proposal.html"><span class="nt">23</span> Proposed switch: your work &rarr;</a>
+</footer>
+</main>
+</div>
+</body>
+</html>

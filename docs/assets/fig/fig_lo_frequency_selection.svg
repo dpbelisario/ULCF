@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="570" viewBox="0 0 1100 570">
+<defs>
+  <marker id="ar_opt" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#C0392B"/></marker>
+  <marker id="ar_gry" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#7F8C8D"/></marker>
+  <marker id="ar_axis" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#34495E"/></marker>
+</defs>
+<rect x="0" y="0" width="1100" height="570" fill="white"/>
+<text x="550" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle" fill="#222" font-weight="bold">The LO frequency selects the wavelength channel (example: 32 GBd, 50-GHz grid)</text>
+
+<!-- ================= panel (a): optical spectrum, 1 GHz = 5 px, f_LO at x = 550 ================= -->
+<text x="60" y="72" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="start" fill="#222" font-weight="bold">(a) Light at the receiver input: optical spectrum</text>
+<rect x="220" y="134" width="160" height="80" fill="#FBE9E7" stroke="#C0392B" stroke-width="1.8"/>
+<rect x="470" y="134" width="160" height="80" fill="#F2B8B0" stroke="#C0392B" stroke-width="2.2"/>
+<rect x="720" y="134" width="160" height="80" fill="#FBE9E7" stroke="#C0392B" stroke-width="1.8"/>
+<text x="300" y="180" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222">other signal</text>
+<text x="800" y="180" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222">other signal</text>
+<text x="510" y="180" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222" font-weight="bold">target</text>
+<line x1="100" y1="214" x2="1000" y2="214" stroke="#34495E" stroke-width="1.6" marker-end="url(#ar_axis)"/>
+<text x="1012" y="219" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#34495E" font-style="italic">f</text>
+<line x1="550" y1="214" x2="550" y2="104" stroke="#C0392B" stroke-width="3.5" marker-end="url(#ar_opt)"/>
+<text x="550" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#C0392B" font-weight="bold">local oscillator (LO) of the receiver</text>
+<line x1="300" y1="214" x2="300" y2="221" stroke="#34495E" stroke-width="1.6"/>
+<line x1="550" y1="214" x2="550" y2="221" stroke="#34495E" stroke-width="1.6"/>
+<line x1="800" y1="214" x2="800" y2="221" stroke="#34495E" stroke-width="1.6"/>
+<text x="258" y="238" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#34495E"><tspan font-style="italic">f</tspan><tspan dy="4" font-size="11">LO</tspan><tspan dy="-4"> − 50 GHz</tspan></text>
+<text x="541" y="238" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#34495E"><tspan font-style="italic">f</tspan><tspan dy="4" font-size="11">LO</tspan></text>
+<text x="758" y="238" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#34495E"><tspan font-style="italic">f</tspan><tspan dy="4" font-size="11">LO</tspan><tspan dy="-4"> + 50 GHz</tspan></text>
+<text x="300" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">channel j − 1</text>
+<text x="550" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">channel j</text>
+<text x="800" y="257" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">channel j + 1</text>
+
+<!-- ================= from (a) to (b) ================= -->
+<line x1="550" y1="270" x2="550" y2="304" stroke="#7F8C8D" stroke-width="2.4" marker-end="url(#ar_gry)"/>
+<text x="566" y="292" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#7F8C8D">coherent receiver: optical frequency <tspan font-style="italic">f</tspan> becomes electrical frequency <tspan font-style="italic">f</tspan> − <tspan font-style="italic">f</tspan><tspan dy="4" font-size="11">LO</tspan></text>
+
+<!-- ================= panel (b): electrical spectrum ================= -->
+<text x="60" y="330" font-family="Segoe UI, Arial, sans-serif" font-size="17" text-anchor="start" fill="#222" font-weight="bold">(b) Output of the coherent receiver: electrical spectrum</text>
+<text x="550" y="356" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#B7791F" font-weight="bold">receive filter: −16 GHz to +16 GHz</text>
+<text x="550" y="373" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">nyquistfilter(length(signal), 0, Fs, baudrate)</text>
+<rect x="462" y="382" width="176" height="94" fill="#FDF4DC" stroke="#B7791F" stroke-width="2" stroke-dasharray="7,4"/>
+<rect x="220" y="396" width="160" height="80" fill="#F4F4F4" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="5,4"/>
+<rect x="720" y="396" width="160" height="80" fill="#F4F4F4" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="5,4"/>
+<rect x="470" y="396" width="160" height="80" fill="#D6E4F0" stroke="#1F4E79" stroke-width="2.2"/>
+<text x="550" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#1F4E79" font-weight="bold">target: kept</text>
+<text x="300" y="434" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">outside the filter:</text>
+<text x="300" y="453" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#7F8C8D" font-weight="bold">removed</text>
+<text x="800" y="434" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">outside the filter:</text>
+<text x="800" y="453" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#7F8C8D" font-weight="bold">removed</text>
+<line x1="100" y1="476" x2="1000" y2="476" stroke="#34495E" stroke-width="1.6" marker-end="url(#ar_axis)"/>
+<text x="1012" y="481" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#34495E" ><tspan font-style="italic">f</tspan> − <tspan font-style="italic">f</tspan><tspan dy="4" font-size="11">LO</tspan></text>
+<line x1="150" y1="476" x2="150" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="220" y1="476" x2="220" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="300" y1="476" x2="300" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="380" y1="476" x2="380" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="470" y1="476" x2="470" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="550" y1="476" x2="550" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="630" y1="476" x2="630" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="720" y1="476" x2="720" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="800" y1="476" x2="800" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="880" y1="476" x2="880" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<line x1="950" y1="476" x2="950" y2="483" stroke="#34495E" stroke-width="1.6"/>
+<text x="150" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">−80</text>
+<text x="220" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">−66</text>
+<text x="300" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">−50</text>
+<text x="380" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">−34</text>
+<text x="470" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">−16</text>
+<text x="550" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">0</text>
+<text x="630" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">+16</text>
+<text x="720" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">+34</text>
+<text x="800" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">+50</text>
+<text x="880" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">+66</text>
+<text x="950" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34495E">+80</text>
+<text x="1012" y="499" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#34495E">GHz</text>
+<line x1="150" y1="524" x2="950" y2="524" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="150" y1="517" x2="150" y2="531" stroke="#7F8C8D" stroke-width="1.6"/>
+<line x1="950" y1="517" x2="950" y2="531" stroke="#7F8C8D" stroke-width="1.6"/>
+<text x="550" y="549" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">simulated band of demo14: Fs = up × baudrate = 5 × 32 GHz = 160 GHz</text>
+</svg>

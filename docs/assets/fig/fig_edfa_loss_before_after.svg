@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="610" viewBox="0 0 1140 610">
+<defs>
+  <marker id="ar_opt" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#C0392B"/></marker>
+</defs>
+<rect x="0" y="0" width="1140" height="610" fill="white"/>
+<text x="570" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle" fill="#222" font-weight="bold">The same 10-dB loss before and after an EDFA</text>
+
+<!-- ================= panel (a): loss before the amplifier ================= -->
+<text x="60" y="72" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#222" font-weight="bold">(a) Loss before the amplifier</text>
+<line x1="60" y1="125" x2="150" y2="125" stroke="#C0392B" stroke-width="2.6" marker-end="url(#ar_opt)"/>
+<rect x="150" y="100" width="120" height="50" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="210" y="131" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222" font-weight="bold">Loss 10 dB</text>
+<text x="210" y="180" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">attenuation</text>
+<line x1="270" y1="125" x2="340" y2="125" stroke="#C0392B" stroke-width="2.6" marker-end="url(#ar_opt)"/>
+<polygon points="340,88 340,162 414,125" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<text x="367" y="130" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">EDFA</text>
+<text x="377" y="180" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">amplified_by_EDFA3</text>
+<line x1="414" y1="125" x2="510" y2="125" stroke="#C0392B" stroke-width="2.6" marker-end="url(#ar_opt)"/>
+
+<!-- level diagram (a): y = 250 - 5*P[dBm] -->
+<line x1="60" y1="250" x2="510" y2="250" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="60" y1="300" x2="510" y2="300" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="60" y1="350" x2="510" y2="350" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="60" y1="400" x2="510" y2="400" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="60" y1="450" x2="510" y2="450" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="210" y1="190" x2="210" y2="475" stroke="#BDC3C7" stroke-width="1.2" stroke-dasharray="3,4"/>
+<line x1="377" y1="190" x2="377" y2="475" stroke="#BDC3C7" stroke-width="1.2" stroke-dasharray="3,4"/>
+<line x1="60" y1="225" x2="60" y2="475" stroke="#34495E" stroke-width="1.5"/>
+<text x="53" y="255" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">0</text>
+<text x="53" y="305" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">−10</text>
+<text x="53" y="355" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">−20</text>
+<text x="53" y="405" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">−30</text>
+<text x="53" y="455" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">−40</text>
+<text x="15" y="350" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#555" transform="rotate(-90 15 350)">Power [dBm]</text>
+<polyline points="377,389.4 510,389.4" fill="none" stroke="#1F4E79" stroke-width="2.6" stroke-dasharray="8,5"/>
+<polyline points="60,350 210,350 210,400 377,400 377,300 510,300" fill="none" stroke="#C0392B" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="377" cy="400" r="6" fill="#B7791F" stroke="white" stroke-width="1.5"/>
+<text x="135" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#C0392B">−20 dBm</text>
+<text x="293" y="423" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#B7791F" font-weight="bold">EDFA input</text>
+<text x="293" y="443" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#B7791F" font-weight="bold">−30 dBm</text>
+<text x="472" y="290" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#C0392B">−10 dBm</text>
+<text x="446" y="411" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#1F4E79">ASE −27.9 dBm</text>
+<line x1="408" y1="312" x2="408" y2="377" stroke="#B7791F" stroke-width="2.2"/>
+<polygon points="408,304 403,314 413,314" fill="#B7791F"/>
+<polygon points="408,385.4 403,375.4 413,375.4" fill="#B7791F"/>
+<rect x="420" y="320" width="88" height="50" rx="6" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.5"/>
+<text x="464" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#B7791F" font-weight="bold">SNR</text>
+<text x="464" y="361" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#B7791F" font-weight="bold">17.9 dB</text>
+<text x="285" y="507" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#34495E">The EDFA input falls by 10 dB, and so does the SNR.</text>
+
+<!-- ================= panel (b): loss after the amplifier ================= -->
+<text x="620" y="72" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#222" font-weight="bold">(b) Loss after the amplifier</text>
+<line x1="620" y1="125" x2="710" y2="125" stroke="#C0392B" stroke-width="2.6" marker-end="url(#ar_opt)"/>
+<polygon points="710,88 710,162 784,125" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8" stroke-linejoin="round"/>
+<text x="737" y="130" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">EDFA</text>
+<text x="747" y="180" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">amplified_by_EDFA3</text>
+<line x1="784" y1="125" x2="850" y2="125" stroke="#C0392B" stroke-width="2.6" marker-end="url(#ar_opt)"/>
+<rect x="850" y="100" width="120" height="50" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="910" y="131" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222" font-weight="bold">Loss 10 dB</text>
+<text x="910" y="180" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#7F8C8D">attenuation</text>
+<line x1="970" y1="125" x2="1070" y2="125" stroke="#C0392B" stroke-width="2.6" marker-end="url(#ar_opt)"/>
+
+<!-- level diagram (b) -->
+<line x1="620" y1="250" x2="1070" y2="250" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="620" y1="300" x2="1070" y2="300" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="620" y1="350" x2="1070" y2="350" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="620" y1="400" x2="1070" y2="400" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="620" y1="450" x2="1070" y2="450" stroke="#E3E7EB" stroke-width="1"/>
+<line x1="747" y1="190" x2="747" y2="475" stroke="#BDC3C7" stroke-width="1.2" stroke-dasharray="3,4"/>
+<line x1="910" y1="190" x2="910" y2="475" stroke="#BDC3C7" stroke-width="1.2" stroke-dasharray="3,4"/>
+<line x1="620" y1="225" x2="620" y2="475" stroke="#34495E" stroke-width="1.5"/>
+<text x="613" y="255" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">0</text>
+<text x="613" y="305" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">−10</text>
+<text x="613" y="355" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">−20</text>
+<text x="613" y="405" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">−30</text>
+<text x="613" y="455" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="end" fill="#555">−40</text>
+<text x="575" y="350" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#555" transform="rotate(-90 575 350)">Power [dBm]</text>
+<polyline points="747,389.4 910,389.4 910,439.4 1070,439.4" fill="none" stroke="#1F4E79" stroke-width="2.6" stroke-dasharray="8,5"/>
+<polyline points="620,350 747,350 747,250 910,250 910,300 1070,300" fill="none" stroke="#C0392B" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="747" cy="350" r="6" fill="#B7791F" stroke="white" stroke-width="1.5"/>
+<text x="682" y="319" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#B7791F" font-weight="bold">EDFA input</text>
+<text x="682" y="339" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#B7791F" font-weight="bold">−20 dBm</text>
+<text x="828" y="240" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#C0392B">0 dBm</text>
+<text x="828" y="411" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#1F4E79">ASE −27.9 dBm</text>
+<text x="1016" y="290" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#C0392B">−10 dBm</text>
+<text x="998" y="461" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#1F4E79">ASE −37.9 dBm</text>
+<line x1="936" y1="312" x2="936" y2="427" stroke="#B7791F" stroke-width="2.2"/>
+<polygon points="936,304 931,314 941,314" fill="#B7791F"/>
+<polygon points="936,435.4 931,425.4 941,425.4" fill="#B7791F"/>
+<rect x="948" y="345" width="88" height="50" rx="6" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.5"/>
+<text x="992" y="365" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="middle" fill="#B7791F" font-weight="bold">SNR</text>
+<text x="992" y="386" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#B7791F" font-weight="bold">27.9 dB</text>
+<text x="845" y="507" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#34495E">Signal and ASE fall together: the SNR does not change.</text>
+
+<!-- ================= legend ================= -->
+<line x1="60" y1="555" x2="104" y2="555" stroke="#C0392B" stroke-width="3"/>
+<text x="112" y="560" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222">signal power of one channel</text>
+<line x1="360" y1="555" x2="404" y2="555" stroke="#1F4E79" stroke-width="2.6" stroke-dasharray="8,5"/>
+<text x="412" y="560" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222">ASE power inside the signal bandwidth (32 GHz)</text>
+<circle cx="820" cy="555" r="6" fill="#B7791F" stroke="white" stroke-width="1.5"/>
+<text x="832" y="560" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="start" fill="#222">power at the EDFA input</text>
+<text x="60" y="592" font-family="Segoe UI, Arial, sans-serif" font-size="15" text-anchor="start" fill="#7F8C8D">Example: EDFA with gain G = 20 dB and noise figure NF = 6 dB. All powers are for one channel, both polarizations together.</text>
+</svg>

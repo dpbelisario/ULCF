@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="710" viewBox="0 0 1000 710">
+<defs>
+  <marker id="ar_dark" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#34495E"/></marker>
+  <marker id="ar_gry" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7F8C8D"/></marker>
+</defs>
+<rect x="0" y="0" width="1000" height="710" fill="white"/>
+<text x="85" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle" fill="#7F8C8D">Kind of work</text>
+<text x="172" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#7F8C8D">Phase, and what you start from</text>
+<text x="700" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#7F8C8D">Part of the paper that the phase feeds</text>
+<rect x="20" y="58" width="130" height="126" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="85" y="119" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#222222">Learn</text>
+<text x="85" y="141" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">read and run</text>
+<rect x="20" y="202" width="130" height="126" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="85" y="263" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#222222">Reproduce</text>
+<text x="85" y="285" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">given code</text>
+<rect x="20" y="346" width="130" height="198" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="85" y="443" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#222222">Create</text>
+<text x="85" y="465" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#B7791F">your own work</text>
+<rect x="20" y="562" width="130" height="126" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="85" y="623" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#222222">Publish</text>
+<text x="85" y="645" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7F8C8D">verify and write</text>
+<rect x="172" y="58" width="470" height="54" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="186" y="81" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#34495E">Phase 0</text>
+<text x="256" y="81" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Set up and orient</text>
+<text x="256" y="101" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">START_HERE, pages 01 to 04</text>
+<rect x="700" y="58" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="81" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Introduction</text>
+<text x="714" y="101" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">the question and the idea</text>
+<line x1="645" y1="85" x2="696" y2="85" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+<line x1="214" y1="114" x2="214" y2="126" stroke="#34495E" stroke-width="2.2" marker-end="url(#ar_dark)"/>
+<rect x="172" y="130" width="470" height="54" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="186" y="153" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#34495E">Phase 1</text>
+<text x="256" y="153" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Background</text>
+<text x="256" y="173" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">pages 11 to 17, demo12 to demo17</text>
+<rect x="700" y="130" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="153" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Simulation model</text>
+<text x="714" y="173" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">elements, noise and crosstalk</text>
+<line x1="645" y1="157" x2="696" y2="157" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+<line x1="214" y1="186" x2="214" y2="198" stroke="#34495E" stroke-width="2.2" marker-end="url(#ar_dark)"/>
+<rect x="172" y="202" width="470" height="54" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="186" y="225" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#34495E">Phase 2</text>
+<text x="256" y="225" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Reproduce the two-stage ULCF switch</text>
+<text x="256" y="245" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">page 21, step21, main_two_stage_ULCF</text>
+<rect x="700" y="202" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="225" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Baseline 1</text>
+<text x="714" y="245" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">two-stage ULCF switch</text>
+<line x1="645" y1="229" x2="696" y2="229" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+<line x1="214" y1="258" x2="214" y2="270" stroke="#34495E" stroke-width="2.2" marker-end="url(#ar_dark)"/>
+<rect x="172" y="274" width="470" height="54" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="186" y="297" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#34495E">Phase 3</text>
+<text x="256" y="297" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Reproduce the conventional three-stage switch</text>
+<text x="256" y="317" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">page 22, step22, main_three_stage_conventional</text>
+<rect x="700" y="274" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="297" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Baseline 2</text>
+<text x="714" y="317" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">conventional three-stage switch</text>
+<line x1="645" y1="301" x2="696" y2="301" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+<line x1="214" y1="330" x2="214" y2="342" stroke="#34495E" stroke-width="2.2" marker-end="url(#ar_dark)"/>
+<rect x="172" y="346" width="470" height="54" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="186" y="369" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#B7791F">Phase 4</text>
+<text x="256" y="369" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Design the proposal on paper and in integers</text>
+<text x="256" y="389" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">page 23, work1_wavelength_rule</text>
+<rect x="700" y="346" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="369" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Proposed architecture</text>
+<text x="714" y="389" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">structure and wavelength rule</text>
+<line x1="645" y1="373" x2="696" y2="373" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+<line x1="214" y1="402" x2="214" y2="414" stroke="#34495E" stroke-width="2.2" marker-end="url(#ar_dark)"/>
+<rect x="172" y="418" width="470" height="54" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="186" y="441" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#B7791F">Phase 5</text>
+<text x="256" y="441" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Simulate the proposal</text>
+<text x="256" y="461" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">work2_three_stage_proposed</text>
+<rect x="700" y="418" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="441" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Transmission performance</text>
+<text x="714" y="461" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">BER, required transmitter power</text>
+<line x1="645" y1="445" x2="696" y2="445" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+<line x1="214" y1="474" x2="214" y2="486" stroke="#34495E" stroke-width="2.2" marker-end="url(#ar_dark)"/>
+<rect x="172" y="490" width="470" height="54" rx="8" fill="#FDF4DC" stroke="#B7791F" stroke-width="1.8"/>
+<text x="186" y="513" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#B7791F">Phase 6</text>
+<text x="256" y="513" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Compare the three switches fairly</text>
+<text x="256" y="533" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">work3_comparison</text>
+<rect x="700" y="490" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="513" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Comparison</text>
+<text x="714" y="533" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">port count, throughput, hardware count</text>
+<line x1="645" y1="517" x2="696" y2="517" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+<line x1="214" y1="546" x2="214" y2="558" stroke="#34495E" stroke-width="2.2" marker-end="url(#ar_dark)"/>
+<rect x="172" y="562" width="470" height="54" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="186" y="585" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#34495E">Phase 7</text>
+<text x="256" y="585" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Experiment</text>
+<text x="256" y="605" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">planned with your supervisor</text>
+<rect x="700" y="562" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="585" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Experimental verification</text>
+<text x="714" y="605" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">a part of the switch, measured</text>
+<line x1="645" y1="589" x2="696" y2="589" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+<line x1="214" y1="618" x2="214" y2="630" stroke="#34495E" stroke-width="2.2" marker-end="url(#ar_dark)"/>
+<rect x="172" y="634" width="470" height="54" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="186" y="657" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="start" fill="#34495E">Phase 8</text>
+<text x="256" y="657" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Write the paper</text>
+<text x="256" y="677" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">the saved results of phases 2 to 7</text>
+<rect x="700" y="634" width="280" height="54" rx="8" fill="white" stroke="#7F8C8D" stroke-width="1.4"/>
+<text x="714" y="657" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="start" fill="#222222">Complete manuscript</text>
+<text x="714" y="677" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D">every figure traced to a saved result</text>
+<line x1="645" y1="661" x2="696" y2="661" stroke="#7F8C8D" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_gry)"/>
+</svg>

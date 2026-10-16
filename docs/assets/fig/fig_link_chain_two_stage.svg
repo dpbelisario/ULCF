@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="790" viewBox="0 0 1150 790">
+<defs>
+  <marker id="ar_opt" markerWidth="6" markerHeight="5" refX="4.4" refY="2.2" orient="auto"><path d="M0,0 L5,2.2 L0,4.4 z" fill="#C0392B"/></marker>
+  <marker id="ar_ele" markerWidth="6" markerHeight="5" refX="4.4" refY="2.2" orient="auto"><path d="M0,0 L5,2.2 L0,4.4 z" fill="#1F4E79"/></marker>
+  <marker id="ar_thin" markerWidth="9" markerHeight="8" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#E3A9A2"/></marker>
+</defs>
+<rect x="0" y="0" width="1150" height="790" rx="0" fill="white" stroke="none" stroke-width="0"/>
+<text x="575" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="20" text-anchor="middle" fill="#222222" font-weight="bold">Simulation chain of the two-stage ULCF switch (blocks of step21, section 3)</text>
+<rect x="56" y="138" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="65" y="158" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[1]</text>
+<text x="163" y="182" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Transmitters</text>
+<text x="163" y="204" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">M signals, one is the target</text>
+<text x="163" y="246" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">TL_QAM</text>
+<rect x="322" y="138" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="331" y="158" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[2]</text>
+<text x="429" y="182" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Fan-in / fan-out</text>
+<text x="429" y="204" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">multicore fiber</text>
+<text x="429" y="246" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">attenuation</text>
+<rect x="588" y="138" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="597" y="158" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[3]</text>
+<text x="695" y="182" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">DC switch</text>
+<text x="695" y="204" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">M × M, selector + coupler</text>
+<text x="695" y="246" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">DCS_loss, attenuation</text>
+<line x1="270" y1="182" x2="316" y2="182" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="536" y1="182" x2="582" y2="182" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<rect x="597" y="62" width="196" height="46" rx="8" fill="white" stroke="#C0392B" stroke-width="1.4"/>
+<text x="695" y="81" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">crosstalk: M − 1 leaks</text>
+<text x="695" y="99" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">each ER below the target</text>
+<line x1="695" y1="108" x2="695" y2="133" stroke="#C0392B" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_opt)"/>
+<line x1="872" y1="100" x2="916" y2="100" stroke="#C0392B" stroke-width="3"/>
+<text x="928" y="105" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#222222">optical field (variable signal)</text>
+<line x1="872" y1="128" x2="912" y2="128" stroke="#C0392B" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_opt)"/>
+<text x="928" y="133" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#222222">noise or crosstalk that is added</text>
+<line x1="872" y1="156" x2="912" y2="156" stroke="#1F4E79" stroke-width="3" marker-end="url(#ar_ele)"/>
+<text x="928" y="161" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#222222">electrical result</text>
+<text x="894" y="189" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">name</text>
+<text x="928" y="189" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#222222">library function of the block</text>
+<polyline points="802,182 828,182 828,262 26,262 26,428 50,428" fill="none" stroke="#C0392B" stroke-width="3" stroke-linejoin="round" marker-end="url(#ar_opt)"/>
+<rect x="40" y="288" width="1042" height="232" rx="12" fill="none" stroke="#7F8C8D" stroke-width="1.6" stroke-dasharray="7,5"/>
+<text x="56" y="314" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D" font-weight="bold">One wavelength-routing</text>
+<text x="56" y="332" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#7F8C8D" font-weight="bold">(WR) switch: blocks [4] to [7]</text>
+<rect x="56" y="384" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="65" y="404" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[4]</text>
+<text x="163" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Aggregation coupler</text>
+<text x="163" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">(N/K) × 1</text>
+<text x="163" y="492" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">coupler_loss, attenuation</text>
+<rect x="322" y="384" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="331" y="404" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[5]</text>
+<text x="429" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">EDFA</text>
+<text x="429" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">shared by N/K wavelengths</text>
+<text x="429" y="492" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">amplified_by_EDFA3</text>
+<rect x="588" y="384" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="597" y="404" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[6]</text>
+<text x="695" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">1 × 2 splitter + AWG</text>
+<text x="695" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">flat loss + shifted passband</text>
+<text x="695" y="492" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">ULCF_dev_freq, awg</text>
+<rect x="854" y="384" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="863" y="404" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[7]</text>
+<text x="961" y="428" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">AWG crosstalk</text>
+<text x="961" y="450" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">added to the AWG output</text>
+<text x="961" y="492" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">TL_QAM, attenuation</text>
+<line x1="270" y1="428" x2="316" y2="428" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="536" y1="428" x2="582" y2="428" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="802" y1="428" x2="848" y2="428" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<rect x="331" y="308" width="196" height="46" rx="8" fill="white" stroke="#C0392B" stroke-width="1.4"/>
+<text x="429" y="327" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">ASE noise</text>
+<text x="429" y="345" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">noise figure NF</text>
+<line x1="429" y1="354" x2="429" y2="379" stroke="#C0392B" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_opt)"/>
+<rect x="863" y="308" width="196" height="46" rx="8" fill="white" stroke="#C0392B" stroke-width="1.4"/>
+<text x="961" y="327" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">crosstalk: K − 1 leaks</text>
+<text x="961" y="345" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">each XT_AWG below the signal</text>
+<line x1="961" y1="354" x2="961" y2="379" stroke="#C0392B" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_opt)"/>
+<polyline points="1068,428 1112,428 1112,545 26,545 26,690 50,690" fill="none" stroke="#C0392B" stroke-width="3" stroke-linejoin="round" marker-end="url(#ar_opt)"/>
+<rect x="56" y="646" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="65" y="666" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[8]</text>
+<text x="163" y="690" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Fan-in / fan-out</text>
+<text x="163" y="712" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">multicore fiber</text>
+<text x="163" y="754" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">attenuation</text>
+<rect x="322" y="646" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="331" y="666" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[9]</text>
+<text x="429" y="690" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Pre-amplifier</text>
+<text x="429" y="712" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">carries one wavelength</text>
+<text x="429" y="754" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">amplified_by_EDFA3</text>
+<rect x="588" y="646" width="214" height="88" rx="8" fill="#F2F6FB" stroke="#34495E" stroke-width="1.8"/>
+<text x="597" y="666" font-family="Segoe UI, Arial, sans-serif" font-size="14" text-anchor="start" fill="#1F4E79" font-weight="bold">[10]</text>
+<text x="695" y="690" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle" fill="#222222" font-weight="bold">Coherent receiver</text>
+<text x="695" y="712" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">filter, equalizer, decision</text>
+<text x="695" y="754" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">nyquistfilter, adequalizet,</text>
+<text x="695" y="771" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#7F8C8D">measure_BER_QAM</text>
+<line x1="270" y1="690" x2="316" y2="690" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<line x1="536" y1="690" x2="582" y2="690" stroke="#C0392B" stroke-width="3" marker-end="url(#ar_opt)"/>
+<rect x="331" y="570" width="196" height="46" rx="8" fill="white" stroke="#C0392B" stroke-width="1.4"/>
+<text x="429" y="589" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#222222" font-weight="bold">ASE noise</text>
+<text x="429" y="607" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="middle" fill="#555555">noise figure NF2</text>
+<line x1="429" y1="616" x2="429" y2="641" stroke="#C0392B" stroke-width="1.8" stroke-dasharray="5,4" marker-end="url(#ar_opt)"/>
+<line x1="802" y1="690" x2="860" y2="690" stroke="#1F4E79" stroke-width="3" marker-end="url(#ar_ele)"/>
+<text x="872" y="696" font-family="Segoe UI, Arial, sans-serif" font-size="18" text-anchor="start" fill="#1F4E79" font-weight="bold">BER</text>
+<text x="872" y="718" font-family="Segoe UI, Arial, sans-serif" font-size="13" text-anchor="start" fill="#7F8C8D">compared with BER_limit</text>
+</svg>
