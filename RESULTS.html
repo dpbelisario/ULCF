@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clos-ULCF Results</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single report column; headline figures, then the three PTx tables, then throughput, cost, limits */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #1c2530;
+  --muted: #5b6876;
+  --line: #dce2e8;
+  --signal: #c0392b;
+  --ok-bg: #e7f3ec; --ok-fg: #1f6b40;
+  --edge-bg: #fbf1dc; --edge-fg: #8a5a0b;
+  --no-bg: #f8e4e2; --no-fg: #9b2c21;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151a; --surface: #192028; --fg: #e2e7ed; --muted: #9aa6b3; --line: #2b343f; --signal: #ef6f61;
+    --ok-bg: #18301f; --ok-fg: #7fd3a0; --edge-bg: #33290f; --edge-fg: #e8b860; --no-bg: #3a1e1b; --no-fg: #f19185;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151a; --surface: #192028; --fg: #e2e7ed; --muted: #9aa6b3; --line: #2b343f; --signal: #ef6f61;
+  --ok-bg: #18301f; --ok-fg: #7fd3a0; --edge-bg: #33290f; --edge-fg: #e8b860; --no-bg: #3a1e1b; --no-fg: #f19185;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 920px; margin: 0 auto; display: grid; gap: 36px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; margin: 0; text-wrap: balance; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1rem; }
+p { margin: 0; }
+section { display: grid; gap: 14px; }
+.eyebrow { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.lede { font-size: 1.05rem; max-width: 70ch; }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+code { font-family: var(--font-mono); font-size: .85em; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.fig { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 4px; min-width: 0; }
+.fig b { font-family: var(--font-display); font-size: 1.7rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.fig b small { font-size: .95rem; font-weight: 500; color: var(--muted); }
+.fig span { font-size: .85rem; color: var(--muted); }
+.setup { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--font-mono); font-size: .78rem; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 2px 10px; }
+.scroll { overflow-x: auto; min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; background: var(--surface); }
+th, td { padding: 8px 10px; border: 1px solid var(--line); text-align: center; vertical-align: middle; }
+th { font-size: .78rem; color: var(--muted); font-weight: 600; }
+th small { display: block; font-weight: 400; }
+td.k, th.k { text-align: left; font-weight: 600; white-space: nowrap; }
+td.l { text-align: left; }
+td { font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: .88rem; }
+td.l, td.k { font-family: var(--font-body); font-size: .9rem; }
+td.ok { background: var(--ok-bg); color: var(--ok-fg); }
+td.edge { background: var(--edge-bg); color: var(--edge-fg); }
+td.no { background: var(--no-bg); color: var(--no-fg); font-family: var(--font-body); font-size: .82rem; }
+tr.base td.k { color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .82rem; color: var(--muted); }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.sw.ok { background: var(--ok-bg); border: 1px solid var(--ok-fg); }
+.sw.edge { background: var(--edge-bg); border: 1px solid var(--edge-fg); }
+.sw.no { background: var(--no-bg); border: 1px solid var(--no-fg); }
+.tables { display: grid; gap: 22px; }
+.tables > div { display: grid; gap: 8px; min-width: 0; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.cols > div { min-width: 0; display: grid; gap: 8px; align-content: start; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.take { border-left: 3px solid var(--signal); padding: 4px 0 4px 16px; display: grid; gap: 8px; }
+strong.hi { color: var(--signal); }
+body { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header style="display:grid;gap:12px">
+  <div class="eyebrow">Clos-ULCF · three-stage optical circuit switch · simulation results</div>
+  <h1>Clos-ULCF Results</h1>
+  <div class="take">
+    <p class="lede">Replacing the 96 × 1 aggregation coupler in each WR switch with K couplers, K EDFAs and a pair of ULCF AWGs cuts the loss before the EDFA by up to 14 dB. The required transmitter power drops by up to 13 dB at every size from 1536 to 12288 ports.</p>
+    <p class="lede">The largest switch, <strong>12288 × 12288 (2457.6 Tbps)</strong>, works at −15 dBm with Scheme A1, and at −12 dBm with the cheaper Scheme A2 under dispersed traffic, where the conventional A2 switch is infeasible.</p>
+  </div>
+  <div class="setup" aria-label="simulation setup">
+    <span class="chip">N = 96 wavelengths, 50-GHz grid</span>
+    <span class="chip">M = 16–128</span>
+    <span class="chip">ports = 96 × M</span>
+    <span class="chip">32-GBd DP-16QAM, 200 Gb/s</span>
+    <span class="chip">BER ≤ 1e-2</span>
+    <span class="chip">feasible: P_TX ≤ 5 dBm</span>
+  </div>
+</header>
+
+<section>
+  <h2>Headline figures</h2>
+  <div class="figs">
+    <div class="fig"><b>2457.6 <small>Tbps</small></b><span>maximum throughput, 12288 ports × 200 Gb/s</span></div>
+    <div class="fig"><b>−13 <small>dB</small></b><span>transmitter power saved, Scheme A1, K = 12, every size</span></div>
+    <div class="fig"><b>−12 <small>dBm</small></b><span>Scheme A2 at 12288 ports, dispersed traffic (conventional: infeasible)</span></div>
+    <div class="fig"><b>21.4 <small>dB</small></b><span>ULCF AWG crosstalk, the new limiting SNR term at K = 12</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Required transmitter power</h2>
+  <p class="muted">Lowest P_TX in dBm at which BER ≤ 1e-2. K = 1 is the conventional switch. Infeasible means the FEC limit is not reached up to 10 dBm.</p>
+  <div class="legend"><span><span class="sw ok"></span>feasible</span><span><span class="sw edge"></span>feasible, within 1 dB of the 5-dBm limit</span><span><span class="sw no"></span>infeasible</span></div>
+
+  <div class="tables">
+    <div>
+      <h3>Scheme A1 · third stage selector + selector · dispersed and concentrated identical</h3>
+      <div class="scroll"><table>
+        <thead><tr><th class="k">K</th><th>M = 16<small>1536 ports</small></th><th>M = 32<small>3072 ports</small></th><th>M = 64<small>6144 ports</small></th><th>M = 128<small>12288 ports</small></th></tr></thead>
+        <tbody>
+          <tr class="base"><td class="k">1 (conventional)</td><td class="ok">−5</td><td class="ok">−4</td><td class="ok">−3</td><td class="ok">−2</td></tr>
+          <tr><td class="k">2</td><td class="ok">−8</td><td class="ok">−7</td><td class="ok">−6</td><td class="ok">−5</td></tr>
+          <tr><td class="k">4</td><td class="ok">−12</td><td class="ok">−11</td><td class="ok">−10</td><td class="ok">−9</td></tr>
+          <tr><td class="k">8</td><td class="ok">−15</td><td class="ok">−14</td><td class="ok">−13</td><td class="ok">−12</td></tr>
+          <tr><td class="k">12</td><td class="ok">−18</td><td class="ok">−17</td><td class="ok">−16</td><td class="ok">−15</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div>
+      <h3>Scheme A2 · third stage selector + coupler · dispersed traffic</h3>
+      <div class="scroll"><table>
+        <thead><tr><th class="k">K</th><th>M = 16<small>1536 ports</small></th><th>M = 32<small>3072 ports</small></th><th>M = 64<small>6144 ports</small></th><th>M = 128<small>12288 ports</small></th></tr></thead>
+        <tbody>
+          <tr class="base"><td class="k">1 (conventional)</td><td class="ok">−4</td><td class="ok">−2</td><td class="edge">4</td><td class="no">infeasible</td></tr>
+          <tr><td class="k">2</td><td class="ok">−7</td><td class="ok">−5</td><td class="ok">2</td><td class="no">infeasible</td></tr>
+          <tr><td class="k">4</td><td class="ok">−11</td><td class="ok">−10</td><td class="ok">−7</td><td class="no">infeasible</td></tr>
+          <tr><td class="k">8</td><td class="ok">−15</td><td class="ok">−13</td><td class="ok">−12</td><td class="ok">−8</td></tr>
+          <tr><td class="k">12</td><td class="ok">−18</td><td class="ok">−17</td><td class="ok">−15</td><td class="ok">−12</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div>
+      <h3>Scheme A2 · third stage selector + coupler · concentrated traffic</h3>
+      <div class="scroll"><table>
+        <thead><tr><th class="k">K</th><th>M = 16<small>1536 ports</small></th><th>M = 32<small>3072 ports</small></th><th>M = 64<small>6144 ports</small></th><th>M = 128<small>12288 ports</small></th></tr></thead>
+        <tbody>
+          <tr class="base"><td class="k">1 (conventional)</td><td class="ok">−4</td><td class="ok">−2</td><td class="edge">4</td><td class="no">infeasible</td></tr>
+          <tr><td class="k">2</td><td class="ok">−7</td><td class="ok">−4</td><td class="no">infeasible</td><td class="no">infeasible</td></tr>
+          <tr><td class="k">4</td><td class="ok">−11</td><td class="ok">−8</td><td class="ok">−1</td><td class="no">infeasible</td></tr>
+          <tr><td class="k">8</td><td class="ok">−14</td><td class="ok">−12</td><td class="ok">−7</td><td class="no">infeasible</td></tr>
+          <tr><td class="k">12</td><td class="ok">−17</td><td class="ok">−15</td><td class="ok">−9</td><td class="no">infeasible</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <p class="small muted">Conventional rows agree with Table V of Mitsuya et al., JLT 2025, within 0.5 dB (A1: −4.5, −3.5, −2.5, −1.5; A2: −4, −2, 4, infeasible). Seed 1, 1-dB grid, 3e4 symbols; a second seed changed 8 of 71 entries by 1 dB.</p>
+</section>
+
+<section>
+  <h2>Which K is feasible</h2>
+  <div class="scroll"><table>
+    <thead><tr><th class="k">Scheme</th><th>Feasible K (P_TX ≤ 5 dBm)</th></tr></thead>
+    <tbody>
+      <tr><td class="k">A1</td><td class="l">All K at every size, up to 12288 ports</td></tr>
+      <tr><td class="k">A2, dispersed</td><td class="l">All K up to 6144 ports; at 12288 ports only K = 8 and 12</td></tr>
+      <tr><td class="k">A2, concentrated</td><td class="l">All K up to 3072 ports; at 6144 ports all except K = 2; 12288 ports none</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Throughput</h2>
+  <p class="muted">Throughput = ports × 200 Gb/s. Largest feasible switch of each kind. The 12288-port ceiling comes from N = 96 wavelengths and M = 128, not from the proposal.</p>
+  <div class="scroll"><table>
+    <thead><tr><th class="k">Switch</th><th>Max ports</th><th>Throughput</th><th>P_TX at that size</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Two-stage, K = 1</td><td>768</td><td>153.6 Tbps</td><td>3 dBm</td></tr>
+      <tr><td class="k">Two-stage, K = 12</td><td>3072</td><td>614.4 Tbps</td><td>0 dBm</td></tr>
+      <tr><td class="k">Conventional A1</td><td>12288</td><td>2457.6 Tbps</td><td>−2 dBm</td></tr>
+      <tr><td class="k">Conventional A2</td><td>6144</td><td>1228.8 Tbps</td><td>4 dBm</td></tr>
+      <tr><td class="k">Proposed A1, K = 12</td><td>12288</td><td>2457.6 Tbps</td><td>−15 dBm</td></tr>
+      <tr><td class="k">Proposed A2, K = 12, dispersed</td><td>12288</td><td><strong class="hi">2457.6 Tbps</strong></td><td>−12 dBm</td></tr>
+      <tr><td class="k">Proposed A2, K = 12, concentrated</td><td>6144</td><td>1228.8 Tbps</td><td>−9 dBm</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Cost</h2>
+  <div class="scroll"><table>
+    <thead><tr><th class="k">Per port, M = 64</th><th>1 × 2 selectors</th><th>EDFAs</th><th>AWGs</th><th>1 × 2 splitters</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Conventional A1</td><td>252</td><td>0.0104</td><td>0.0104</td><td>0</td></tr>
+      <tr><td class="k">Conventional A2</td><td>189</td><td>0.0104</td><td>0.0104</td><td>0</td></tr>
+      <tr><td class="k">Proposed A1, K = 12</td><td>252</td><td>0.125</td><td>0.0208</td><td>0.125</td></tr>
+      <tr><td class="k">Proposed A2, K = 12</td><td>189</td><td>0.125</td><td>0.0208</td><td>0.125</td></tr>
+    </tbody>
+  </table></div>
+  <ul>
+    <li>Selectors per port are unchanged: 4(M − 1) for A1, 3(M − 1) for A2.</li>
+    <li>Each WR switch needs K EDFAs, K splitters and 2 AWGs instead of 1 EDFA and 1 AWG.</li>
+    <li>Because A2 becomes feasible at 12288 ports, the proposal can save 127 selectors per port against A1.</li>
+  </ul>
+</section>
+
+<section class="cols">
+  <div>
+    <h2>Main limitations</h2>
+    <ul>
+      <li><strong>Traffic dependence.</strong> With A2 and concentrated traffic every third-stage leak is in band again; the gain shrinks with M and 12288 ports stay infeasible.</li>
+      <li><strong>New crosstalk floor.</strong> K − 1 ULCF AWG leaks at −32 dB cap the SNR near 21.4 dB at K = 12. Larger K adds little; K = 8 already gives most of the gain.</li>
+      <li><strong>Simulation only.</strong> No device was fabricated or measured. The 32-dB AWG crosstalk comes from the lab code.</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Significance</h2>
+    <ul>
+      <li>The aggregation coupler loss, the main scalability limit of the JLT architecture, is reduced without changing the space switches.</li>
+      <li>The saving buys either far lower transmitter power or the simpler Scheme A2 at the largest size.</li>
+      <li>A connection's wavelength depends only on its source group and destination, so rearrangement needs no laser retuning.</li>
+      <li>Third-stage in-band leaks fall from M − 1 to ⌈M/K⌉ − 1 under dispersed traffic.</li>
+    </ul>
+  </div>
+</section>
+
+<p class="small muted">Source: matlab_claude/claude_runs/REPORT.md and the sweep claude_main_three_stage_proposed (seeds 1 and 2). References: Nagai et al., JOCN 10(7) 2018; Mitsuya et al., JLT 43(2) 2025.</p>
+
+</div>
+</body>
+</html>
