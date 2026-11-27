@@ -262,11 +262,11 @@ end
 
 %% 7. Tables
 stage_names = {'Tx', 'Fan-in/out', 'Switch 1', 'Coupler', 'EDFA', 'AWG', ...
-    'Switch 3', 'Fan-in/out', 'Pre-amp'};
+    'AWG crosstalk', 'Switch 3', 'Fan-in/out', 'Pre-amp'};
 fprintf('\nPower after every block [dBm] (one polarization, inside the band Fs)\n');
 fprintf('  %-18s %11s %11s %11s\n', 'block', 'simulation', 'budget', 'budget');
 fprintf('  %-18s %11s %11s %11s\n', '', '(total)', '(total)', '(target)');
-for k = 1:9
+for k = 1:10
     fprintf('  [%d] %-14s %11.3f %11.3f %11.3f\n', k, stage_names{k}, ...
         stage_power(k), budget_total(k), budget_target(k));
 end
@@ -274,11 +274,12 @@ ase1_sim = calc_signal_power(aseNoise);
 ase2_sim = calc_signal_power(aseNoise2);
 fprintf('  %-18s %11.3f %11.3f\n', 'ASE of EDFA', ase1_sim, budget_ase1);
 fprintf('  %-18s %11.3f %11.3f\n', 'ASE of pre-amp', ase2_sim, budget_ase2);
-fprintf('  %-18s %11.3f %11.3f\n', 'sigpw (block [7])', sigpw, budget_sigpw);
+fprintf('  %-18s %11.3f %11.3f\n', 'sigpw (block [8])', sigpw, budget_sigpw);
 
 fprintf('\nSNR contributions in the signal bandwidth [dB]\n');
 fprintf('  ASE of the EDFA                 %7.2f\n', -10*log10(nsr_ase1));
 fprintf('  crosstalk of the stage-1 switch %7.2f\n', -10*log10(nsr_xt_sw1));
+fprintf('  crosstalk of the ULCF AWG       %7.2f\n', -10*log10(nsr_xt_awg));
 fprintf('  crosstalk of the stage-3 switch %7.2f\n', -10*log10(nsr_xt_sw3));
 fprintf('  ASE of the pre-amplifier        %7.2f\n', -10*log10(nsr_ase2));
 fprintf('  all together (budget)           %7.2f\n', SNR_budget);
@@ -316,7 +317,7 @@ if isprop(gcf, 'Theme')
     set(gcf, 'Theme', 'light');
 end
 hold on;
-plot(1:9, budget_total, 'k-');
+plot(1:10, budget_total, 'k-');
 legend('simulation (total power)', 'closed-form budget', 'Location', 'southwest');
 title(sprintf('Level diagram: PTx = %.1f dBm, M = %d, Scheme A%d', PTx, sw_size, ...
     stage3_coupler_flag + 1));
