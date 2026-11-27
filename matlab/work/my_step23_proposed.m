@@ -1,11 +1,8 @@
 %% my_step23_proposed - proposed three-stage switch, one operating point (start: copy of step22)
-% [1] transmitter -> [2] fan-in/fan-out
-
-% [3] is the DC switch there, and [7] is the crosstalk of the ULCF AWG there.
 
 clear; close all; rng(1);
 if exist('attenuation', 'file') ~= 2
-    error(['step22_three_stage_one_point: the library is not on the MATLAB path. ' ...
+    error(['my_step23_proposed: the library is not on the MATLAB path. ' ...
         'Run setup_path first.']);
 end
 
@@ -153,7 +150,7 @@ f_opt = 299792458/1550e-9;
 budget_target = zeros(1, 9);
 budget_total = zeros(1, 9);
 
-% [1] to [4]: losses in dB are subtracted
+% [1] to [4]
 xt_sw1 = num_xt*10^(-sw1_xt_att/10);
 budget_target(1) = pin;
 budget_total(1) = pin;
@@ -164,7 +161,7 @@ budget_total(3) = budget_target(3) + 10*log10(1 + xt_sw1);
 budget_target(4) = budget_target(3) - agg_coupler_loss;
 budget_total(4) = budget_total(3) - agg_coupler_loss;
 
-% [5] EDFA: the gain lifts the input to limit1. Then ASE is added.
+% [5] EDFA
 limit1 = sat1 - 10*log10(N);
 G1 = 10^((limit1 - budget_total(4))/10);
 F1 = 10^(NF/10);
@@ -175,7 +172,7 @@ budget_target(5) = budget_target(4) + 10*log10(G1*scale1);
 budget_total(5) = 10*log10((10^(limit1/10) + ase1_mW)*scale1);
 budget_ase1 = 10*log10(ase1_mW*scale1);
 
-% [6] AWG: flat loss and the shape of the passband.
+% [6] AWG
 Hawg = gaussfilter(datasize*up, 0, Fs, FWHM_AWG, AWG_XT, 1);
 w_sig = Hrcos.^2/sum(Hrcos.^2);
 T_sig = sum(w_sig.*Hawg.^2);
@@ -186,7 +183,7 @@ sig6_mW = 10^(budget_target(6)/10)*(1 + xt_sw1);
 ase6_mW = ase1_mW*scale1*10^(-AWG_loss/10);
 budget_total(6) = 10*log10(sig6_mW + ase6_mW*T_ase);
 
-% [7] Stage-3 switch: sw_size-1 leaks, each sw3_xt_att dB below sigpw.
+% [7] Stage-3 switch
 budget_sigpw = 10*log10(sig6_mW + ase6_mW*T_inband);
 xt_sw3_mW = num_xt*10^((budget_sigpw - sw3_xt_att)/10);
 budget_target(7) = budget_target(6) - sw3_loss;
@@ -196,7 +193,7 @@ budget_total(7) = 10*log10(10^(budget_total(6)/10) + xt_sw3_mW) - sw3_loss;
 budget_target(8) = budget_target(7) - fiber_loss;
 budget_total(8) = budget_total(7) - fiber_loss;
 
-% [9] pre-amplifier: the same rules as the EDFA, for one wavelength
+% [9] Pre-amplifier
 limit2 = sat2;
 G2 = 10^((limit2 - budget_total(8))/10);
 F2 = 10^(NF2/10);
