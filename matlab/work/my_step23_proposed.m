@@ -249,9 +249,10 @@ budget_ase2 = 10*log10(ase2_mW*scale2);
 eq_penalty = T_sig*sum(w_sig./Hawg.^2);
 nsr_ase1 = (ase1_mW*baudrate/Fs)/(G1*10^(budget_target(4)/10));
 nsr_xt_sw1 = xt_sw1;
-nsr_xt_sw3 = xt_sw3_mW/10^(budget_target(6)/10)*eq_penalty;
-nsr_ase2 = (ase2_mW*baudrate/Fs)/(G2*10^(budget_target(8)/10))*eq_penalty;
-SNR_budget = -10*log10(nsr_ase1 + nsr_xt_sw1 + nsr_xt_sw3 + nsr_ase2);
+nsr_xt_awg = xt_awg_mW/10^(budget_target(7)/10)*eq_penalty;
+nsr_xt_sw3 = xt_sw3_mW/10^(budget_target(7)/10)*eq_penalty;
+nsr_ase2 = (ase2_mW*baudrate/Fs)/(G2*10^(budget_target(9)/10))*eq_penalty;
+SNR_budget = -10*log10(nsr_ase1 + nsr_xt_sw1 + nsr_xt_awg + nsr_xt_sw3 + nsr_ase2);
 
 BER_gauss = NaN;
 if mod_flag ~= 5
