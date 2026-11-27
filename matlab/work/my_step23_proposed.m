@@ -179,8 +179,8 @@ SNR_sim = 10*log10(abs(g)^2*mean(abs(tx_sym).^2)/mean(abs(err_sym).^2));
 %% 5. Closed-form power budget
 h_planck = 6.62607004e-34;
 f_opt = 299792458/1550e-9;
-budget_target = zeros(1, 9);
-budget_total = zeros(1, 9);
+budget_target = zeros(1, 10);
+budget_total = zeros(1, 10);
 
 % [1] to [4]
 xt_sw1 = num_xt*10^(-sw1_xt_att/10);
@@ -215,25 +215,34 @@ sig6_mW = 10^(budget_target(6)/10)*(1 + xt_sw1);
 ase6_mW = ase1_mW*scale1*10^(-AWG_loss/10);
 budget_total(6) = 10*log10(sig6_mW + ase6_mW*T_ase);
 
-% [7] Stage-3 switch
+% [7] AWG crosstalk
 budget_sigpw = 10*log10(sig6_mW + ase6_mW*T_inband);
+xt_awg_mW = 0;
+if K > 1
+    xt_awg_mW = (K - 1)*10^((budget_sigpw - AWG_XT)/10);
+end
+budget_target(7) = budget_target(6);
+budget_total(7) = 10*log10(10^(budget_total(6)/10) + xt_awg_mW);
+
+% [8] Stage-3 switch
+budget_sigpw = 10*log10(sig6_mW + ase6_mW*T_inband + xt_awg_mW);
 xt_sw3_mW = num_xt3*10^((budget_sigpw - sw3_xt_att)/10);
-budget_target(7) = budget_target(6) - sw3_loss;
-budget_total(7) = 10*log10(10^(budget_total(6)/10) + xt_sw3_mW) - sw3_loss;
+budget_target(8) = budget_target(7) - sw3_loss;
+budget_total(8) = 10*log10(10^(budget_total(7)/10) + xt_sw3_mW) - sw3_loss;
 
-% [8] fan-in and fan-out
-budget_target(8) = budget_target(7) - fiber_loss;
-budget_total(8) = budget_total(7) - fiber_loss;
+% [9] fan-in and fan-out
+budget_target(9) = budget_target(8) - fiber_loss;
+budget_total(9) = budget_total(8) - fiber_loss;
 
-% [9] Pre-amplifier
+% [10] Pre-amplifier
 limit2 = sat2;
-G2 = 10^((limit2 - budget_total(8))/10);
+G2 = 10^((limit2 - budget_total(9))/10);
 F2 = 10^(NF2/10);
 ase2_mW = (G2*F2 - 1)*h_planck*f_opt*Fs/2*1e3;
 ase2_ref_mW = ase2_mW*signal_interval/Fs;
 scale2 = 10^(limit2/10)/(10^(limit2/10) + ase2_ref_mW);
-budget_target(9) = budget_target(8) + 10*log10(G2*scale2);
-budget_total(9) = 10*log10((10^(limit2/10) + ase2_mW)*scale2);
+budget_target(10) = budget_target(9) + 10*log10(G2*scale2);
+budget_total(10) = 10*log10((10^(limit2/10) + ase2_mW)*scale2);
 budget_ase2 = 10*log10(ase2_mW*scale2);
 
 %% 6. Closed-form SNR budget
