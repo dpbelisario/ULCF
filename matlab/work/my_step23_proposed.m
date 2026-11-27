@@ -100,7 +100,22 @@ end
 signal = awg(signal, AWG_loss, shift, Fs, FWHM_AWG, AWG_XT, 1);
 stage_power(6) = calc_signal_power(signal);
 
-% [7] Stage-3 space switch
+% [7] In-band crosstalk of the ULCF AWG (legacy lines 172-183)
+Hband = nyquistfilter(datasize*up, 0, Fs, baudrate*(1+rolloff));
+if K > 1
+    AWG_crosstalk = zeros(datasize*up, K - 1);
+    sigpw = calc_signal_power(apply_filter(signal, Hband, 1));
+    for k = 1:(K-1)
+        [AWG_crosstalk(:, k), ~, ~] = ...
+            TL_QAM(datasize, up, Hrcos, sigpw, mod_flag);
+    end
+    AWG_crosstalk = attenuation(AWG_crosstalk, AWG_XT);
+    AWG_crosstalk = sum(AWG_crosstalk, 2);
+    signal = signal + AWG_crosstalk;
+end
+stage_power(7) = calc_signal_power(signal);
+
+% [8] Stage-3 space switch
 if stage3_coupler_flag == 1
     sw3_loss = selector_loss(sw_size) + coupler_loss(sw_size);
     sw3_xt_att = sel_ex_ratio;
@@ -118,20 +133,20 @@ for k = 1:num_xt_wave
 end
 signal = signal + attenuation(crosstalk, sw3_xt_att);
 signal = attenuation(signal, sw3_loss);
-stage_power(7) = calc_signal_power(signal);
-
-% [8] Fan-in and fan-out of the multicore fiber again
-signal = attenuation(signal, fiber_loss);
 stage_power(8) = calc_signal_power(signal);
 
-% [9] Pre-amplifier of the receiver
+% [9] Fan-in and fan-out of the multicore fiber again
+signal = attenuation(signal, fiber_loss);
+stage_power(9) = calc_signal_power(signal);
+
+% [10] Pre-amplifier of the receiver
 sat2 = edfa_sat2 - 3*pol_flag;
 edfaGain = sat2 - calc_signal_power(signal);
 [signal, aseNoise2] = amplified_by_EDFA3(signal, Fs, edfaGain, NF2, sat2, 1, ...
     signal_interval);
-stage_power(9) = calc_signal_power(signal);
+stage_power(10) = calc_signal_power(signal);
 
-% [10] Coherent receiver and BER
+% [11] Coherent receiver and BER
 H = nyquistfilter(length(signal), 0, Fs, baudrate*(1+rolloff));
 signal = apply_filter(signal, H, 1);
 training_num = floor(datasize/3);
