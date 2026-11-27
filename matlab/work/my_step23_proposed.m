@@ -83,8 +83,8 @@ stage_power(4) = calc_signal_power(signal);
 
 % [5] EDFA of the wavelength-routing switch
 sat1 = edfa_sat1 - 3*pol_flag;
-edfaGain = sat1 - 10*log10(N) - calc_signal_power(signal);
-[signal, aseNoise] = amplified_by_EDFA3(signal, Fs, edfaGain, NF, sat1, N, ...
+edfaGain = sat1 - 10*log10(N_agg) - calc_signal_power(signal);
+[signal, aseNoise] = amplified_by_EDFA3(signal, Fs, edfaGain, NF, sat1, N_agg, ...
     signal_interval);
 stage_power(5) = calc_signal_power(signal);
 
