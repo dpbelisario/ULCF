@@ -89,7 +89,15 @@ edfaGain = sat1 - 10*log10(N_agg) - calc_signal_power(signal);
 stage_power(5) = calc_signal_power(signal);
 
 % [6] AWG
-signal = awg(signal, AWG_loss, 0, Fs, FWHM_AWG, AWG_XT, 1);
+shift = 0;
+if K > 1
+    AWG_loss = 9;
+    AWG_loss = AWG_loss + coupler_loss(2);
+    FWHM_AWG = 66.6e9;
+    shift = ULCF_dev_freq(K);
+end
+
+signal = awg(signal, AWG_loss, shift, Fs, FWHM_AWG, AWG_XT, 1);
 stage_power(6) = calc_signal_power(signal);
 
 % [7] Stage-3 space switch
