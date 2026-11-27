@@ -76,7 +76,8 @@ signal = attenuation(signal, sw1_loss);
 stage_power(3) = calc_signal_power(signal);
 
 % [4] Aggregation coupler
-agg_coupler_loss = coupler_loss(N);
+N_agg = N/K;
+agg_coupler_loss = coupler_loss(N_agg);
 signal = attenuation(signal, agg_coupler_loss);
 stage_power(4) = calc_signal_power(signal);
 
