@@ -130,6 +130,7 @@ BER = measure_BER_QAM(signal(training_num+1:end), ...
     data(mod_flag*training_num+1:end), mod_flag);
 
 %% 4. Result of the simulation
+disp(stage_power)
 num_bits = mod_flag*(datasize - training_num);
 fprintf('Operating point : PTx = %.1f dBm, space switches %d x %d, Scheme A%d\n', ...
     PTx, sw_size, sw_size, stage3_coupler_flag + 1);
