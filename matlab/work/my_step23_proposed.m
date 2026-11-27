@@ -33,6 +33,8 @@ AWG_XT = 32;
 Morder = 16;
 seed = 1;
 BER_limit = 1e-2;
+K = 1;
+assert(mod(N,K) == 0);
 
 %% 2. Values that follow from the parameters
 Mary = 2^mod_flag;
