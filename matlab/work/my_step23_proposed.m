@@ -194,7 +194,7 @@ budget_target(4) = budget_target(3) - agg_coupler_loss;
 budget_total(4) = budget_total(3) - agg_coupler_loss;
 
 % [5] EDFA
-limit1 = sat1 - 10*log10(N);
+limit1 = sat1 - 10*log10(N_agg);
 G1 = 10^((limit1 - budget_total(4))/10);
 F1 = 10^(NF/10);
 ase1_mW = (G1*F1 - 1)*h_planck*f_opt*Fs/2*1e3;
@@ -205,7 +205,7 @@ budget_total(5) = 10*log10((10^(limit1/10) + ase1_mW)*scale1);
 budget_ase1 = 10*log10(ase1_mW*scale1);
 
 % [6] AWG
-Hawg = gaussfilter(datasize*up, 0, Fs, FWHM_AWG, AWG_XT, 1);
+Hawg = gaussfilter(datasize*up, shift, Fs, FWHM_AWG, AWG_XT, 1);
 w_sig = Hrcos.^2/sum(Hrcos.^2);
 T_sig = sum(w_sig.*Hawg.^2);
 T_ase = mean(Hawg.^2);
@@ -217,7 +217,7 @@ budget_total(6) = 10*log10(sig6_mW + ase6_mW*T_ase);
 
 % [7] Stage-3 switch
 budget_sigpw = 10*log10(sig6_mW + ase6_mW*T_inband);
-xt_sw3_mW = num_xt*10^((budget_sigpw - sw3_xt_att)/10);
+xt_sw3_mW = num_xt3*10^((budget_sigpw - sw3_xt_att)/10);
 budget_target(7) = budget_target(6) - sw3_loss;
 budget_total(7) = 10*log10(10^(budget_total(6)/10) + xt_sw3_mW) - sw3_loss;
 
