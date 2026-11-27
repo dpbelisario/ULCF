@@ -33,8 +33,9 @@ AWG_XT = 32;
 Morder = 16;
 seed = 1;
 BER_limit = 1e-2;
-K = 12;
+K = 2;
 assert(mod(N,K) == 0);
+pattern = 'dispersed';
 
 %% 2. Values that follow from the parameters
 Mary = 2^mod_flag;
@@ -89,6 +90,7 @@ edfaGain = sat1 - 10*log10(N_agg) - calc_signal_power(signal);
 stage_power(5) = calc_signal_power(signal);
 
 % [6] AWG
+shift = 0;
 if K > 1
     AWG_loss = 9;
     AWG_loss = AWG_loss + coupler_loss(2);
@@ -96,7 +98,7 @@ if K > 1
     shift = ULCF_dev_freq(K);
 end
 
-signal = awg(signal, AWG_loss, 0, Fs, FWHM_AWG, AWG_XT, 1);
+signal = awg(signal, AWG_loss, shift, Fs, FWHM_AWG, AWG_XT, 1);
 stage_power(6) = calc_signal_power(signal);
 
 % [7] In-band crosstalk of the ULCF AWG (legacy lines 172-183)
@@ -123,12 +125,17 @@ else
     sw3_xt_att = 2*sel_ex_ratio;
 end
 Hband = nyquistfilter(datasize*up, 0, Fs, baudrate*(1+rolloff));
+num_xt3 = my_inband_leaks(sw_size, K, pattern);
 sigpw = calc_signal_power(apply_filter(signal, Hband, 1));
-xt_power = sigpw + xt_boost;
 crosstalk = zeros(datasize*up, 1);
-for k = 1:num_xt_wave
-    [xt, ~, ~] = TL_QAM(datasize, up, Hrcos, xt_power, mod_flag);
-    crosstalk = crosstalk + xt;
+if num_xt3 > 0
+    num_xt3_wave = min(num_xt3, floor(xt_wave_max));
+    xt3_boost = 10*log10(num_xt3/num_xt3_wave);
+    xt_power = sigpw + xt3_boost;
+    for k = 1:num_xt3_wave
+        [xt, ~, ~] = TL_QAM(datasize, up, Hrcos, xt_power, mod_flag);
+        crosstalk = crosstalk + xt;
+    end
 end
 signal = signal + attenuation(crosstalk, sw3_xt_att);
 signal = attenuation(signal, sw3_loss);
@@ -198,7 +205,7 @@ budget_total(5) = 10*log10((10^(limit1/10) + ase1_mW)*scale1);
 budget_ase1 = 10*log10(ase1_mW*scale1);
 
 % [6] AWG
-Hawg = gaussfilter(datasize*up, 0, Fs, FWHM_AWG, AWG_XT, 1);
+Hawg = gaussfilter(datasize*up, shift, Fs, FWHM_AWG, AWG_XT, 1);
 w_sig = Hrcos.^2/sum(Hrcos.^2);
 T_sig = sum(w_sig.*Hawg.^2);
 T_ase = mean(Hawg.^2);
@@ -219,7 +226,7 @@ budget_total(7) = 10*log10(10^(budget_total(6)/10) + xt_awg_mW);
 
 % [8] Stage-3 switch
 budget_sigpw = 10*log10(sig6_mW + ase6_mW*T_inband + xt_awg_mW);
-xt_sw3_mW = num_xt*10^((budget_sigpw - sw3_xt_att)/10);
+xt_sw3_mW = num_xt3*10^((budget_sigpw - sw3_xt_att)/10);
 budget_target(8) = budget_target(7) - sw3_loss;
 budget_total(8) = 10*log10(10^(budget_total(7)/10) + xt_sw3_mW) - sw3_loss;
 
