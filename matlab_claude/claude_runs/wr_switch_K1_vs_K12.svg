@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 690" width="1000" height="690" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .t { font-size: 14px; fill: #1f2a36; }
+    .s { font-size: 12px; fill: #5b6977; }
+    .h { font-size: 17px; font-weight: 700; fill: #1f2a36; }
+    .b { font-size: 13px; font-weight: 700; fill: #1f2a36; }
+    .tag { font-family: Menlo, Consolas, monospace; font-size: 12px; font-weight: 700; fill: #c0392b; }
+    .tagn { font-family: Menlo, Consolas, monospace; font-size: 12px; font-weight: 700; fill: #b07a1c; }
+    .db { font-family: Menlo, Consolas, monospace; font-size: 12px; fill: #1f2a36; }
+    .el { fill: #ffffff; stroke: #3b4a5c; stroke-width: 1.5; }
+    .cpl { fill: #f7d9c4; stroke: #3b4a5c; stroke-width: 1.5; }
+    .amp { fill: #c9c4bd; stroke: #3b4a5c; stroke-width: 1.5; }
+    .awgf { fill: #f7d9c4; stroke: #3b4a5c; stroke-width: 1.5; }
+    .wire { stroke: #9aa6b2; stroke-width: 1.2; fill: none; }
+    .flow { stroke: #9aa6b2; stroke-width: 1.2; fill: none; stroke-dasharray: 4 6; animation: dash 1.4s linear infinite; }
+    .red { stroke: #c0392b; stroke-width: 2.6; fill: none; }
+    .xt { stroke: #b07a1c; stroke-width: 1.6; fill: none; stroke-dasharray: 3 4; animation: dash 0.9s linear infinite; }
+    .box { fill: #f5f8fc; stroke: #3b5b8c; stroke-width: 1.3; stroke-dasharray: 5 4; }
+    .boxg { fill: #fdf6e6; stroke: #c8902a; stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .card { fill: #ffffff; stroke: #dde3ea; stroke-width: 1.2; }
+    @keyframes dash { to { stroke-dashoffset: -20; } }
+    @keyframes glow { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+    .pulse { animation: glow 2s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { .flow, .xt, .pulse { animation: none; } }
+  </style>
+  <rect width="1000" height="690" fill="#ffffff"/>
+
+  <!-- ================= (a) conventional ================= -->
+  <text x="20" y="30" class="h">(a) One WR switch today (K = 1): one coupler, one EDFA, one AWG</text>
+  <rect x="120" y="48" width="500" height="210" rx="10" class="box"/>
+  <text x="130" y="66" class="s">WR switch m  (N × N = 96 × 96)</text>
+
+  <!-- inputs -->
+  <g class="flow">
+    <path d="M40,95 C110,95 130,150 168,150"/>
+    <path d="M40,120 C110,120 130,150 168,150"/>
+    <path d="M40,185 C110,185 130,150 168,150"/>
+    <path d="M40,210 C110,210 130,150 168,150"/>
+  </g>
+  <path d="M40,150 H168" class="red"/>
+    <text x="60" y="168" class="s">⋮</text>
+  <text x="44" y="232" class="s">N = 96 lines, one per</text>
+  <text x="44" y="246" class="s">first-stage switch</text>
+
+  <!-- coupler [4] -->
+  <circle cx="190" cy="150" r="22" class="cpl"/>
+  <text x="190" y="155" text-anchor="middle" class="b">96×1</text>
+  <path d="M212,150 H268" class="red"/>
+  <!-- EDFA [5] -->
+  <path d="M268,128 L318,150 L268,172 Z" class="amp"/>
+  <path d="M318,150 H400" class="red"/>
+  <!-- AWG [6] -->
+  <path d="M400,128 L460,88 L460,212 L400,172 Z" class="awgf"/>
+  <g class="flow">
+    <path d="M460,130 H600"/><path d="M460,165 H600"/><path d="M460,200 H600"/>
+  </g>
+  <path d="M460,100 H640" class="red"/>
+  <text x="530" y="187" class="s">⋮</text>
+
+  <!-- third stage -->
+  <rect x="640" y="80" width="120" height="44" rx="7" class="el"/>
+  <text x="700" y="100" text-anchor="middle" class="b">third-stage</text>
+  <text x="700" y="116" text-anchor="middle" class="s">switch j  [7]</text>
+
+  <!-- tags -->
+  <text x="190" y="196" text-anchor="middle" class="tag">[4]</text>
+  <text x="190" y="212" text-anchor="middle" class="s">coupler</text>
+  <text x="290" y="196" text-anchor="middle" class="tag">[5]</text>
+  <text x="290" y="212" text-anchor="middle" class="s">EDFA</text>
+  <text x="430" y="230" text-anchor="middle" class="tag">[6]</text>
+  <text x="430" y="246" text-anchor="middle" class="s">1 × N AWG</text>
+
+  <!-- moving target -->
+  <circle r="6" fill="#c0392b">
+    <animateMotion dur="4s" repeatCount="indefinite" path="M40,150 H168 L212,150 H318 L400,150 L460,100 H640"/>
+  </circle>
+
+  <!-- numbers card (a) -->
+  <rect x="780" y="48" width="200" height="210" rx="10" class="card"/>
+  <text x="792" y="70" class="b">power after block</text>
+  <text x="792" y="96" class="db">[3] switch 1   −5.0</text>
+  <text x="792" y="120" class="db">[4] coupler   −29.5</text>
+  <text x="792" y="136" class="s">   loss 24.5 dB (7 × 3.5)</text>
+  <text x="792" y="160" class="db">[5] EDFA       −2.8</text>
+  <text x="792" y="176" class="s">   17 dBm shared by 96</text>
+  <text x="792" y="200" class="db">[6] AWG        −9.2</text>
+  <text x="792" y="216" class="s">   loss 6 dB, no crosstalk</text>
+  <text x="792" y="244" class="s">dBm, one polarization</text>
+
+  <!-- ================= (b) proposed ================= -->
+  <line x1="20" y1="282" x2="980" y2="282" stroke="#e2e7ec"/>
+  <text x="20" y="312" class="h">(b) The same WR switch, proposed (K = 12): what Ex 3 – Ex 6 build</text>
+  <rect x="120" y="328" width="540" height="345" rx="10" class="boxg"/>
+  <text x="650" y="346" class="s" text-anchor="end">WR switch m  (still 96 × 96, now K = 12 branches)</text>
+
+  <!-- branch 1 (target) y=385 -->
+  <g class="flow">
+    <path d="M40,362 C110,362 130,385 168,385"/>
+    <path d="M40,408 C110,408 130,385 168,385"/>
+  </g>
+  <path d="M40,385 H168" class="red"/>
+  <text x="20" y="356" class="s">group 1 (switches 1–8)</text>
+  <circle cx="190" cy="385" r="20" class="cpl"/>
+  <text x="190" y="390" text-anchor="middle" class="b">8×1</text>
+  <path d="M210,385 H268" class="red"/>
+  <path d="M268,365 L314,385 L268,405 Z" class="amp"/>
+  <path d="M314,385 H350" class="red"/>
+  <rect x="350" y="370" width="36" height="30" rx="5" class="el"/>
+  <path d="M358,385 H367 M367,385 L377,378 M367,385 L377,392" stroke="#3b4a5c" stroke-width="1.4" fill="none"/>
+
+  <!-- branch 2 y=470 -->
+  <g class="flow">
+    <path d="M40,450 C110,450 130,470 168,470"/>
+    <path d="M40,490 C110,490 130,470 168,470"/>
+    <path d="M210,470 H268"/><path d="M314,470 H350"/>
+  </g>
+  <text x="44" y="514" class="s">group 2 (9–16)</text>
+  <circle cx="190" cy="470" r="20" class="cpl"/>
+  <text x="190" y="475" text-anchor="middle" class="b">8×1</text>
+  <path d="M268,450 L314,470 L268,490 Z" class="amp"/>
+  <rect x="350" y="455" width="36" height="30" rx="5" class="el"/>
+  <path d="M358,470 H367 M367,470 L377,463 M367,470 L377,477" stroke="#3b4a5c" stroke-width="1.4" fill="none"/>
+
+  <text x="190" y="545" text-anchor="middle" class="b">⋮</text>
+  <text x="291" y="545" text-anchor="middle" class="b">⋮</text>
+  <text x="368" y="545" text-anchor="middle" class="b">⋮</text>
+
+  <!-- branch 12 y=600 -->
+  <g class="flow">
+    <path d="M40,580 C110,580 130,600 168,600"/>
+    <path d="M40,620 C110,620 130,600 168,600"/>
+    <path d="M210,600 H268"/><path d="M314,600 H350"/>
+  </g>
+  <text x="44" y="644" class="s">group 12 (89–96)</text>
+  <circle cx="190" cy="600" r="20" class="cpl"/>
+  <text x="190" y="605" text-anchor="middle" class="b">8×1</text>
+  <path d="M268,580 L314,600 L268,620 Z" class="amp"/>
+  <rect x="350" y="585" width="36" height="30" rx="5" class="el"/>
+  <path d="M358,600 H367 M367,600 L377,593 M367,600 L377,607" stroke="#3b4a5c" stroke-width="1.4" fill="none"/>
+
+  <!-- ULCF AWG pair -->
+  <path d="M480,420 L540,385 L540,490 L480,455 Z" class="awgf"/>
+  <text x="514" y="442" text-anchor="middle" class="b">odd</text>
+  <path d="M480,560 L540,525 L540,630 L480,595 Z" class="awgf"/>
+  <text x="514" y="582" text-anchor="middle" class="b">even</text>
+  <!-- splitter outputs -->
+  <path d="M386,385 L480,430" class="red"/>
+  <g class="flow">
+    <path d="M386,385 L480,575"/>
+    <path d="M386,470 L480,580"/>
+    <path d="M386,600 L480,590"/>
+  </g>
+  <!-- crosstalk into odd AWG from other groups -->
+  <g class="xt">
+    <path d="M386,470 L480,440"/>
+    <path d="M386,600 L480,448"/>
+  </g>
+  <!-- outputs -->
+  <g class="flow">
+    <path d="M540,430 H620"/><path d="M540,462 H620"/>
+    <path d="M540,548 H620"/><path d="M540,580 H620"/><path d="M540,615 H620"/>
+  </g>
+  <path d="M540,400 H690" class="red"/>
+  <rect x="690" y="380" width="120" height="44" rx="7" class="el"/>
+  <text x="750" y="400" text-anchor="middle" class="b">third-stage</text>
+  <text x="750" y="416" text-anchor="middle" class="s">switch j  [8]</text>
+
+  <!-- tags (b) -->
+  <text x="190" y="428" text-anchor="middle" class="tag">[4]</text>
+  <text x="291" y="428" text-anchor="middle" class="tag">[5]</text>
+  <text x="368" y="428" text-anchor="middle" class="tag">[6]</text>
+  <text x="510" y="660" text-anchor="middle" class="tag">[6] ULCF AWG pair</text>
+  <text x="560" y="500" class="tagn pulse">[7] new: 11 leaks</text>
+  <text x="560" y="515" class="s">same λ, −32 dB</text>
+
+  <circle r="6" fill="#c0392b">
+    <animateMotion dur="4s" repeatCount="indefinite" path="M40,385 H168 L210,385 H314 L350,385 H386 L480,430 L540,400 H690"/>
+  </circle>
+
+  <!-- numbers card (b) -->
+  <rect x="830" y="328" width="150" height="345" rx="10" class="card"/>
+  <text x="842" y="350" class="b">what changed</text>
+  <text x="842" y="378" class="tag">Ex 3 · [4]</text>
+  <text x="842" y="394" class="db">8×1: 10.5 dB</text>
+  <text x="842" y="410" class="db">in: −15.5 dBm</text>
+  <text x="842" y="438" class="tag">Ex 4 · [5]</text>
+  <text x="842" y="454" class="db">17 dBm / 8 ch</text>
+  <text x="842" y="470" class="db">out: +8.0 dBm</text>
+  <text x="842" y="498" class="tag">Ex 5 · [6]</text>
+  <text x="842" y="514" class="db">1×2 split 3.5</text>
+  <text x="842" y="530" class="db">+ AWG 9 dB</text>
+  <text x="842" y="546" class="db">offset 16 GHz</text>
+  <text x="842" y="574" class="tagn">Ex 6 · new [7]</text>
+  <text x="842" y="590" class="db">K−1 = 11 leaks</text>
+  <text x="842" y="606" class="db">same λ, −32 dB</text>
+  <text x="842" y="634" class="tag">Ex 8 · [8]</text>
+  <text x="842" y="650" class="db">fewer in-band</text>
+  <text x="842" y="666" class="db">leaks (work1)</text>
+</svg>
