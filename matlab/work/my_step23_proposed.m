@@ -33,7 +33,7 @@ AWG_XT = 32;
 Morder = 16;
 seed = 1;
 BER_limit = 1e-2;
-K = 1;
+K = 12;
 assert(mod(N,K) == 0);
 pattern = 'dispersed';
 
