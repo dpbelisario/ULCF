@@ -33,6 +33,9 @@ AWG_XT = 32;
 Morder = 16;
 seed = 1;
 BER_limit = 1e-2;
+K = 2;
+assert(mod(N,K) == 0);
+pattern = 'dispersed';
 
 %% 2. Values that follow from the parameters
 Mary = 2^mod_flag;
@@ -74,22 +77,46 @@ signal = attenuation(signal, sw1_loss);
 stage_power(3) = calc_signal_power(signal);
 
 % [4] Aggregation coupler
-agg_coupler_loss = coupler_loss(N);
+N_agg = N/K;
+agg_coupler_loss = coupler_loss(N_agg);
 signal = attenuation(signal, agg_coupler_loss);
 stage_power(4) = calc_signal_power(signal);
 
 % [5] EDFA of the wavelength-routing switch
 sat1 = edfa_sat1 - 3*pol_flag;
-edfaGain = sat1 - 10*log10(N) - calc_signal_power(signal);
-[signal, aseNoise] = amplified_by_EDFA3(signal, Fs, edfaGain, NF, sat1, N, ...
+edfaGain = sat1 - 10*log10(N_agg) - calc_signal_power(signal);
+[signal, aseNoise] = amplified_by_EDFA3(signal, Fs, edfaGain, NF, sat1, N_agg, ...
     signal_interval);
 stage_power(5) = calc_signal_power(signal);
 
 % [6] AWG
-signal = awg(signal, AWG_loss, 0, Fs, FWHM_AWG, AWG_XT, 1);
+shift = 0;
+if K > 1
+    AWG_loss = 9;
+    AWG_loss = AWG_loss + coupler_loss(2);
+    FWHM_AWG = 66.6e9;
+    shift = ULCF_dev_freq(K);
+end
+
+signal = awg(signal, AWG_loss, shift, Fs, FWHM_AWG, AWG_XT, 1);
 stage_power(6) = calc_signal_power(signal);
 
-% [7] Stage-3 space switch
+% [7] In-band crosstalk of the ULCF AWG (legacy lines 172-183)
+Hband = nyquistfilter(datasize*up, 0, Fs, baudrate*(1+rolloff));
+if K > 1
+    AWG_crosstalk = zeros(datasize*up, K - 1);
+    sigpw = calc_signal_power(apply_filter(signal, Hband, 1));
+    for k = 1:(K-1)
+        [AWG_crosstalk(:, k), ~, ~] = ...
+            TL_QAM(datasize, up, Hrcos, sigpw, mod_flag);
+    end
+    AWG_crosstalk = attenuation(AWG_crosstalk, AWG_XT);
+    AWG_crosstalk = sum(AWG_crosstalk, 2);
+    signal = signal + AWG_crosstalk;
+end
+stage_power(7) = calc_signal_power(signal);
+
+% [8] Stage-3 space switch
 if stage3_coupler_flag == 1
     sw3_loss = selector_loss(sw_size) + coupler_loss(sw_size);
     sw3_xt_att = sel_ex_ratio;
@@ -98,29 +125,34 @@ else
     sw3_xt_att = 2*sel_ex_ratio;
 end
 Hband = nyquistfilter(datasize*up, 0, Fs, baudrate*(1+rolloff));
+num_xt3 = my_inband_leaks(sw_size, K, pattern);
 sigpw = calc_signal_power(apply_filter(signal, Hband, 1));
-xt_power = sigpw + xt_boost;
 crosstalk = zeros(datasize*up, 1);
-for k = 1:num_xt_wave
-    [xt, ~, ~] = TL_QAM(datasize, up, Hrcos, xt_power, mod_flag);
-    crosstalk = crosstalk + xt;
+if num_xt3 > 0
+    num_xt3_wave = min(num_xt3, floor(xt_wave_max));
+    xt3_boost = 10*log10(num_xt3/num_xt3_wave);
+    xt_power = sigpw + xt3_boost;
+    for k = 1:num_xt3_wave
+        [xt, ~, ~] = TL_QAM(datasize, up, Hrcos, xt_power, mod_flag);
+        crosstalk = crosstalk + xt;
+    end
 end
 signal = signal + attenuation(crosstalk, sw3_xt_att);
 signal = attenuation(signal, sw3_loss);
-stage_power(7) = calc_signal_power(signal);
-
-% [8] Fan-in and fan-out of the multicore fiber again
-signal = attenuation(signal, fiber_loss);
 stage_power(8) = calc_signal_power(signal);
 
-% [9] Pre-amplifier of the receiver
+% [9] Fan-in and fan-out of the multicore fiber again
+signal = attenuation(signal, fiber_loss);
+stage_power(9) = calc_signal_power(signal);
+
+% [10] Pre-amplifier of the receiver
 sat2 = edfa_sat2 - 3*pol_flag;
 edfaGain = sat2 - calc_signal_power(signal);
 [signal, aseNoise2] = amplified_by_EDFA3(signal, Fs, edfaGain, NF2, sat2, 1, ...
     signal_interval);
-stage_power(9) = calc_signal_power(signal);
+stage_power(10) = calc_signal_power(signal);
 
-% [10] Coherent receiver and BER
+% [11] Coherent receiver and BER
 H = nyquistfilter(length(signal), 0, Fs, baudrate*(1+rolloff));
 signal = apply_filter(signal, H, 1);
 training_num = floor(datasize/3);
@@ -147,8 +179,8 @@ SNR_sim = 10*log10(abs(g)^2*mean(abs(tx_sym).^2)/mean(abs(err_sym).^2));
 %% 5. Closed-form power budget
 h_planck = 6.62607004e-34;
 f_opt = 299792458/1550e-9;
-budget_target = zeros(1, 9);
-budget_total = zeros(1, 9);
+budget_target = zeros(1, 10);
+budget_total = zeros(1, 10);
 
 % [1] to [4]
 xt_sw1 = num_xt*10^(-sw1_xt_att/10);
@@ -162,7 +194,7 @@ budget_target(4) = budget_target(3) - agg_coupler_loss;
 budget_total(4) = budget_total(3) - agg_coupler_loss;
 
 % [5] EDFA
-limit1 = sat1 - 10*log10(N);
+limit1 = sat1 - 10*log10(N_agg);
 G1 = 10^((limit1 - budget_total(4))/10);
 F1 = 10^(NF/10);
 ase1_mW = (G1*F1 - 1)*h_planck*f_opt*Fs/2*1e3;
@@ -173,7 +205,7 @@ budget_total(5) = 10*log10((10^(limit1/10) + ase1_mW)*scale1);
 budget_ase1 = 10*log10(ase1_mW*scale1);
 
 % [6] AWG
-Hawg = gaussfilter(datasize*up, 0, Fs, FWHM_AWG, AWG_XT, 1);
+Hawg = gaussfilter(datasize*up, shift, Fs, FWHM_AWG, AWG_XT, 1);
 w_sig = Hrcos.^2/sum(Hrcos.^2);
 T_sig = sum(w_sig.*Hawg.^2);
 T_ase = mean(Hawg.^2);
@@ -183,34 +215,44 @@ sig6_mW = 10^(budget_target(6)/10)*(1 + xt_sw1);
 ase6_mW = ase1_mW*scale1*10^(-AWG_loss/10);
 budget_total(6) = 10*log10(sig6_mW + ase6_mW*T_ase);
 
-% [7] Stage-3 switch
+% [7] AWG crosstalk
 budget_sigpw = 10*log10(sig6_mW + ase6_mW*T_inband);
-xt_sw3_mW = num_xt*10^((budget_sigpw - sw3_xt_att)/10);
-budget_target(7) = budget_target(6) - sw3_loss;
-budget_total(7) = 10*log10(10^(budget_total(6)/10) + xt_sw3_mW) - sw3_loss;
+xt_awg_mW = 0;
+if K > 1
+    xt_awg_mW = (K - 1)*10^((budget_sigpw - AWG_XT)/10);
+end
+budget_target(7) = budget_target(6);
+budget_total(7) = 10*log10(10^(budget_total(6)/10) + xt_awg_mW);
 
-% [8] fan-in and fan-out
-budget_target(8) = budget_target(7) - fiber_loss;
-budget_total(8) = budget_total(7) - fiber_loss;
+% [8] Stage-3 switch
+budget_sigpw = 10*log10(sig6_mW + ase6_mW*T_inband + xt_awg_mW);
+xt_sw3_mW = num_xt3*10^((budget_sigpw - sw3_xt_att)/10);
+budget_target(8) = budget_target(7) - sw3_loss;
+budget_total(8) = 10*log10(10^(budget_total(7)/10) + xt_sw3_mW) - sw3_loss;
 
-% [9] Pre-amplifier
+% [9] fan-in and fan-out
+budget_target(9) = budget_target(8) - fiber_loss;
+budget_total(9) = budget_total(8) - fiber_loss;
+
+% [10] Pre-amplifier
 limit2 = sat2;
-G2 = 10^((limit2 - budget_total(8))/10);
+G2 = 10^((limit2 - budget_total(9))/10);
 F2 = 10^(NF2/10);
 ase2_mW = (G2*F2 - 1)*h_planck*f_opt*Fs/2*1e3;
 ase2_ref_mW = ase2_mW*signal_interval/Fs;
 scale2 = 10^(limit2/10)/(10^(limit2/10) + ase2_ref_mW);
-budget_target(9) = budget_target(8) + 10*log10(G2*scale2);
-budget_total(9) = 10*log10((10^(limit2/10) + ase2_mW)*scale2);
+budget_target(10) = budget_target(9) + 10*log10(G2*scale2);
+budget_total(10) = 10*log10((10^(limit2/10) + ase2_mW)*scale2);
 budget_ase2 = 10*log10(ase2_mW*scale2);
 
 %% 6. Closed-form SNR budget
 eq_penalty = T_sig*sum(w_sig./Hawg.^2);
 nsr_ase1 = (ase1_mW*baudrate/Fs)/(G1*10^(budget_target(4)/10));
 nsr_xt_sw1 = xt_sw1;
-nsr_xt_sw3 = xt_sw3_mW/10^(budget_target(6)/10)*eq_penalty;
-nsr_ase2 = (ase2_mW*baudrate/Fs)/(G2*10^(budget_target(8)/10))*eq_penalty;
-SNR_budget = -10*log10(nsr_ase1 + nsr_xt_sw1 + nsr_xt_sw3 + nsr_ase2);
+nsr_xt_awg = xt_awg_mW/10^(budget_target(7)/10)*eq_penalty;
+nsr_xt_sw3 = xt_sw3_mW/10^(budget_target(7)/10)*eq_penalty;
+nsr_ase2 = (ase2_mW*baudrate/Fs)/(G2*10^(budget_target(9)/10))*eq_penalty;
+SNR_budget = -10*log10(nsr_ase1 + nsr_xt_sw1 + nsr_xt_awg + nsr_xt_sw3 + nsr_ase2);
 
 BER_gauss = NaN;
 if mod_flag ~= 5
@@ -220,11 +262,11 @@ end
 
 %% 7. Tables
 stage_names = {'Tx', 'Fan-in/out', 'Switch 1', 'Coupler', 'EDFA', 'AWG', ...
-    'Switch 3', 'Fan-in/out', 'Pre-amp'};
+    'AWG crosstalk', 'Switch 3', 'Fan-in/out', 'Pre-amp'};
 fprintf('\nPower after every block [dBm] (one polarization, inside the band Fs)\n');
 fprintf('  %-18s %11s %11s %11s\n', 'block', 'simulation', 'budget', 'budget');
 fprintf('  %-18s %11s %11s %11s\n', '', '(total)', '(total)', '(target)');
-for k = 1:9
+for k = 1:10
     fprintf('  [%d] %-14s %11.3f %11.3f %11.3f\n', k, stage_names{k}, ...
         stage_power(k), budget_total(k), budget_target(k));
 end
@@ -232,11 +274,12 @@ ase1_sim = calc_signal_power(aseNoise);
 ase2_sim = calc_signal_power(aseNoise2);
 fprintf('  %-18s %11.3f %11.3f\n', 'ASE of EDFA', ase1_sim, budget_ase1);
 fprintf('  %-18s %11.3f %11.3f\n', 'ASE of pre-amp', ase2_sim, budget_ase2);
-fprintf('  %-18s %11.3f %11.3f\n', 'sigpw (block [7])', sigpw, budget_sigpw);
+fprintf('  %-18s %11.3f %11.3f\n', 'sigpw (block [8])', sigpw, budget_sigpw);
 
 fprintf('\nSNR contributions in the signal bandwidth [dB]\n');
 fprintf('  ASE of the EDFA                 %7.2f\n', -10*log10(nsr_ase1));
 fprintf('  crosstalk of the stage-1 switch %7.2f\n', -10*log10(nsr_xt_sw1));
+fprintf('  crosstalk of the ULCF AWG       %7.2f\n', -10*log10(nsr_xt_awg));
 fprintf('  crosstalk of the stage-3 switch %7.2f\n', -10*log10(nsr_xt_sw3));
 fprintf('  ASE of the pre-amplifier        %7.2f\n', -10*log10(nsr_ase2));
 fprintf('  all together (budget)           %7.2f\n', SNR_budget);
@@ -274,7 +317,7 @@ if isprop(gcf, 'Theme')
     set(gcf, 'Theme', 'light');
 end
 hold on;
-plot(1:9, budget_total, 'k-');
+plot(1:10, budget_total, 'k-');
 legend('simulation (total power)', 'closed-form budget', 'Location', 'southwest');
 title(sprintf('Level diagram: PTx = %.1f dBm, M = %d, Scheme A%d', PTx, sw_size, ...
     stage3_coupler_flag + 1));
