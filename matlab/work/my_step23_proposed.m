@@ -35,6 +35,7 @@ seed = 1;
 BER_limit = 1e-2;
 K = 1;
 assert(mod(N,K) == 0);
+pattern = 'dispersed';
 
 %% 2. Values that follow from the parameters
 Mary = 2^mod_flag;
@@ -124,12 +125,17 @@ else
     sw3_xt_att = 2*sel_ex_ratio;
 end
 Hband = nyquistfilter(datasize*up, 0, Fs, baudrate*(1+rolloff));
+num_xt3 = my_inband_leaks(sw_size, K, pattern);
 sigpw = calc_signal_power(apply_filter(signal, Hband, 1));
-xt_power = sigpw + xt_boost;
 crosstalk = zeros(datasize*up, 1);
-for k = 1:num_xt_wave
-    [xt, ~, ~] = TL_QAM(datasize, up, Hrcos, xt_power, mod_flag);
-    crosstalk = crosstalk + xt;
+if num_xt3 > 0
+    num_xt3_wave = min(num_xt3, floor(xt_wave_max));
+    xt3_boost = 10*log10(num_xt3/num_xt3_wave);
+    xt_power = sigpw + xt3_boost;
+    for k = 1:num_xt3_wave
+        [xt, ~, ~] = TL_QAM(datasize, up, Hrcos, xt_power, mod_flag);
+        crosstalk = crosstalk + xt;
+    end
 end
 signal = signal + attenuation(crosstalk, sw3_xt_att);
 signal = attenuation(signal, sw3_loss);
